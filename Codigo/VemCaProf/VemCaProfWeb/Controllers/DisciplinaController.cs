@@ -44,43 +44,43 @@ namespace VemCaProfWeb.Controllers
         // POST: DisciplinaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(DisciplinaModel disciplinaModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var disciplina = _mapper.Map<Disciplina>(disciplinaModel);
+                _disciplinaService.Create(disciplina);
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: DisciplinaController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            Disciplina disciplina = _disciplinaService.Get((uint)id);
+            DisciplinaModel disciplinaModel = _mapper.Map<DisciplinaModel>(disciplina);
+            return View(disciplinaModel);
         }
 
         // POST: DisciplinaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, DisciplinaModel disciplinaModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var disciplina = _mapper.Map<Disciplina>(disciplinaModel);
+                _disciplinaService.Edit(disciplina);
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: DisciplinaController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Disciplina disciplina = _disciplinaService.Get((uint)id);
+            DisciplinaModel disciplinaModel = _mapper.Map<DisciplinaModel>(disciplina);
+            return View(disciplinaModel);
         }
 
         // POST: DisciplinaController/Delete/5
@@ -88,14 +88,8 @@ namespace VemCaProfWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _disciplinaService.Delete((uint)id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
