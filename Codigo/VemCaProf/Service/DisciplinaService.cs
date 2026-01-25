@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    internal class DisciplinaService : IDisciplinaService
+    public class DisciplinaService : IDisciplinaService
     {
         private readonly VemCaProfContext _context;
 
