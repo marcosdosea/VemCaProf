@@ -48,7 +48,7 @@ namespace Service
         /// <summary>
         /// Editar dados da disciplina
         /// </summary>
-        /// param name="disciplina">dados da disciplina</param>
+        /// <param name="disciplina">dados da disciplina</param>
         /// exception cref="ServiceException">lançada quando a disciplina é inválida ou não encontrada</exception>
         public void Edit(Disciplina disciplina)
         {
