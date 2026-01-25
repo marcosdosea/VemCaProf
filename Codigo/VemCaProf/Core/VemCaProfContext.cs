@@ -91,7 +91,7 @@ public partial class VemCaProfContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Descricao)
-                .HasMaxLength(45)
+                .HasMaxLength(200)
                 .HasColumnName("descricao");
             entity.Property(e => e.Nivel)
                 .HasComment("F1 = Ensino Fundamental Menor\nF2 = Ensino Fundamental Maior\nM1 = Ensino Medio ")
