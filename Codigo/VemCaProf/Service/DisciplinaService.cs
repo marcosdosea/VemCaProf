@@ -29,9 +29,19 @@ namespace Service
             return (uint)disciplina.Id;
         }
 
+        /// <summary>
+        /// Remover disciplina da base de dados
+        /// </summary>
+        /// <param name="id">id da Disciplina</param>
         public void Delete(uint id)
         {
-            throw new NotImplementedException();
+            var disciplina = _context.Disciplinas.Find(id);
+            if (disciplina != null)
+            {
+                _context.Remove(disciplina);
+                _context.SaveChanges();
+            }
+
         }
 
         /// <summary>

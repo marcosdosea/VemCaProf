@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.2.11415.280 d18.0
+VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VemCaProfWeb", "VemCaProfWeb\VemCaProfWeb.csproj", "{274125E8-5529-429A-B4BD-3B61C9B4E828}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{560061E9-FD75-49DC-A709-DE10C7F9A710}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{DB5E9FB9-9845-4D46-AF9F-82F79DF9583F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +23,15 @@ Global
 		{560061E9-FD75-49DC-A709-DE10C7F9A710}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{560061E9-FD75-49DC-A709-DE10C7F9A710}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{560061E9-FD75-49DC-A709-DE10C7F9A710}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB5E9FB9-9845-4D46-AF9F-82F79DF9583F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB5E9FB9-9845-4D46-AF9F-82F79DF9583F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB5E9FB9-9845-4D46-AF9F-82F79DF9583F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB5E9FB9-9845-4D46-AF9F-82F79DF9583F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F1A549B0-9A13-487D-9930-2046BC4337EF}
 	EndGlobalSection
 EndGlobal
