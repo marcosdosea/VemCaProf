@@ -14,6 +14,6 @@ namespace Core.Service
         Disciplina Get(uint id);
         IEnumerable<Disciplina> GetAll();
         IEnumerable<Disciplina> GetByNome(string nome);
-        Disciplina Get(uint id);
+
     }
 }

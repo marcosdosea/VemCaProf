@@ -11,5 +11,10 @@ public partial class Disciplina
 
     public string? Descricao { get; set; }
 
+    /// <summary>
+    /// F1 = Ensino Fundamental Menor
+    /// F2 = Ensino Fundamental Maior
+    /// M1 = Ensino Medio 
+    /// </summary>
     public string? Nivel { get; set; }
 }

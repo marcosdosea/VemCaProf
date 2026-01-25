@@ -29,7 +29,9 @@ public partial class VemCaProfContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Aula>(entity =>
@@ -92,7 +94,8 @@ public partial class VemCaProfContext : DbContext
                 .HasMaxLength(45)
                 .HasColumnName("descricao");
             entity.Property(e => e.Nivel)
-                .HasColumnType("enum('Fundamental menor','Fundamental maior','Medio')")
+                .HasComment("F1 = Ensino Fundamental Menor\nF2 = Ensino Fundamental Maior\nM1 = Ensino Medio ")
+                .HasColumnType("enum('F1','F2','M1')")
                 .HasColumnName("nivel");
             entity.Property(e => e.Nome)
                 .HasMaxLength(45)
@@ -206,7 +209,7 @@ public partial class VemCaProfContext : DbContext
             entity.Property(e => e.IdCidade).HasColumnName("idCidade");
             entity.Property(e => e.Libras).HasColumnName("libras");
             entity.Property(e => e.Nome)
-                .HasMaxLength(45)
+                .HasMaxLength(50)
                 .HasColumnName("nome");
             entity.Property(e => e.Numero)
                 .HasMaxLength(45)
@@ -218,6 +221,9 @@ public partial class VemCaProfContext : DbContext
             entity.Property(e => e.Senha)
                 .HasMaxLength(45)
                 .HasColumnName("senha");
+            entity.Property(e => e.Sobrenome)
+                .HasMaxLength(50)
+                .HasColumnName("sobrenome");
             entity.Property(e => e.Telefone)
                 .HasMaxLength(45)
                 .HasColumnName("telefone");
