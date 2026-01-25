@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,19 +63,37 @@ namespace Service
 
         }
 
+        /// <summary>
+        /// Buscar disciplina pelo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Dados da disciplina</returns>
         public Disciplina Get(uint id)
         {
-            throw new NotImplementedException();
+            return _context.Disciplinas.FirstOrDefault(disciplina => disciplina.Id == id)
+                ?? throw new ServiceException("Disciplina não encontrada.");
         }
 
+        /// <summary>
+        /// Buscar todas as disciplinas
+        /// </summary>
+        /// <returns>lista de disciplinas</returns>
         public IEnumerable<Disciplina> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Disciplinas.AsNoTracking();
         }
 
+        /// <summary>
+        /// Obtém disciplinas pelo nome
+        /// </summary>
+        /// <param name="nome"></param>
+        /// <returns></returns>
         public IEnumerable<Disciplina> GetByNome(string nome)
         {
-            throw new NotImplementedException();
+            IEnumerable<Disciplina> disciplinas = _context.Disciplinas
+                .Where(disciplina => disciplina.Nome.StartsWith(nome))
+                .AsNoTracking();
+            return disciplinas;
         }
     }
 }
