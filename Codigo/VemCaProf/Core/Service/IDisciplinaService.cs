@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Service
 {
-    internal interface IDisciplinaService
+    public interface IDisciplinaService
     {
         uint Create(Disciplina disciplina);
         void Edit(Disciplina disciplina);
