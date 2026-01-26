@@ -2,7 +2,7 @@ using Core.DTO;
 
 namespace Core.Mappers
 {
-    public static class PessoaMapper
+    public static class PessoaProfile
     {
         // MÉTODOS DE IDA (DTO -> ENTITY) - Usados no CREATE/EDIT
         
