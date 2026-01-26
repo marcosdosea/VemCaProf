@@ -18,5 +18,5 @@
     </PackageReference>
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.20" />
   </ItemGroup>
-
+  
 </Project>
