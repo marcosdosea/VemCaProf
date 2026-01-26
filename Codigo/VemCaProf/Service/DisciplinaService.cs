@@ -36,10 +36,11 @@ namespace Service
         /// <param name="id">id da Disciplina</param>
         public void Delete(uint id)
         {
-            var disciplina = _context.Disciplinas.Find(id);
+            int intId = (int)id;
+            var disciplina = _context.Disciplinas.Find(intId);
             if (disciplina != null)
             {
-                _context.Remove(disciplina);
+                _context.Disciplinas.Remove(disciplina);
                 _context.SaveChanges();
             }
 
