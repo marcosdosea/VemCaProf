@@ -14,11 +14,10 @@ namespace VemCaProfWeb.Models
             = Enumerable.Empty<SelectListItem>();
 
         [Display(Name = "Atende em Libras?")]
-        [Range(0, 1, ErrorMessage = "Valor inválido para Atende em Libras.")]
-        public bool AtendeLibras { get; set; }
+        public bool Libras { get; set; }
 
-        [Display(Name = "Descrição Profissional")]
+        [Display(Name = "Descrição Professor")]
         [StringLength(1000)]
-        public string? Descricao { get; set; }
+        public string? DescricaoProfessor { get; set; }
     }
 }
