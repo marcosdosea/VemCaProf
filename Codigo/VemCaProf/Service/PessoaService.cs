@@ -25,7 +25,7 @@ namespace Service
         /// <returns>id do professor criado</returns>
         public void CreateProfessor(ProfessorPessoaDTO dto)
         {
-            var pessoa = PessoaMapper.ToEntity(dto);
+            var pessoa = PessoaProfile.ToEntity(dto);
 
             pessoa.Senha = dto.Senha;
 
@@ -116,7 +116,7 @@ namespace Service
         /// <param name="dto">DTO com dados do aluno</param>
         public void CreateAluno(AlunoPessoaDTO dto)
         {
-            var pessoa = PessoaMapper.ToEntity(dto);
+            var pessoa = PessoaProfile.ToEntity(dto);
             pessoa.Senha = dto.Senha;
 
             _context.Pessoas.Add(pessoa);
@@ -174,7 +174,7 @@ namespace Service
 
         public void CreateResponsavel(ResponsavelPessoaDTO dto)
         {
-            var pessoa = PessoaMapper.ToEntity(dto);
+            var pessoa = PessoaProfile.ToEntity(dto);
             pessoa.Senha = dto.Senha;
 
             _context.Pessoas.Add(pessoa);
