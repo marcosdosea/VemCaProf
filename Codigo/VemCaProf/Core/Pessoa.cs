@@ -54,4 +54,26 @@ public partial class Pessoa
     public byte[]? FotoPerfil { get; set; }
 
     public int IdCidade { get; set; }
+
+    public int? ResponsavelId { get; set; }
+
+    public virtual ICollection<Aula> AulaIdAlunoNavigations { get; set; } = new List<Aula>();
+
+    public virtual ICollection<Aula> AulaIdProfessorNavigations { get; set; } = new List<Aula>();
+
+    public virtual ICollection<Aula> AulaIdResponsavelNavigations { get; set; } = new List<Aula>();
+
+    public virtual ICollection<DisponibilidadeHorario> DisponibilidadeHorarios { get; set; } = new List<DisponibilidadeHorario>();
+
+    public virtual Cidade IdCidadeNavigation { get; set; } = null!;
+
+    public virtual ICollection<Pessoa> InverseResponsavel { get; set; } = new List<Pessoa>();
+
+    public virtual ICollection<Penalidade> PenalidadeIdProfessorNavigations { get; set; } = new List<Penalidade>();
+
+    public virtual ICollection<Penalidade> PenalidadeIdResponsavelNavigations { get; set; } = new List<Penalidade>();
+
+    public virtual Pessoa? Responsavel { get; set; }
+
+    public virtual ICollection<Disciplina> IdDisciplinas { get; set; } = new List<Disciplina>();
 }

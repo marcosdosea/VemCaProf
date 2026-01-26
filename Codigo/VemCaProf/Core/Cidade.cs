@@ -10,4 +10,6 @@ public partial class Cidade
     public string Nome { get; set; } = null!;
 
     public string Estado { get; set; } = null!;
+
+    public virtual ICollection<Pessoa> Pessoas { get; set; } = new List<Pessoa>();
 }

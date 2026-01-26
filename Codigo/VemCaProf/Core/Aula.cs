@@ -13,11 +13,39 @@ public partial class Aula
 
     public string Descricao { get; set; } = null!;
 
-    public int IdAulaPagamento { get; set; }
+    public DateTime DataHoraPagamento { get; set; }
 
-    public int IdDisciplinaAula { get; set; }
+    public double Valor { get; set; }
 
-    public int IdResponsavelAula { get; set; }
+    /// <summary>
+    /// P = Pix
+    /// C = Credito
+    /// D = Debito
+    /// </summary>
+    public string MetodoPagamento { get; set; } = null!;
 
-    public int IdProfessorAula { get; set; }
+    /// <summary>
+    /// AG = Agendada
+    /// RE = Realizada
+    /// PG = Paga
+    /// AP = Aguardando Pagamento
+    /// 
+    /// </summary>
+    public string Status { get; set; } = null!;
+
+    public int IdDisciplina { get; set; }
+
+    public int IdResponsavel { get; set; }
+
+    public int IdAluno { get; set; }
+
+    public int IdProfessor { get; set; }
+
+    public virtual Pessoa IdAlunoNavigation { get; set; } = null!;
+
+    public virtual Disciplina IdDisciplinaNavigation { get; set; } = null!;
+
+    public virtual Pessoa IdProfessorNavigation { get; set; } = null!;
+
+    public virtual Pessoa IdResponsavelNavigation { get; set; } = null!;
 }

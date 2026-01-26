@@ -21,16 +21,15 @@ public partial class VemCaProfContext : DbContext
 
     public virtual DbSet<Disciplina> Disciplinas { get; set; }
 
-    public virtual DbSet<Pagamento> Pagamentos { get; set; }
+    public virtual DbSet<DisponibilidadeHorario> DisponibilidadeHorarios { get; set; }
 
     public virtual DbSet<Penalidade> Penalidades { get; set; }
 
     public virtual DbSet<Pessoa> Pessoas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=VCP");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,17 +37,20 @@ public partial class VemCaProfContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("aula");
+            entity.ToTable("Aula", "VCP");
 
-            entity.HasIndex(e => e.IdDisciplinaAula, "fk_Aula_Disciplina1_idx");
+            entity.HasIndex(e => e.IdDisciplina, "fk_Aula_Disciplina1_idx");
 
-            entity.HasIndex(e => e.IdAulaPagamento, "fk_Aula_Pagamento1_idx");
+            entity.HasIndex(e => e.IdResponsavel, "fk_Aula_Pessoa1_idx");
 
-            entity.HasIndex(e => e.IdResponsavelAula, "fk_Aula_Pessoa1_idx");
+            entity.HasIndex(e => e.IdProfessor, "fk_Aula_Pessoa2_idx");
 
-            entity.HasIndex(e => e.IdProfessorAula, "fk_Aula_Pessoa2_idx");
+            entity.HasIndex(e => e.IdAluno, "fk_Aula_Pessoa3_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.DataHoraPagamento)
+                .HasColumnType("datetime")
+                .HasColumnName("dataHoraPagamento");
             entity.Property(e => e.DataHorarioFinal)
                 .HasColumnType("datetime")
                 .HasColumnName("dataHorarioFinal");
@@ -58,17 +60,46 @@ public partial class VemCaProfContext : DbContext
             entity.Property(e => e.Descricao)
                 .HasMaxLength(45)
                 .HasColumnName("descricao");
-            entity.Property(e => e.IdAulaPagamento).HasColumnName("idAulaPagamento");
-            entity.Property(e => e.IdDisciplinaAula).HasColumnName("idDisciplinaAula");
-            entity.Property(e => e.IdProfessorAula).HasColumnName("idProfessorAula");
-            entity.Property(e => e.IdResponsavelAula).HasColumnName("idResponsavelAula");
+            entity.Property(e => e.IdAluno).HasColumnName("idAluno");
+            entity.Property(e => e.IdDisciplina).HasColumnName("idDisciplina");
+            entity.Property(e => e.IdProfessor).HasColumnName("idProfessor");
+            entity.Property(e => e.IdResponsavel).HasColumnName("idResponsavel");
+            entity.Property(e => e.MetodoPagamento)
+                .HasComment("P = Pix\nC = Credito\nD = Debito")
+                .HasColumnType("enum('P','C','D')")
+                .HasColumnName("metodoPagamento");
+            entity.Property(e => e.Status)
+                .HasComment("AG = Agendada\nRE = Realizada\nPG = Paga\nAP = Aguardando Pagamento\n")
+                .HasColumnType("enum('AG','RE','PG','AP')")
+                .HasColumnName("status");
+            entity.Property(e => e.Valor).HasColumnName("valor");
+
+            entity.HasOne(d => d.IdAlunoNavigation).WithMany(p => p.AulaIdAlunoNavigations)
+                .HasForeignKey(d => d.IdAluno)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Aula_Pessoa3");
+
+            entity.HasOne(d => d.IdDisciplinaNavigation).WithMany(p => p.Aulas)
+                .HasForeignKey(d => d.IdDisciplina)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Aula_Disciplina1");
+
+            entity.HasOne(d => d.IdProfessorNavigation).WithMany(p => p.AulaIdProfessorNavigations)
+                .HasForeignKey(d => d.IdProfessor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Aula_Pessoa2");
+
+            entity.HasOne(d => d.IdResponsavelNavigation).WithMany(p => p.AulaIdResponsavelNavigations)
+                .HasForeignKey(d => d.IdResponsavel)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Aula_Pessoa1");
         });
 
         modelBuilder.Entity<Cidade>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("cidade");
+            entity.ToTable("Cidade", "VCP");
 
             entity.HasIndex(e => e.Id, "id_UNIQUE").IsUnique();
 
@@ -85,7 +116,7 @@ public partial class VemCaProfContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("disciplina");
+            entity.ToTable("Disciplina", "VCP");
 
             entity.HasIndex(e => e.Id, "id_UNIQUE").IsUnique();
 
@@ -102,30 +133,39 @@ public partial class VemCaProfContext : DbContext
                 .HasColumnName("nome");
         });
 
-        modelBuilder.Entity<Pagamento>(entity =>
+        modelBuilder.Entity<DisponibilidadeHorario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("pagamento");
+            entity.ToTable("DisponibilidadeHorario", "VCP");
 
-            entity.HasIndex(e => e.IdResponsavelPagamento, "fk_Pagamento_Pessoa1_idx");
+            entity.HasIndex(e => e.IdProfessor, "fk_DisponibilidadeHorario_Pessoa1_idx");
+
+            entity.HasIndex(e => e.Id, "id_UNIQUE").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.DataHora)
-                .HasColumnType("datetime")
-                .HasColumnName("dataHora");
-            entity.Property(e => e.IdResponsavelPagamento).HasColumnName("idResponsavelPagamento");
-            entity.Property(e => e.Status)
-                .HasMaxLength(45)
-                .HasColumnName("status");
-            entity.Property(e => e.Valor).HasColumnName("valor");
+            entity.Property(e => e.Dia)
+                .HasColumnType("date")
+                .HasColumnName("dia");
+            entity.Property(e => e.HorarioFim)
+                .HasColumnType("time")
+                .HasColumnName("horarioFim");
+            entity.Property(e => e.HorarioInicio)
+                .HasColumnType("time")
+                .HasColumnName("horarioInicio");
+            entity.Property(e => e.IdProfessor).HasColumnName("idProfessor");
+
+            entity.HasOne(d => d.IdProfessorNavigation).WithMany(p => p.DisponibilidadeHorarios)
+                .HasForeignKey(d => d.IdProfessor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_DisponibilidadeHorario_Pessoa1");
         });
 
         modelBuilder.Entity<Penalidade>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("penalidade");
+            entity.ToTable("Penalidade", "VCP");
 
             entity.HasIndex(e => e.IdProfessor, "fk_Penalidade_Pessoa1_idx");
 
@@ -148,13 +188,25 @@ public partial class VemCaProfContext : DbContext
             entity.Property(e => e.Tipo)
                 .HasMaxLength(45)
                 .HasColumnName("tipo");
+
+            entity.HasOne(d => d.IdProfessorNavigation).WithMany(p => p.PenalidadeIdProfessorNavigations)
+                .HasForeignKey(d => d.IdProfessor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Penalidade_Pessoa1");
+
+            entity.HasOne(d => d.IdResponsavelNavigation).WithMany(p => p.PenalidadeIdResponsavelNavigations)
+                .HasForeignKey(d => d.IdResponsavel)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Penalidade_Pessoa2");
         });
 
         modelBuilder.Entity<Pessoa>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 
-            entity.ToTable("pessoa");
+            entity.ToTable("Pessoa", "VCP");
+
+            entity.HasIndex(e => e.ResponsavelId, "FK_Pessoa_Responsavel");
 
             entity.HasIndex(e => e.Cpf, "cpf_UNIQUE").IsUnique();
 
@@ -215,6 +267,7 @@ public partial class VemCaProfContext : DbContext
                 .HasMaxLength(45)
                 .HasColumnName("numero");
             entity.Property(e => e.QuantidadeDeDependentes).HasColumnName("quantidadeDeDependentes");
+            entity.Property(e => e.ResponsavelId).HasColumnName("responsavelId");
             entity.Property(e => e.Rua)
                 .HasMaxLength(45)
                 .HasColumnName("rua");
@@ -227,6 +280,36 @@ public partial class VemCaProfContext : DbContext
             entity.Property(e => e.Telefone)
                 .HasMaxLength(45)
                 .HasColumnName("telefone");
+
+            entity.HasOne(d => d.IdCidadeNavigation).WithMany(p => p.Pessoas)
+                .HasForeignKey(d => d.IdCidade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_Pessoa_Cidade1");
+
+            entity.HasOne(d => d.Responsavel).WithMany(p => p.InverseResponsavel)
+                .HasForeignKey(d => d.ResponsavelId)
+                .HasConstraintName("FK_Pessoa_Responsavel");
+
+            entity.HasMany(d => d.IdDisciplinas).WithMany(p => p.IdProfessors)
+                .UsingEntity<Dictionary<string, object>>(
+                    "DisciplinaProfessor",
+                    r => r.HasOne<Disciplina>().WithMany()
+                        .HasForeignKey("IdDisciplina")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("fk_Pessoa_has_Disciplina_Disciplina1"),
+                    l => l.HasOne<Pessoa>().WithMany()
+                        .HasForeignKey("IdProfessor")
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("fk_Pessoa_has_Disciplina_Pessoa1"),
+                    j =>
+                    {
+                        j.HasKey("IdProfessor", "IdDisciplina").HasName("PRIMARY");
+                        j.ToTable("Disciplina_Professor", "VCP");
+                        j.HasIndex(new[] { "IdDisciplina" }, "fk_Pessoa_has_Disciplina_Disciplina1_idx");
+                        j.HasIndex(new[] { "IdProfessor" }, "fk_Pessoa_has_Disciplina_Pessoa1_idx");
+                        j.IndexerProperty<int>("IdProfessor").HasColumnName("idProfessor");
+                        j.IndexerProperty<int>("IdDisciplina").HasColumnName("idDisciplina");
+                    });
         });
 
         OnModelCreatingPartial(modelBuilder);

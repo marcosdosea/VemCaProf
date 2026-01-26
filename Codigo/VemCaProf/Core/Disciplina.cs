@@ -17,4 +17,8 @@ public partial class Disciplina
     /// M1 = Ensino Medio 
     /// </summary>
     public string? Nivel { get; set; }
+
+    public virtual ICollection<Aula> Aulas { get; set; } = new List<Aula>();
+
+    public virtual ICollection<Pessoa> IdProfessors { get; set; } = new List<Pessoa>();
 }
