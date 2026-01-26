@@ -58,7 +58,7 @@ namespace Service
             var disciplinaExistente = _context.Disciplinas.Find(disciplina.Id);
             if (disciplinaExistente == null)
                 throw new ServiceException("Disciplina não encontrada.");
-            _context.Update(disciplina);
+            _context.Entry(disciplinaExistente).CurrentValues.SetValues(disciplina);
             _context.SaveChanges();
 
         }
