@@ -1,10 +1,5 @@
 ﻿using Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using System.Configuration;
 using Core.Service;
 using Service;
 
@@ -30,7 +25,7 @@ namespace VemCaProfWeb
             _ = services.AddDbContext<VemCaProfContext>(options =>
                 options.UseMySQL(connectionString));
 
-            services.AddTransient<IDisciplinaService, DisciplinaService>();
+            services.AddTransient<IDisciplinaService, DisciplinaService>();     
 
             services.AddAutoMapper(typeof(Startup).Assembly);
         }
