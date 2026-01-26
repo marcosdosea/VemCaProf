@@ -2,7 +2,7 @@ using Core.DTO;
 
 namespace Core.Mappers
 {
-    public static class PessoaProfile
+    public static class PessoaMapper
     {
         // MÉTODOS DE IDA (DTO -> ENTITY) - Usados no CREATE/EDIT
         
@@ -29,6 +29,8 @@ namespace Core.Mappers
 
             pessoa.AlunoDeMenor = dto.AlunoDeMenor;
             pessoa.Atipico = dto.Atipico;
+            
+            pessoa.ResponsavelId = dto.IdResponsavel;
             
             
             pessoa.IdCidade = 0; 
@@ -99,6 +101,8 @@ namespace Core.Mappers
             
             dto.AlunoDeMenor = entity.AlunoDeMenor;
             dto.Atipico = entity.Atipico;
+            
+            dto.IdResponsavel = entity.ResponsavelId;
             
             return dto;
         }

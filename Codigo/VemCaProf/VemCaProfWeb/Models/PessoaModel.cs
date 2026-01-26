@@ -4,6 +4,9 @@ namespace VemCaProfWeb.Models
 {
     public class PessoaModel
     {
+        
+        [Display(Name = "Código")]
+        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O nome é obrigatório")]
@@ -24,7 +27,6 @@ namespace VemCaProfWeb.Models
         [Display(Name = "E-mail")]
         public string Email { get; set; } = null!;
 
-        [Required(ErrorMessage = "A senha é obrigatória")]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
         public string Senha { get; set; } = null!;

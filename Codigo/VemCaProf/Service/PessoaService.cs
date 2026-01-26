@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
-    internal class PessoaService : IPessoaService
+    public class PessoaService : IPessoaService
     {
         private readonly VemCaProfContext _context;
 
@@ -25,7 +25,7 @@ namespace Service
         /// <returns>id do professor criado</returns>
         public void CreateProfessor(ProfessorPessoaDTO dto)
         {
-            var pessoa = PessoaProfile.ToEntity(dto);
+            var pessoa = PessoaMapper.ToEntity(dto);
 
             pessoa.Senha = dto.Senha;
 
@@ -54,6 +54,14 @@ namespace Service
             pessoaExistente.Email = dto.Email;
             pessoaExistente.Telefone = dto.Telefone;
             
+            // Endereço
+            pessoaExistente.Cep = dto.Cep;
+            pessoaExistente.Rua = dto.Rua;
+            pessoaExistente.Numero = dto.Numero;
+            pessoaExistente.Bairro = dto.Bairro;
+            pessoaExistente.Cidade = dto.Cidade; 
+            pessoaExistente.Estado = dto.Estado;
+            
             // Dados específicos
             pessoaExistente.DescricaoProfessor = dto.DescricaoProfessor;
             pessoaExistente.Libras = dto.Libras;
@@ -80,8 +88,10 @@ namespace Service
         /// <returns>Entidade Pessoa (Professor)</returns>
         public Pessoa GetProfessor(int id)
         {
-            return _context.Pessoas.FirstOrDefault(p => p.Id == id) 
+            var pessoa =  _context.Pessoas.FirstOrDefault(p => p.Id == id) 
                 ?? throw new ServiceException("Professor não encontrado.");
+            pessoa.Senha = "";
+            return pessoa;
         }
 
         /// <summary>
@@ -116,7 +126,7 @@ namespace Service
         /// <param name="dto">DTO com dados do aluno</param>
         public void CreateAluno(AlunoPessoaDTO dto)
         {
-            var pessoa = PessoaProfile.ToEntity(dto);
+            var pessoa = PessoaMapper.ToEntity(dto);
             pessoa.Senha = dto.Senha;
 
             _context.Pessoas.Add(pessoa);
@@ -137,8 +147,22 @@ namespace Service
             // Atualização manual simples
             pessoaExistente.Nome = dto.Nome;
             pessoaExistente.Sobrenome = dto.Sobrenome;
+            pessoaExistente.Email = dto.Email;
+            pessoaExistente.Telefone = dto.Telefone;
+            
+            // Endereço
+            pessoaExistente.Cep = dto.Cep;
+            pessoaExistente.Rua = dto.Rua;
+            pessoaExistente.Numero = dto.Numero;
+            pessoaExistente.Bairro = dto.Bairro;
+            pessoaExistente.Cidade = dto.Cidade; 
+            pessoaExistente.Estado = dto.Estado;
+            
+            // Dados específicos
             pessoaExistente.AlunoDeMenor = dto.AlunoDeMenor;
             pessoaExistente.Atipico = dto.Atipico;
+            
+            pessoaExistente.ResponsavelId = dto.IdResponsavel;
 
             if (!string.IsNullOrEmpty(dto.Senha))
             {
@@ -151,8 +175,10 @@ namespace Service
 
         public Pessoa GetAluno(int id)
         {
-            return _context.Pessoas.FirstOrDefault(p => p.Id == id)
+            var pessoa =  _context.Pessoas.FirstOrDefault(p => p.Id == id)
                 ?? throw new ServiceException("Aluno não encontrado.");
+            pessoa.Senha = "";
+            return pessoa;
         }
 
         public IEnumerable<Pessoa> GetAllAlunos()
@@ -174,7 +200,7 @@ namespace Service
 
         public void CreateResponsavel(ResponsavelPessoaDTO dto)
         {
-            var pessoa = PessoaProfile.ToEntity(dto);
+            var pessoa = PessoaMapper.ToEntity(dto);
             pessoa.Senha = dto.Senha;
 
             _context.Pessoas.Add(pessoa);
@@ -183,23 +209,40 @@ namespace Service
 
         public void EditResponsavel(ResponsavelPessoaDTO dto)
         {
-            var pessoa = _context.Pessoas.Find(dto.Id) 
-                         ?? throw new ServiceException("Responsável não encontrado.");
+            if (dto.Id == 0) throw new ServiceException("ID inválido.");
             
-            pessoa.Nome = dto.Nome;
-            pessoa.QuantidadeDeDependentes = dto.QuantidadeDeDependentes;
+            var pessoaExistente = _context.Pessoas.Find(dto.Id);
+            if (pessoaExistente == null) throw new ServiceException("Responsável não encontrado.");
+            
+            // Atualização manual simples
+            pessoaExistente.Nome = dto.Nome;
+            pessoaExistente.Sobrenome = dto.Sobrenome;
+            pessoaExistente.Email = dto.Email;
+            pessoaExistente.Telefone = dto.Telefone;
+            
+            // Endereço
+            pessoaExistente.Cep = dto.Cep;
+            pessoaExistente.Rua = dto.Rua;
+            pessoaExistente.Numero = dto.Numero;
+            pessoaExistente.Bairro = dto.Bairro;
+            pessoaExistente.Cidade = dto.Cidade; 
+            pessoaExistente.Estado = dto.Estado;
+            
+            pessoaExistente.QuantidadeDeDependentes = dto.QuantidadeDeDependentes;
             
             if(!string.IsNullOrEmpty(dto.Senha))
-                pessoa.Senha = dto.Senha;
+                pessoaExistente.Senha = dto.Senha;
 
-            _context.Update(pessoa);
+            _context.Update(pessoaExistente);
             _context.SaveChanges();
         }
 
         public Pessoa GetResponsavel(int id)
         {
-             return _context.Pessoas.Find(id) 
+             var pessoa =  _context.Pessoas.Find(id) 
                     ?? throw new ServiceException("Responsável não encontrado.");
+             pessoa.Senha = "";
+             return pessoa;
         }
 
         public IEnumerable<Pessoa> GetAllResponsaveis()
@@ -224,12 +267,13 @@ namespace Service
         
         public void Delete(int id)
         {
-            var pessoa = _context.Pessoas.Find(id);
-            if (pessoa != null)
-            {
-                _context.Remove(pessoa);
-                _context.SaveChanges();
-            }
+            
+                var pessoa = _context.Pessoas.Find(id);
+                if (pessoa != null)
+                {
+                    _context.Remove(pessoa);
+                    _context.SaveChanges();
+                }
         }
     }
 }
