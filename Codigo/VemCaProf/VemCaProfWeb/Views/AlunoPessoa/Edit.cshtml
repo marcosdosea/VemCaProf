@@ -1,0 +1,73 @@
+@model VemCaProfWeb.Models.AlunoPessoaModel
+
+@{
+    ViewData["Title"] = "Editar Aluno";
+}
+
+<h1>Editar</h1>
+
+<h4>Aluno: @Model.Nome @Model.Sobrenome</h4>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+            <div class="col-md-6 form-group mb-3">
+                @Html.LabelFor(model => model.Nome, new { @class = "control-label" })
+                @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
+            </div>
+             <div class="col-md-6 form-group mb-3">
+                @Html.LabelFor(model => model.Sobrenome, new { @class = "control-label" })
+                @Html.EditorFor(model => model.Sobrenome, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group mb-3">
+            @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+        
+        <div class="form-group mb-3">
+            @Html.LabelFor(model => model.Senha, new { @class = "control-label" })
+            @Html.EditorFor(model => model.Senha, new { htmlAttributes = new { @class = "form-control", type="password", placeholder="Deixe vazio para manter a senha atual" } })
+            @Html.ValidationMessageFor(model => model.Senha, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="card mb-3 border-info">
+            <div class="card-body">
+                 <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.IdResponsavel, new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.IdResponsavel, ViewBag.ListaResponsaveis as SelectList, "-- Selecione --", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.IdResponsavel, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-check">
+                    @Html.EditorFor(model => model.AlunoDeMenor, new { htmlAttributes = new { @class = "form-check-input" } })
+                    @Html.LabelFor(model => model.AlunoDeMenor, new { @class = "form-check-label" })
+                </div>
+                
+                <div class="form-check">
+                    @Html.EditorFor(model => model.Atipico, new { htmlAttributes = new { @class = "form-check-input" } })
+                    @Html.LabelFor(model => model.Atipico, new { @class = "form-check-label" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <input type="submit" value="Salvar Alterações" class="btn btn-warning" />
+            @Html.ActionLink("Voltar para Lista", "Index", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

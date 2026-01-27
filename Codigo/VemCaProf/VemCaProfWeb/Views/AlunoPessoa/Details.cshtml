@@ -1,0 +1,41 @@
+@model VemCaProfWeb.Models.AlunoPessoaModel
+
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h1>Detalhes</h1>
+
+<div>
+    <h4>Aluno</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nome)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Nome) @Html.DisplayFor(model => model.Sobrenome)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Cpf)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Cpf)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Email)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Email)</dd>
+
+        <dt class="col-sm-2">Endereço</dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Rua), @Html.DisplayFor(model => model.Numero) - 
+            @Html.DisplayFor(model => model.Bairro) / @Html.DisplayFor(model => model.Cidade)
+        </dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.AlunoDeMenor)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.AlunoDeMenor)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Atipico)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Atipico)</dd>
+        
+        <dt class="col-sm-2">ID Responsável</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.IdResponsavel)</dd>
+    </dl>
+</div>
+<div class="mt-3">
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" }) |
+    @Html.ActionLink("Voltar para Lista", "Index", null, new { @class = "btn btn-secondary" })
+</div>

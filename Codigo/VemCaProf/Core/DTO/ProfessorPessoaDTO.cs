@@ -10,7 +10,7 @@ public class ProfessorPessoaDTO : PessoaDTO
 
     public byte[]? FotoPerfil { get; set; }
 
-    public int IdCidade { get; set; }
+    public int? IdCidade { get; set; }
     
     public bool? Libras { get; set; }
     

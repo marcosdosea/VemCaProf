@@ -10,8 +10,8 @@ public class AlunoPessoaModel : PessoaModel
         = Enumerable.Empty<SelectListItem>();
     
     [Display(Name = "Aluno de menor?")]
-    public bool? AlunoDeMenor { get; set; }
+    public bool AlunoDeMenor { get; set; }
     
     [Display(Name = "Aluno Atípico?")]
-    public bool? Atipico { get; set; }
+    public bool Atipico { get; set; }
 }
