@@ -17,6 +17,7 @@ public class Program
         // Injeções de Dependência
         builder.Services.AddTransient<IDisciplinaService, DisciplinaService>();
         builder.Services.AddTransient<ICidadeService, CidadeService>();
+        builder.Services.AddTransient<IDisponibilidadeHorarioService, DisponibilidadeHorarioService>();
         builder.Services.AddTransient<IPessoaService, PessoaService>();
 
         // AutoMapper
