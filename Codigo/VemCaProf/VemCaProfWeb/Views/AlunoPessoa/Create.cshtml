@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Cadastrar Aluno";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Cadastrar Aluno</h1>
@@ -9,145 +10,146 @@
 <h4>Dados do Aluno</h4>
 <hr />
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card mb-3">
-                    <div class="card-header">Dados Pessoais</div>
-                    <div class="card-body">
-                        
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.Nome, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.Sobrenome, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Sobrenome, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Sobrenome, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.Cpf, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Cpf, new { htmlAttributes = new { @class = "form-control", placeholder = "000.000.000-00" } })
-                            @Html.ValidationMessageFor(model => model.Cpf, "", new { @class = "text-danger" })
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.DataNascimento, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.DataNascimento, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                            @Html.ValidationMessageFor(model => model.DataNascimento, "", new { @class = "text-danger" })
-                        </div>
-
-                         <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.Genero, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Genero, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Genero, "", new { @class = "text-danger" })
-                        </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">Dados Pessoais</div>
+                <div class="card-body">
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Nome" class="control-label"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
                     </div>
-                </div>
-            </div>
 
-            <div class="col-md-6">
-                 <div class="card mb-3">
-                    <div class="card-header">Contato e Vínculo</div>
-                    <div class="card-body">
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.Email, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                        </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Sobrenome" class="control-label"></label>
+                        <input asp-for="Sobrenome" class="form-control" />
+                        <span asp-validation-for="Sobrenome" class="text-danger"></span>
+                    </div>
 
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.Senha, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Senha, new { htmlAttributes = new { @class = "form-control", type = "password" } })
-                            @Html.ValidationMessageFor(model => model.Senha, "", new { @class = "text-danger" })
-                        </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Cpf" class="control-label"></label>
+                        <input asp-for="Cpf" class="form-control" placeholder="000.000.000-00" />
+                        <span asp-validation-for="Cpf" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="DataNascimento" class="control-label"></label>
+                        <input asp-for="DataNascimento" class="form-control" type="date" />
+                        <span asp-validation-for="DataNascimento" class="text-danger"></span>
+                    </div>
 
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.Telefone, new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Telefone, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(model => model.Telefone, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group mb-3">
-                            @Html.LabelFor(model => model.IdResponsavel, new { @class = "control-label fw-bold" })
-                            @Html.DropDownListFor(model => model.IdResponsavel, ViewBag.ListaResponsaveis as SelectList, "-- Selecione --", new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.IdResponsavel, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group form-check mb-2">
-                            <div class="form-check">
-                                @Html.EditorFor(model => model.AlunoDeMenor, new { htmlAttributes = new { @class = "form-check-input" } })
-                                @Html.LabelFor(model => model.AlunoDeMenor, new { @class = "form-check-label" })
-                            </div>
-                        </div>
-
-                        <div class="form-group form-check mb-3">
-                            <div class="form-check">
-                                @Html.EditorFor(model => model.Atipico, new { htmlAttributes = new { @class = "form-check-input" } })
-                                @Html.LabelFor(model => model.Atipico, new { @class = "form-check-label" })
-                            </div>
-                        </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Genero" class="control-label"></label>
+                        <input asp-for="Genero" class="form-control" />
+                        <span asp-validation-for="Genero" class="text-danger"></span>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="row">
-            <div class="col-12">
-                 <div class="card mb-3">
-                    <div class="card-header">Endereço</div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3 form-group mb-3">
-                                @Html.LabelFor(model => model.Cep, new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Cep, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Cep, "", new { @class = "text-danger" })
-                            </div>
-                             <div class="col-md-5 form-group mb-3">
-                                @Html.LabelFor(model => model.Rua, new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Rua, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                            <div class="col-md-2 form-group mb-3">
-                                @Html.LabelFor(model => model.Numero, new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Numero, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                             <div class="col-md-2 form-group mb-3">
-                                @Html.LabelFor(model => model.Estado, new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Estado, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                             <div class="col-md-4 form-group mb-3">
-                                @Html.LabelFor(model => model.Bairro, new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Bairro, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                             <div class="col-md-4 form-group mb-3">
-                                @Html.LabelFor(model => model.Cidade, new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Cidade, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                             <div class="col-md-4 form-group mb-3">
-                                @Html.LabelFor(model => model.Complemento, new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Complemento, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                        </div>
-                    </div>
-                 </div>
-            </div>
-        </div>
 
-        <div class="form-group mt-3">
-            <input type="submit" value="Salvar" class="btn btn-primary" />
-            @Html.ActionLink("Voltar para Lista", "Index", null, new { @class = "btn btn-secondary" })
+        <div class="col-md-6">
+             <div class="card mb-3">
+                <div class="card-header bg-success text-white">Contato e Vínculo</div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" type="email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Senha" class="control-label"></label>
+                        <input asp-for="Senha" class="form-control" type="password" />
+                        <span asp-validation-for="Senha" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Telefone" class="control-label"></label>
+                        <input asp-for="Telefone" class="form-control" />
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="IdResponsavel" class="control-label fw-bold"></label>
+                        <select asp-for="IdResponsavel" class="form-control" asp-items="ViewBag.ListaResponsaveis">
+                            <option value="">-- Selecione o Responsável --</option>
+                        </select>
+                        <span asp-validation-for="IdResponsavel" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group form-check mb-2">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="AlunoDeMenor" /> @Html.DisplayNameFor(model => model.AlunoDeMenor)
+                        </label>
+                    </div>
+
+                    <div class="form-group form-check mb-3">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Atipico" /> @Html.DisplayNameFor(model => model.Atipico)
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-}
+    
+    <div class="row">
+        <div class="col-12">
+             <div class="card mb-3">
+                <div class="card-header">Endereço</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 form-group mb-3">
+                            <label asp-for="Cep" class="control-label"></label>
+                            <input asp-for="Cep" class="form-control" />
+                            <span asp-validation-for="Cep" class="text-danger"></span>
+                        </div>
+                         <div class="col-md-5 form-group mb-3">
+                            <label asp-for="Rua" class="control-label"></label>
+                            <input asp-for="Rua" class="form-control" />
+                            <span asp-validation-for="Rua" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2 form-group mb-3">
+                            <label asp-for="Numero" class="control-label"></label>
+                            <input asp-for="Numero" class="form-control" />
+                            <span asp-validation-for="Numero" class="text-danger"></span>
+                        </div>
+                         <div class="col-md-2 form-group mb-3">
+                            <label asp-for="Estado" class="control-label"></label>
+                            <input asp-for="Estado" class="form-control" />
+                            <span asp-validation-for="Estado" class="text-danger"></span>
+                        </div>
+                         <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Bairro" class="control-label"></label>
+                            <input asp-for="Bairro" class="form-control" />
+                            <span asp-validation-for="Bairro" class="text-danger"></span>
+                        </div>
+                         <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Cidade" class="control-label"></label>
+                            <input asp-for="Cidade" class="form-control" />
+                            <span asp-validation-for="Cidade" class="text-danger"></span>
+                        </div>
+                         <div class="col-md-4 form-group mb-3">
+                            <label asp-for="Complemento" class="control-label"></label>
+                            <input asp-for="Complemento" class="form-control" />
+                            <span asp-validation-for="Complemento" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Salvar Aluno" class="btn btn-primary btn-lg" />
+        <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
