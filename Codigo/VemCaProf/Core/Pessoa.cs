@@ -53,7 +53,7 @@ public partial class Pessoa
 
     public byte[]? FotoPerfil { get; set; }
 
-    public int IdCidade { get; set; }
+    public int? IdCidade { get; set; }
 
     public int? ResponsavelId { get; set; }
 
@@ -65,7 +65,7 @@ public partial class Pessoa
 
     public virtual ICollection<DisponibilidadeHorario> DisponibilidadeHorarios { get; set; } = new List<DisponibilidadeHorario>();
 
-    public virtual Cidade IdCidadeNavigation { get; set; } = null!;
+    public virtual Cidade? IdCidadeNavigation { get; set; }
 
     public virtual ICollection<Pessoa> InverseResponsavel { get; set; } = new List<Pessoa>();
 

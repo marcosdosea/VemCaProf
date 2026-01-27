@@ -32,9 +32,8 @@ namespace Core.Mappers
             
             pessoa.ResponsavelId = dto.IdResponsavel;
             
+            pessoa.IdCidade = null;
             
-            pessoa.IdCidade = 0; 
-
             return pessoa;
         }
 
@@ -46,8 +45,8 @@ namespace Core.Mappers
             // Mapeia o específico de Responsável
             pessoa.QuantidadeDeDependentes = dto.QuantidadeDeDependentes;
             
-            pessoa.IdCidade = 0;
-
+            pessoa.IdCidade = null;
+            
             return pessoa;
         }
 

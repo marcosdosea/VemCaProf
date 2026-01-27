@@ -1,0 +1,37 @@
+@model VemCaProfWeb.Models.ResponsavelPessoaModel
+
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h1>Detalhes do Responsável</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nome)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Nome) @Html.DisplayFor(model => model.Sobrenome)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Cpf)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Cpf)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Email)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Email)</dd>
+        
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Telefone)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Telefone)</dd>
+
+        <dt class="col-sm-2">Endereço</dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Rua), @Html.DisplayFor(model => model.Numero) - @Html.DisplayFor(model => model.Bairro) <br/>
+            @Html.DisplayFor(model => model.Cidade) / @Html.DisplayFor(model => model.Estado) - CEP: @Html.DisplayFor(model => model.Cep)
+        </dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.QuantidadeDeDependentes)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.QuantidadeDeDependentes)</dd>
+    </dl>
+</div>
+<div class="mt-3">
+    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" }) |
+    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+</div>

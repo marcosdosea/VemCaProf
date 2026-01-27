@@ -1,0 +1,95 @@
+@model VemCaProfWeb.Models.ProfessorPessoaModel
+
+@{
+    ViewData["Title"] = "Editar Professor";
+}
+
+<h1>Editar</h1>
+<h4>Professor: @Model.Nome</h4>
+<hr />
+
+@using (Html.BeginForm("Edit", "ProfessorPessoa", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.Nome, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.Sobrenome, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Sobrenome, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                 <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+                
+                <div class="form-group mb-3">
+                    @Html.LabelFor(model => model.Senha, new { @class = "control-label" })
+                    @Html.EditorFor(model => model.Senha, new { htmlAttributes = new { @class = "form-control", type="password", placeholder="Deixe vazio para manter a senha atual" } })
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-3 border-success">
+                    <div class="card-body">
+                         <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.IdCidade, new { @class = "control-label fw-bold" })
+                            @Html.DropDownListFor(model => model.IdCidade, ViewBag.ListaDeCidades as SelectList, "-- Selecione --", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.IdCidade, "", new { @class = "text-danger" })
+                        </div>
+
+                         <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.DescricaoProfessor, new { @class = "control-label" })
+                            @Html.TextAreaFor(model => model.DescricaoProfessor, new { @class = "form-control", rows="3" })
+                        </div>
+
+                        <div class="form-group form-check mb-3">
+                            <div class="form-check">
+                                @Html.EditorFor(model => model.Libras, new { htmlAttributes = new { @class = "form-check-input" } })
+                                @Html.LabelFor(model => model.Libras, new { @class = "form-check-label" })
+                            </div>
+                        </div>
+
+                        <hr/>
+                        <p class="text-muted small">Faça upload apenas se desejar substituir os arquivos atuais.</p>
+                        
+                         <div class="form-group mb-2">
+                            <label class="control-label">Nova Foto de Perfil</label>
+                            <input type="file" name="arquivoFoto" class="form-control" accept="image/*" />
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label class="control-label">Novo Diploma</label>
+                            <input type="file" name="arquivoDiploma" class="form-control" accept=".pdf,image/*" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+             <div class="card-header">Endereço Residencial</div>
+             <div class="card-body row">
+                 <div class="col-md-3 mb-2">@Html.LabelFor(m => m.Cep) @Html.EditorFor(m => m.Cep, new { htmlAttributes = new { @class = "form-control" }})</div>
+                 <div class="col-md-9 mb-2">@Html.LabelFor(m => m.Rua) @Html.EditorFor(m => m.Rua, new { htmlAttributes = new { @class = "form-control" }})</div>
+                 </div>
+        </div>
+
+        <div class="form-group mt-3">
+            <input type="submit" value="Salvar Alterações" class="btn btn-warning" />
+            @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

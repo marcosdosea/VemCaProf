@@ -2,6 +2,7 @@ using AutoMapper;
 using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers;
@@ -9,12 +10,14 @@ namespace VemCaProfWeb.Controllers;
 public class ProfessorPessoaController : Controller
 {
     IPessoaService _pessoaService;
+    ICidadeService _cidadeService;
     IMapper _mapper;
 
 
-    public ProfessorPessoaController(IPessoaService pessoaService, IMapper mapper)
+    public ProfessorPessoaController(IPessoaService pessoaService, ICidadeService cidadeService, IMapper mapper)
     {
         _pessoaService = pessoaService;
+        _cidadeService = cidadeService;
         _mapper = mapper;
     }
 
@@ -37,6 +40,7 @@ public class ProfessorPessoaController : Controller
     // GET: Professor/Create
     public ActionResult Create()
     {
+        CarregarCidades();
         return View();
     }
 
@@ -57,6 +61,7 @@ public class ProfessorPessoaController : Controller
             if (string.IsNullOrEmpty(professorModel.Senha))
             {
                 ModelState.AddModelError("Senha", "Senha é obrigatória");
+                CarregarCidades();
                 return View(professorModel);
             }
 
@@ -66,6 +71,7 @@ public class ProfessorPessoaController : Controller
             return RedirectToAction(nameof(Index));
         }
 
+        CarregarCidades();
         return View(professorModel);
     }
 
@@ -74,6 +80,7 @@ public class ProfessorPessoaController : Controller
     {
         var entity = _pessoaService.GetProfessor(id);
         var professorModel = _mapper.Map<ProfessorPessoaModel>(entity);
+        CarregarCidades();
         return View(professorModel);
     }
 
@@ -97,7 +104,7 @@ public class ProfessorPessoaController : Controller
             _pessoaService.EditProfessor(dto);
             return RedirectToAction(nameof(Index));
         }
-
+        CarregarCidades();
         return View(professorModel);
     }
 
@@ -115,6 +122,17 @@ public class ProfessorPessoaController : Controller
     {
         _pessoaService.Delete(id);
         return RedirectToAction(nameof(Index));
+    }
+    
+    private void CarregarCidades()
+    {
+        // Busca todas as cidades do banco
+        var listaCidades = _cidadeService.GetAll(); 
+        
+        // Cria o SelectList que a View espera
+        // "Id" é o valor que vai pro banco (value)
+        // "Nome" é o texto que aparece pro usuário (text)
+        ViewBag.ListaDeCidades = new SelectList(listaCidades, "Id", "Nome");
     }
 
     // Auxiliar para Arquivos
