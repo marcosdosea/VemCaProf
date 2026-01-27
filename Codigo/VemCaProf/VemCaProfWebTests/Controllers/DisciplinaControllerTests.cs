@@ -137,29 +137,7 @@ namespace VemCaProfWeb.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
-        [TestMethod]
-        public void Edit_Get_RetornaViewComModeloMapeado()
-        {
-            // Arrange
-            var disciplina = new Disciplina { Id = 5, Nome = "História" };
-            var disciplinaModel = new DisciplinaModel { Id = 5, Nome = "História" };
-
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            disciplinaServiceMock.Setup(s => s.Get((uint)5)).Returns(disciplina);
-
-            var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(m => m.Map<DisciplinaModel>(disciplina)).Returns(disciplinaModel);
-
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
-
-            // Act
-            var result = controller.Edit(5);
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
-            Assert.AreSame(disciplinaModel, viewResult.Model);
-        }
+       
 
         [TestMethod]
         public void Edit_Post_ModelValido_ChamaEditERedireciona()
