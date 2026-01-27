@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Core;
 using Core.DTO;
 using Core.Service;
@@ -11,118 +12,85 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
 {
     private readonly VemCaProfContext _context;
     private readonly IMapper _mapper;
-    private readonly ILogger<CidadeService> _logger;
+    private readonly ILogger<DisponibilidadeHorarioService> _logger;
 
-    public CidadeService(
+    public DisponibilidadeHorarioService(
         VemCaProfContext context,
         IMapper mapper,
-        ILogger<CidadeService> logger)
+        ILogger<DisponibilidadeHorarioService> logger)
     {
         _context = context;
         _mapper = mapper;
         _logger = logger;
     }
-    /// <summary>
-    /// Retorna todas as cidades cadastradas
-    /// </summary>
-    /// <returns>lista de cidades</returns>
-    public IEnumerable<CidadeDTO> GetAll()
+   
+    public IEnumerable<DisponibilidadeHorarioDTO> GetAll()
     {
         try
         {
-            var cidades = _context.Cidades
+            var disponibilidadeHorario = _context.DisponibilidadeHorarios
                 .AsNoTracking()
                 .ToList();
 
-            return _mapper.Map<IEnumerable<CidadeDTO>>(cidades);
+            return _mapper.Map<IEnumerable<DisponibilidadeHorarioDTO>>(disponibilidadeHorario);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar todas as cidades");
-            throw new ServiceException("Erro ao buscar cidades", ex);
+            _logger.LogError(ex, "Erro ao buscar ");
+            throw new ServiceException("Erro ao buscar ", ex);
         }
     }
-    /// <summary>
-    /// Busca uma cidade pelo identificador
-    /// </summary>
-    /// <param name="id">id da cidade</param>
-    /// <returns>dados da cidade</returns>
-    public CidadeDTO? Get(int id)
+    
+    public DisponibilidadeHorarioDTO? Get(int id)
     {
         try
         {
-            var cidade = _context.Cidades
+            var disponibilidadeHorario = _context.DisponibilidadeHorarios
                 .AsNoTracking()
                 .FirstOrDefault(c => c.Id == id);
 
-            if (cidade == null)
+            if (disponibilidadeHorario == null)
                 return null;
 
-            return _mapper.Map<CidadeDTO>(cidade);
+            return _mapper.Map<DisponibilidadeHorarioDTO>(disponibilidadeHorario);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar cidade com ID {Id}", id);
-            throw new ServiceException($"Erro ao buscar cidade com ID {id}", ex);
+            _logger.LogError(ex, "Erro ao buscar  ID {Id}", id);
+            throw new ServiceException($"Erro ao buscar ID {id}", ex);
         }
     }
 
-    /// <summary>
-    /// Busca uma cidade pelo nome e estado
-    /// </summary>
-    /// <param name="nome">nome da cidade</param>
-    /// <param name="estado">sigla do estado</param>
-    /// <returns>dados da cidade</returns>
-    public CidadeDTO? GetByNomeEstado(string nome, string estado)
-    {
-        try
-        {
-            var cidade = _context.Cidades
-                .AsNoTracking()
-                .FirstOrDefault(c =>
-                    c.Nome.ToLower() == nome.ToLower() &&
-                    c.Estado.ToUpper() == estado.ToUpper());
-
-            if (cidade == null)
-                return null;
-
-            return _mapper.Map<CidadeDTO>(cidade);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao buscar cidade {Nome}/{Estado}", nome, estado);
-            throw new ServiceException($"Erro ao buscar cidade {nome}/{estado}", ex);
-        }
-    }
-
-    /// <summary>
-    /// Cadastra uma nova cidade na base de dados
-    /// </summary>
-    /// <param name="cidadeDto">dados da cidade</param>
-    /// <returns>id da cidade</returns>
-    public int Create(CidadeDTO cidadeDto)
+ 
+    
+ 
+    public int Create(DisponibilidadeHorarioDTO disponibilidadeHorarioDto)
     {
         try
         {
 
-            if (string.IsNullOrWhiteSpace(cidadeDto.Nome))
-                throw new ServiceException("Nome da cidade é obrigatório");
-
-            if (string.IsNullOrWhiteSpace(cidadeDto.Estado) || cidadeDto.Estado.Length != 2)
-                throw new ServiceException("Estado deve ter 2 caracteres");
+            if (disponibilidadeHorarioDto.Dia == DateTime.MinValue)
+                throw new ServiceException("campo obrigatório");
 
 
-            var existing = GetByNomeEstado(cidadeDto.Nome, cidadeDto.Estado);
-            if (existing != null)
-                throw new ServiceException($"Cidade {cidadeDto.Nome}/{cidadeDto.Estado} já cadastrada");
+            if (disponibilidadeHorarioDto.HorarioInicio == TimeSpan.MinValue)
+                throw new ServiceException("campo obrigatório");
 
-            var cidade = _mapper.Map<Cidade>(cidadeDto);
-            cidade.Estado = cidade.Estado.Trim().ToUpper();
+            if (disponibilidadeHorarioDto.HorarioFim == TimeSpan.MinValue)
+                throw new ServiceException("campo obrigatório");
 
-            _context.Cidades.Add(cidade);
+            if (disponibilidadeHorarioDto.IdProfessor <= 0)
+                throw new ServiceException("campo obrigatório");
+
+           
+
+            var disponibilidadeHorario = _mapper.Map<DisponibilidadeHorario>(disponibilidadeHorarioDto);
+           
+
+            _context.DisponibilidadeHorarios.Add(disponibilidadeHorario);
             _context.SaveChanges();
 
-            return cidade.Id;
+            return disponibilidadeHorario.Id;
         }
         catch (ServiceException)
         {
@@ -130,41 +98,35 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar cidade");
-            throw new ServiceException("Erro ao criar cidade", ex);
+            _logger.LogError(ex, "Erro ao criar horário");
+            throw new ServiceException("Erro ao criar horário", ex);
         }
     }
 
-    /// <summary>
-    /// Atualiza os dados de uma cidade existente
-    /// </summary>
-    /// <param name="cidadeDto">dados atualizados da cidade</param>
-    /// <returns>true se atualizado com sucesso</returns>
-    public bool Update(CidadeDTO cidadeDto)
+  
+    public bool Update(DisponibilidadeHorarioDTO disponibilidadeHorarioDto)
     {
         try
         {
 
-            if (string.IsNullOrWhiteSpace(cidadeDto.Nome))
-                throw new ServiceException("Nome da cidade é obrigatório");
+            if (disponibilidadeHorarioDto.Dia == DateTime.MinValue)
+                throw new ServiceException("campo obrigatório");
 
-            if (string.IsNullOrWhiteSpace(cidadeDto.Estado) || cidadeDto.Estado.Length != 2)
-                throw new ServiceException("Estado deve ter 2 caracteres");
 
-            var cidade = _context.Cidades.Find(cidadeDto.Id);
-            if (cidade == null)
+            if (disponibilidadeHorarioDto.HorarioInicio == TimeSpan.MinValue)
+                throw new ServiceException("campo obrigatório");
+
+            if (disponibilidadeHorarioDto.HorarioFim == TimeSpan.MinValue)
+                throw new ServiceException("campo obrigatório");
+
+            if (disponibilidadeHorarioDto.IdProfessor <= 0)
+                throw new ServiceException("campo obrigatório");
+
+            var disponibilidadeHorario = _context.DisponibilidadeHorarios.Find(disponibilidadeHorarioDto.Id);
+            if (disponibilidadeHorario == null)
                 return false;
 
-
-            var existing = GetByNomeEstado(cidadeDto.Nome, cidadeDto.Estado);
-            if (existing != null && existing.Id != cidadeDto.Id)
-                throw new ServiceException($"Cidade {cidadeDto.Nome}/{cidadeDto.Estado} já cadastrada");
-
-
-            cidade.Nome = cidadeDto.Nome.Trim();
-            cidade.Estado = cidadeDto.Estado.Trim().ToUpper();
-
-            _context.Cidades.Update(cidade);
+            _context.DisponibilidadeHorarios.Update(disponibilidadeHorario);
             _context.SaveChanges();
 
             return true;
@@ -175,33 +137,29 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao atualizar cidade ID {Id}", cidadeDto.Id);
-            throw new ServiceException($"Erro ao atualizar cidade ID {cidadeDto.Id}", ex);
+            _logger.LogError(ex, "Erro ao atualizar  ID {Id}", disponibilidadeHorarioDto.Id);
+            throw new ServiceException($"Erro ao atualizar  ID {disponibilidadeHorarioDto.Id}", ex);
         }
     }
 
-    /// <summary>
-    /// Remove uma cidade da base de dados
-    /// </summary>
-    /// <param name="id">id da cidade</param>
-    /// <returns>true se removida com sucesso</returns>
+    
     public bool Delete(int id)
     {
         try
         {
-            var cidade = _context.Cidades.Find(id);
-            if (cidade == null)
+            var disponibilidadeHorario = _context.DisponibilidadeHorarios.Find(id);
+            if (disponibilidadeHorario == null)
                 return false;
 
-            _context.Cidades.Remove(cidade);
+            _context.DisponibilidadeHorarios.Remove(disponibilidadeHorario);
             _context.SaveChanges();
 
             return true;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao excluir cidade ID {Id}", id);
-            throw new ServiceException($"Erro ao excluir cidade ID {id}", ex);
+            _logger.LogError(ex, "Erro ao excluir  ID {Id}", id);
+            throw new ServiceException($"Erro ao excluir ID {id}", ex);
         }
     }
 }
