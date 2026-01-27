@@ -1,3 +1,8 @@
+using Core;
+using Core.Service;
+using Microsoft.EntityFrameworkCore;
+using Service;
+
 namespace VemCaProfWeb;
 
 public class Program
@@ -6,20 +11,33 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        // 1. SERVIÇOS
         builder.Services.AddControllersWithViews();
+        
+        // Injeções de Dependência
+        builder.Services.AddTransient<IDisciplinaService, DisciplinaService>();
+        builder.Services.AddTransient<ICidadeService, CidadeService>();
+        builder.Services.AddTransient<IPessoaService, PessoaService>();
 
-        var startup = new VemCaProfWeb.Startup(builder.Configuration);
-        startup.ConfigureServices(builder.Services);
+        // AutoMapper
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        
+        // Banco de Dados
+        var connectionString = builder.Configuration.GetConnectionString("VemCaProfConnection");
+        if (string.IsNullOrEmpty(connectionString))
+            throw new InvalidOperationException("A string de conexão 'VemCaProfConnection' não foi encontrada.");
 
+        // 2. BUILD
+        builder.Services.AddDbContext<VemCaProfContext>(options =>
+            options.UseMySQL(connectionString));
+        
+        // 3. PIPELINE
         var app = builder.Build();
-        startup.Configure(app, app.Environment);
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            // The default HSTS value is 30 days. You may want to change this for production scenarios.
             app.UseHsts();
         }
 
@@ -29,11 +47,15 @@ public class Program
         app.UseRouting();
 
         app.UseAuthorization();
+        app.UseAuthentication();
+        
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Disciplina}/{action=Index}/{id?}");
+            pattern: "{controller=Home}/{action=Index}/{id?}");
 
         app.Run();
+
+        
     }
 }
