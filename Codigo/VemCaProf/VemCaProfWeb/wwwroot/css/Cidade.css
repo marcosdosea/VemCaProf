@@ -1,0 +1,71 @@
+﻿/* ===== Layout geral ===== */
+body {
+    background-color: #f4f8fc;
+}
+
+/* Títulos */
+h1, h2, h3, h4 {
+    color: #0d6efd; /* azul Bootstrap */
+    font-weight: 600;
+}
+
+/* Cards / áreas */
+.container,
+.row {
+    margin-top: 20px;
+}
+
+/* ===== Formulários ===== */
+.form-control {
+    border-radius: 6px;
+    border: 1px solid #cfe2ff;
+}
+
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    }
+
+/* ===== Botões ===== */
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+
+/* Botões do Index (Edit / Details / Delete) */
+a.btn,
+.btn {
+    border-radius: 6px;
+}
+
+/* Links */
+a {
+    color: #0d6efd;
+}
+
+    a:hover {
+        color: #0a58ca;
+        text-decoration: underline;
+    }
+
+/* ===== Tabela do Index ===== */
+table {
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    table thead {
+        background-color: #0d6efd;
+        color: #ffffff;
+    }
+
+    table th,
+    table td {
+        vertical-align: middle;
+    }
