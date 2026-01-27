@@ -55,7 +55,7 @@ namespace VemCaProfWeb.Controllers
         }
 
         // GET: DisciplinaController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(uint id1, int id)
         {
             Disciplina disciplina = _disciplinaService.Get((uint)id);
             DisciplinaModel disciplinaModel = _mapper.Map<DisciplinaModel>(disciplina);
