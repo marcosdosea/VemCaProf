@@ -139,6 +139,15 @@ public class ProfessorPessoaController : Controller
     private byte[]? ConvertToBytes(IFormFile? file)
     {
         if (file == null) return null;
+
+        // DEFININDO O LIMITE (60KB em bytes)
+        const long maxSizeBytes = 60000; 
+
+        if (file.Length > maxSizeBytes)
+        {
+            throw new InvalidOperationException($"O arquivo '{file.FileName}' excede o limite de 60KB.");
+        }
+
         using (var ms = new MemoryStream())
         {
             file.CopyTo(ms);

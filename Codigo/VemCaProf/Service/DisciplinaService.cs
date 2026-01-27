@@ -56,10 +56,13 @@ namespace Service
             if (disciplina == null || disciplina.Id == 0)
                 throw new ServiceException("Disciplina inválida.");
 
-            var disciplinaExistente = _context.Disciplinas.Find(disciplina.Id);
+            var disciplinaExistente = _context.Disciplinas
+                .AsNoTracking()
+                .FirstOrDefault(d => d.Id == disciplina.Id);
+            
             if (disciplinaExistente == null)
                 throw new ServiceException("Disciplina não encontrada.");
-            _context.Entry(disciplinaExistente).CurrentValues.SetValues(disciplina);
+            _context.Update(disciplina);
             _context.SaveChanges();
 
         }
