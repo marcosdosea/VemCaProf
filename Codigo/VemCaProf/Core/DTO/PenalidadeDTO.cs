@@ -8,8 +8,10 @@ namespace Core.DTO
 {
     public class PenalidadeDTO : PessoaDTO
     {
-        public int id { get; set; }
-        public DateTime dataHorario { get; set; }
-        public string descricao { get; set; } = null!;
+        public int Id { get; set; }
+        public DateTime DataHorarioInicio { get; set; }
+        public DateTime DataHoraFim { get; set; }
+        public string Tipo { get; set; } = null!;
+        public string Descricao { get; set; } = null!;
     }
 }
