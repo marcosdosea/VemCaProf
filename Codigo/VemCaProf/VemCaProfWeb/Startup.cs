@@ -25,9 +25,13 @@ namespace VemCaProfWeb
             _ = services.AddDbContext<VemCaProfContext>(options =>
                 options.UseMySQL(connectionString));
 
-            services.AddTransient<IDisciplinaService, DisciplinaService>();     
-
+            services.AddTransient<IDisciplinaService, DisciplinaService>();
+            services.AddTransient<ICidadeService, CidadeService>();
             services.AddAutoMapper(typeof(Startup).Assembly);
+            services.AddAutoMapper(
+                typeof(Core.Mappers.CidadeMapper),       
+                typeof(VemCaProfWeb.Mappers.CidadeProfile)
+            );
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
