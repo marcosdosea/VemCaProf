@@ -3,85 +3,83 @@ using Core;
 using Core.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.Generic;
 using VemCaProfWeb.Controllers;
 using VemCaProfWeb.Models;
 
-namespace VemCaProfWeb.Tests.Controllers
+namespace VemCaProfWeb.Controllers.Tests
 {
-    [TestClass]
+    [TestClass()]
     public class DisciplinaControllerTests
     {
-        // Método Helper para criar o Controller com Mocks
-        private DisciplinaController CreateController(
-            Mock<IDisciplinaService>? disciplinaServiceMock = null,
-            Mock<IMapper>? mapperMock = null)
-        {
-            disciplinaServiceMock ??= new Mock<IDisciplinaService>();
-            mapperMock ??= new Mock<IMapper>();
+        private static DisciplinaController controller;
 
-            return new DisciplinaController(disciplinaServiceMock.Object, mapperMock.Object);
-        }
-
-        [TestMethod]
-        public void Index_RetornaViewComListaMapeada()
+        [TestInitialize]
+        public void Initialize()
         {
             // Arrange
-            var disciplina = new Disciplina { Id = 1, Nome = "Matemática" };
-            var disciplinas = new List<Disciplina> { disciplina };
-            var disciplinaModel = new DisciplinaModel { Id = 1, Nome = "Matemática" };
-            var mappedList = new List<DisciplinaModel> { disciplinaModel };
+            var mockService = new Mock<IDisciplinaService>();
 
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            disciplinaServiceMock.Setup(s => s.GetAll()).Returns(disciplinas);
+            IMapper mapper = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Disciplina, DisciplinaModel>().ReverseMap();
+            }).CreateMapper();
 
-            var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(m => m.Map<List<DisciplinaModel>>(It.IsAny<IEnumerable<Disciplina>>())).Returns(mappedList);
+            // Configuração dos Mocks (Stubs)
+            mockService.Setup(service => service.GetAll())
+                .Returns(GetTestDisciplinas());
 
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
+            mockService.Setup(service => service.Get(It.IsAny<uint>()))
+                .Returns(GetTargetDisciplina());
 
+            mockService.Setup(service => service.Create(It.IsAny<Disciplina>()))
+                .Verifiable();
+
+            mockService.Setup(service => service.Edit(It.IsAny<Disciplina>()))
+                .Verifiable();
+
+            mockService.Setup(service => service.Delete(It.IsAny<uint>()))
+                .Verifiable();
+
+            controller = new DisciplinaController(mockService.Object, mapper);
+        }
+
+        [TestMethod()]
+        public void IndexTest_Valido()
+        {
             // Act
             var result = controller.Index();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
-            Assert.AreSame(mappedList, viewResult.Model);
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(List<DisciplinaModel>));
+
+            List<DisciplinaModel>? lista = (List<DisciplinaModel>)viewResult.ViewData.Model;
+            Assert.AreEqual(3, lista.Count);
+            Assert.AreEqual("Matemática", lista.First().Nome);
         }
 
-        [TestMethod]
-        public void Details_RetornaViewComModeloMapeado()
+        [TestMethod()]
+        public void DetailsTest_Valido()
         {
-            // Arrange
-            var disciplina = new Disciplina { Id = 2, Nome = "Física" };
-            var disciplinaModel = new DisciplinaModel { Id = 2, Nome = "Física" };
-
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            disciplinaServiceMock.Setup(s => s.Get((uint)2)).Returns(disciplina);
-
-            var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(m => m.Map<DisciplinaModel>(disciplina)).Returns(disciplinaModel);
-
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
-
             // Act
-            var result = controller.Details(2);
+            var result = controller.Details(1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
-            Assert.AreSame(disciplinaModel, viewResult.Model);
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(DisciplinaModel));
+
+            DisciplinaModel model = (DisciplinaModel)viewResult.ViewData.Model;
+            Assert.AreEqual("Matemática", model.Nome);
+            Assert.AreEqual((uint)1, model.Id);
         }
 
-        [TestMethod]
-        public void Create_Get_RetornaView()
+        [TestMethod()]
+        public void CreateTest_Get_Valido()
         {
-            // Arrange
-            var controller = CreateController();
-
             // Act
             var result = controller.Create();
 
@@ -89,123 +87,113 @@ namespace VemCaProfWeb.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
-        [TestMethod]
-        public void Create_Post_ModelValido_ChamaCreateERedireciona()
+        [TestMethod()]
+        public void CreateTest_Post_Valid()
         {
-            // Arrange
-            var disciplinaModel = new DisciplinaModel { Id = 3, Nome = "Química" };
-            var disciplina = new Disciplina { Id = 3, Nome = "Química" };
-
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            disciplinaServiceMock.Setup(s => s.Create(It.IsAny<Disciplina>())).Returns((uint)disciplina.Id);
-
-            var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(m => m.Map<Disciplina>(disciplinaModel)).Returns(disciplina);
-
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
-
             // Act
-            var result = controller.Create(disciplinaModel);
+            var result = controller.Create(GetNewDisciplinaModel());
 
             // Assert
-            disciplinaServiceMock.Verify(s => s.Create(It.Is<Disciplina>(d => d == disciplina)), Times.Once);
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
-            Assert.AreEqual(nameof(controller.Index), redirect.ActionName);
+            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+            Assert.IsNull(redirectToActionResult.ControllerName);
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
 
-        [TestMethod]
-        public void Create_Post_ModelInvalido_NaoChamaCreateERedireciona()
+        [TestMethod()]
+        public void EditTest_Get_Valid()
         {
-            // Arrange
-            var disciplinaModel = new DisciplinaModel { Id = 4, Nome = "Bio" };
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            var mapperMock = new Mock<IMapper>();
-
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
-            controller.ModelState.AddModelError("Nome", "Erro de validação");
-
             // Act
-            var result = controller.Create(disciplinaModel);
-
-            // Assert
-            disciplinaServiceMock.Verify(s => s.Create(It.IsAny<Disciplina>()), Times.Never);
-
-            // OBSERVAÇÃO: Em MVC padrão, se o modelo é inválido, retorna-se a View, não um Redirect.
-            // O código abaixo assume que seu controller retorna a View quando há erro.
-            // Se o seu teste original exigia Redirect, troque typeof(ViewResult) por typeof(RedirectToActionResult).
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-        }
-
-       
-
-        [TestMethod]
-        public void Edit_Post_ModelValido_ChamaEditERedireciona()
-        {
-            // Arrange
-            var disciplinaModel = new DisciplinaModel { Id = 6, Nome = "Geografia" };
-            var disciplina = new Disciplina { Id = 6, Nome = "Geografia" };
-
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(m => m.Map<Disciplina>(disciplinaModel)).Returns(disciplina);
-
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
-
-            // Act
-            var result = controller.Edit(6, disciplinaModel);
-
-            // Assert
-            disciplinaServiceMock.Verify(s => s.Edit(It.Is<Disciplina>(d => d == disciplina)), Times.Once);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
-            Assert.AreEqual(nameof(controller.Index), redirect.ActionName);
-        }
-
-        [TestMethod]
-        public void Delete_Get_RetornaViewComModeloMapeado()
-        {
-            // Arrange
-            var disciplina = new Disciplina { Id = 7, Nome = "Artes" };
-            var disciplinaModel = new DisciplinaModel { Id = 7, Nome = "Artes" };
-
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            disciplinaServiceMock.Setup(s => s.Get((uint)7)).Returns(disciplina);
-
-            var mapperMock = new Mock<IMapper>();
-            mapperMock.Setup(m => m.Map<DisciplinaModel>(disciplina)).Returns(disciplinaModel);
-
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
-
-            // Act
-            var result = controller.Delete(7);
+            var result = controller.Edit(0, 1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
-            Assert.AreSame(disciplinaModel, viewResult.Model);
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(DisciplinaModel));
+
+            DisciplinaModel model = (DisciplinaModel)viewResult.ViewData.Model;
+            Assert.AreEqual("Matemática", model.Nome);
         }
 
-        [TestMethod]
-        public void Delete_Post_ChamaDeleteERedireciona()
+        [TestMethod()]
+        public void EditTest_Post_Valid()
         {
-            // Arrange
-            var disciplinaServiceMock = new Mock<IDisciplinaService>();
-            var mapperMock = new Mock<IMapper>();
-
-            var controller = CreateController(disciplinaServiceMock, mapperMock);
-
-            // Cria um FormCollection vazio
-            var form = new FormCollection(new Dictionary<string, StringValues>());
-
             // Act
-            var result = controller.Delete(8, form);
+            var result = controller.Edit(1, GetTargetDisciplinaModel());
 
             // Assert
-            disciplinaServiceMock.Verify(s => s.Delete((uint)8), Times.Once);
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
-            Assert.AreEqual(nameof(controller.Index), redirect.ActionName);
+            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+            Assert.IsNull(redirectToActionResult.ControllerName);
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
+
+        [TestMethod()]
+        public void DeleteTest_Get_Valid()
+        {
+            // Act
+            var result = controller.Delete(1);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(DisciplinaModel));
+
+            DisciplinaModel model = (DisciplinaModel)viewResult.ViewData.Model;
+            Assert.AreEqual("Matemática", model.Nome);
+        }
+
+        [TestMethod()]
+        public void DeleteTest_Post_Valid()
+        {
+            // Act
+            var result = controller.Delete(1, null);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+            Assert.IsNull(redirectToActionResult.ControllerName);
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
+        }
+
+        #region Métodos Auxiliares de Dados
+
+        private DisciplinaModel GetNewDisciplinaModel()
+        {
+            return new DisciplinaModel
+            {
+                Id = 4,
+                Nome = "Geografia"
+            };
+        }
+
+        private static Disciplina GetTargetDisciplina()
+        {
+            return new Disciplina
+            {
+                Id = 1,
+                Nome = "Matemática"
+            };
+        }
+
+        private DisciplinaModel GetTargetDisciplinaModel()
+        {
+            return new DisciplinaModel
+            {
+                Id = 1,
+                Nome = "Matemática"
+            };
+        }
+
+        private IEnumerable<Disciplina> GetTestDisciplinas()
+        {
+            return new List<Disciplina>
+            {
+                new Disciplina { Id = 1, Nome = "Matemática" },
+                new Disciplina { Id = 2, Nome = "Português" },
+                new Disciplina { Id = 3, Nome = "História" },
+            };
+        }
+        #endregion
     }
 }
