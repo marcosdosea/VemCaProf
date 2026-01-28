@@ -73,7 +73,10 @@ namespace VemCaProfWeb.Controllers.Tests
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(DisciplinaModel));
 
             DisciplinaModel model = (DisciplinaModel)viewResult.ViewData.Model;
+
+            // Validações
             Assert.AreEqual("Matemática", model.Nome);
+            Assert.AreEqual("Cálculos e Lógica Fundamental", model.Descricao);
             Assert.AreEqual((uint)1, model.Id);
         }
 
@@ -113,6 +116,7 @@ namespace VemCaProfWeb.Controllers.Tests
 
             DisciplinaModel model = (DisciplinaModel)viewResult.ViewData.Model;
             Assert.AreEqual("Matemática", model.Nome);
+            Assert.AreEqual("Cálculos e Lógica Fundamental", model.Descricao);
         }
 
         [TestMethod()]
@@ -156,14 +160,13 @@ namespace VemCaProfWeb.Controllers.Tests
             Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
 
-        #region Métodos Auxiliares de Dados
-
         private DisciplinaModel GetNewDisciplinaModel()
         {
             return new DisciplinaModel
             {
                 Id = 4,
-                Nome = "Geografia"
+                Nome = "Geografia",
+                Descricao = "Estudo da superfície terrestre"
             };
         }
 
@@ -172,7 +175,8 @@ namespace VemCaProfWeb.Controllers.Tests
             return new Disciplina
             {
                 Id = 1,
-                Nome = "Matemática"
+                Nome = "Matemática",
+                Descricao = "Cálculos e Lógica Fundamental"
             };
         }
 
@@ -181,7 +185,8 @@ namespace VemCaProfWeb.Controllers.Tests
             return new DisciplinaModel
             {
                 Id = 1,
-                Nome = "Matemática"
+                Nome = "Matemática",
+                Descricao = "Cálculos e Lógica Fundamental"
             };
         }
 
@@ -189,11 +194,23 @@ namespace VemCaProfWeb.Controllers.Tests
         {
             return new List<Disciplina>
             {
-                new Disciplina { Id = 1, Nome = "Matemática" },
-                new Disciplina { Id = 2, Nome = "Português" },
-                new Disciplina { Id = 3, Nome = "História" },
+                new Disciplina {
+                    Id = 1,
+                    Nome = "Matemática",
+                    Descricao = "Cálculos e Lógica Fundamental"
+                },
+                new Disciplina {
+                    Id = 2,
+                    Nome = "Português",
+                    Descricao = "Gramática e Literatura"
+                },
+                new Disciplina {
+                    Id = 3,
+                    Nome = "História",
+                    Descricao = "História Geral e do Brasil"
+                },
             };
         }
-        #endregion
+
     }
 }
