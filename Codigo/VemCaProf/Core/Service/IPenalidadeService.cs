@@ -9,7 +9,9 @@ namespace Core.Service
         int Create(PenalidadeDTO penalidade);
         void Delete(int id);
         void Edit(PenalidadeDTO penalidade);
-        IEnumerable<PenalidadeDTO> GetAll();
-        IEnumerable<PenalidadeDTO> GetByPessoaId(int pessoaId);
+
+        IEnumerable<Penalidade> GetAll();
+        Penalidade Get(int id);
+        IEnumerable<Penalidade> GetByPessoaId(int pessoaId);
     }
 }

@@ -2,6 +2,7 @@
 using Core.DTO;
 using Core.Mappers;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -49,7 +50,7 @@ namespace Service
         /// <param name="penalidadeNova"></param>
         public void Edit(PenalidadeDTO penalidadeNova)
         {
-            if(penalidadeNova.Id == 0
+            if(penalidadeNova.Id == 0)
                 throw new ServiceException("ID da penalidade inválido.");
 
             var penalidadeExistente = _context.Penalidades.Find(penalidadeNova.Id);
@@ -62,14 +63,51 @@ namespace Service
 
         }
 
-        public IEnumerable<PenalidadeDTO> GetAll()
+
+        /// <summary>
+        ///   Buscar todas as penalidades
+        /// </summary>
+        /// <returns>Lista de penalidades</returns>
+        public IEnumerable<Penalidade> GetAll()
         {
-            throw new NotImplementedException();
+            var penalidade =  _context.Penalidades.AsNoTracking().ToList();
+            return penalidade;
+
         }
 
-        public IEnumerable<PenalidadeDTO> GetByPessoaId(int pessoaId)
+        /// <summary>
+        /// Buscar penalidade pelo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public Penalidade Get(int id)
         {
-            throw new NotImplementedException();
+            var penalidade = _context.Penalidades.FirstOrDefault(p => p.Id == id);
+
+            if (penalidade == null)
+                return null;
+
+            return penalidade;
+
+        }
+
+        /// <summary>
+        /// Buscar penalidade pelo id da pessoa 
+        /// </summary>
+        /// <param name="pessoaId"></param>
+        /// <returns></returns>
+        public IEnumerable<Penalidade> GetByPessoaId(int pessoaId)
+        {
+            var penalidades = _context.Penalidades
+                .AsNoTracking()
+                .Where(p => p.Id == pessoaId);
+            if(penalidades == null)
+                throw new ServiceException("Nenhuma penalidade encontrada para essa pessoa.");
+
+
+            return penalidades;
+
         }
 
 
