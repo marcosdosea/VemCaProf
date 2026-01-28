@@ -51,14 +51,18 @@ namespace Service
             // Atualização manual simples
             pessoaExistente.Nome = dto.Nome;
             pessoaExistente.Sobrenome = dto.Sobrenome;
+            pessoaExistente.Cpf = dto.Cpf;
             pessoaExistente.Email = dto.Email;
+            pessoaExistente.Senha = dto.Senha;
             pessoaExistente.Telefone = dto.Telefone;
+            pessoaExistente.Genero = dto.Genero;
             
             // Endereço
             pessoaExistente.Cep = dto.Cep;
             pessoaExistente.Rua = dto.Rua;
             pessoaExistente.Numero = dto.Numero;
             pessoaExistente.Bairro = dto.Bairro;
+            pessoaExistente.Complemento = dto.Complemento;
             pessoaExistente.Cidade = dto.Cidade; 
             pessoaExistente.Estado = dto.Estado;
             
@@ -147,14 +151,18 @@ namespace Service
             // Atualização manual simples
             pessoaExistente.Nome = dto.Nome;
             pessoaExistente.Sobrenome = dto.Sobrenome;
+            pessoaExistente.Cpf = dto.Cpf;
             pessoaExistente.Email = dto.Email;
+            pessoaExistente.Senha = dto.Senha;
             pessoaExistente.Telefone = dto.Telefone;
+            pessoaExistente.Genero = dto.Genero;
             
             // Endereço
             pessoaExistente.Cep = dto.Cep;
             pessoaExistente.Rua = dto.Rua;
             pessoaExistente.Numero = dto.Numero;
             pessoaExistente.Bairro = dto.Bairro;
+            pessoaExistente.Complemento = dto.Complemento;
             pessoaExistente.Cidade = dto.Cidade; 
             pessoaExistente.Estado = dto.Estado;
             
@@ -187,6 +195,7 @@ namespace Service
             return _context.Pessoas
                 .AsNoTracking()
                 .Where(p => p.AlunoDeMenor != null);
+            
         }
 
         public IEnumerable<Pessoa> GetAlunosByNome(string nome)
@@ -217,14 +226,18 @@ namespace Service
             // Atualização manual simples
             pessoaExistente.Nome = dto.Nome;
             pessoaExistente.Sobrenome = dto.Sobrenome;
+            pessoaExistente.Cpf = dto.Cpf;
             pessoaExistente.Email = dto.Email;
+            pessoaExistente.Senha = dto.Senha;
             pessoaExistente.Telefone = dto.Telefone;
+            pessoaExistente.Genero = dto.Genero;
             
             // Endereço
             pessoaExistente.Cep = dto.Cep;
             pessoaExistente.Rua = dto.Rua;
             pessoaExistente.Numero = dto.Numero;
             pessoaExistente.Bairro = dto.Bairro;
+            pessoaExistente.Complemento = dto.Complemento;
             pessoaExistente.Cidade = dto.Cidade; 
             pessoaExistente.Estado = dto.Estado;
             
