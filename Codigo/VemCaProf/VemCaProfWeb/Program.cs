@@ -20,6 +20,8 @@ public class Program
         builder.Services.AddTransient<IDisponibilidadeHorarioService, DisponibilidadeHorarioService>();
         builder.Services.AddTransient<IPessoaService, PessoaService>();
 
+        builder.Services.AddTransient<IPenalidadeService,PenalidadeService>();
+
         // AutoMapper
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         
