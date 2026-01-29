@@ -12,12 +12,14 @@ namespace VemCaProfWeb.Controllers
     {
         private readonly IPenalidadeService _penalidadeService;
         private readonly IMapper _mapper;
+        private readonly ILogger<PenalidadeController> _logger;
 
 
-        public PenalidadeController(IPenalidadeService penalidadeService, IMapper mapper)
+        public PenalidadeController(IPenalidadeService penalidadeService, IMapper mapper, ILogger<PenalidadeController> logger)
         {
             _penalidadeService = penalidadeService;
             _mapper = mapper;
+            _logger = logger;
 
         }
 
@@ -44,26 +46,40 @@ namespace VemCaProfWeb.Controllers
 
         }
 
-
-        // GET: PenalidadeController/Create
-        public ActionResult Create()
+        // GET: Penalidade/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        // GET: PenalidadeController/Create
+        // GET: Penalidade/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PenalidadeModel penalidadeM)
+        public ActionResult Create([Bind ("DataHorarioInicio,DataHoraFim,Tipo,Descricao")]PenalidadeModel penalidadeM)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                return View(penalidadeM);
+            }
+            try
             {
                 var penalidade = _mapper.Map<PenalidadeDTO>(penalidadeM);
                 _penalidadeService.Create(penalidade);
 
-
+                TempData["SuccessMessage"] = "Penalidade cadastrada com sucesso!";
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+            catch (ServiceException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View(penalidadeM);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao criar penalidade");
+                TempData["ErrorMessage"] = "Erro ao criar penalidade";
+                return View(penalidadeM);
+            }
         }
 
         // GET: PenalidadeController/Edit/5
