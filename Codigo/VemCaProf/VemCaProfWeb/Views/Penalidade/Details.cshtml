@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Detalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>Detalhes</h1>
 
@@ -39,9 +40,21 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Descricao)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdProfessor)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdResponsavel)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdResponsavel)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdResponsavel)
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
-    <a asp-action="Index">Voltar para a lista</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg">Editar</a> |
+    <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para a lista</a>
 </div>

@@ -23,5 +23,14 @@ namespace VemCaProfWeb.Models
 
         [Display(Name = "Descrição")]
         public string Descricao { get; set; } = null!;
+
+        [Display(Name = "Código do Professor")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        
+        public int IdProfessor { get; set;}
+
+        [Display(Name = "Código do Responsável")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public int IdResponsavel { get; set; }
     }
 }
