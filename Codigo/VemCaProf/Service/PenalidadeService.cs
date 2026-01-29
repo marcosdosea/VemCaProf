@@ -20,11 +20,13 @@ namespace Service
         ///</summary>
         ///<param name="penalidade"></param>
         ///<returns> id do autor </returns>
-        public int Create(PenalidadeDTO penalidade)
+        public void Create(PenalidadeDTO penalidade)
         {
            _context.Add(penalidade);
            _context.SaveChanges();
-           return penalidade.Id;
+
+            return penalidade.Id;
+           
         }
 
         /// <summary>
