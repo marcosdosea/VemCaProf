@@ -2,36 +2,67 @@
 
 @{
     ViewData["Title"] = "Detalhes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Detalhes do Responsável</h1>
+<h1>Detalhes</h1>
 
 <div>
+    <h4>Responsável</h4>
     <hr />
+    
+    <h5 class="text-primary mt-4">Dados Pessoais</h5>
     <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Nome)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Nome) @Html.DisplayFor(model => model.Sobrenome)</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nome)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Nome) @Html.DisplayFor(model => model.Sobrenome)</dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Cpf)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Cpf)</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Cpf)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Cpf)</dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Email)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Email)</dd>
-        
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Telefone)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Telefone)</dd>
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DataNascimento)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.DataNascimento)</dd>
 
-        <dt class="col-sm-2">Endereço</dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Rua), @Html.DisplayFor(model => model.Numero) - @Html.DisplayFor(model => model.Bairro) <br/>
-            @Html.DisplayFor(model => model.Cidade) / @Html.DisplayFor(model => model.Estado) - CEP: @Html.DisplayFor(model => model.Cep)
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Genero)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Genero)</dd>
+    </dl>
+
+    <h5 class="text-primary mt-4">Contato e Dependentes</h5>
+    <dl class="row">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Telefone)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Telefone)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.QuantidadeDeDependentes)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.QuantidadeDeDependentes)</dd>
+    </dl>
+
+    <h5 class="text-primary mt-4">Endereço</h5>
+    <dl class="row">
+        <dt class="col-sm-3">Logradouro</dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Rua), Nº @Html.DisplayFor(model => model.Numero)
+            @if (!string.IsNullOrEmpty(Model.Complemento))
+            {
+                <span> - @Html.DisplayFor(model => model.Complemento)</span>
+            }
         </dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.QuantidadeDeDependentes)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.QuantidadeDeDependentes)</dd>
+        <dt class="col-sm-3">Bairro</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Bairro)</dd>
+
+        <dt class="col-sm-3">Localidade</dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Cidade) - @Html.DisplayFor(model => model.Estado)
+        </dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Cep)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Cep)</dd>
     </dl>
 </div>
-<div class="mt-3">
-    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning" }) |
-    @Html.ActionLink("Voltar", "Index", null, new { @class = "btn btn-secondary" })
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a> |
+    <a asp-action="Index" class="btn btn-secondary">Voltar para a Lista</a>
 </div>

@@ -2,71 +2,113 @@
 
 @{
     ViewData["Title"] = "Editar Aluno";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Editar</h1>
-
 <h4>Aluno: @Model.Nome @Model.Sobrenome</h4>
 <hr />
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.Id)
+<form asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
 
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <div class="row">
-            <div class="col-md-6 form-group mb-3">
-                @Html.LabelFor(model => model.Nome, new { @class = "control-label" })
-                @Html.EditorFor(model => model.Nome, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Nome, "", new { @class = "text-danger" })
-            </div>
-             <div class="col-md-6 form-group mb-3">
-                @Html.LabelFor(model => model.Sobrenome, new { @class = "control-label" })
-                @Html.EditorFor(model => model.Sobrenome, new { htmlAttributes = new { @class = "form-control" } })
-            </div>
-        </div>
-
-        <div class="form-group mb-3">
-            @Html.LabelFor(model => model.Email, new { @class = "control-label" })
-            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-        </div>
-        
-        <div class="form-group mb-3">
-            @Html.LabelFor(model => model.Senha, new { @class = "control-label" })
-            @Html.EditorFor(model => model.Senha, new { htmlAttributes = new { @class = "form-control", type="password", placeholder="Deixe vazio para manter a senha atual" } })
-            @Html.ValidationMessageFor(model => model.Senha, "", new { @class = "text-danger" })
-        </div>
-
-        <div class="card mb-3 border-info">
-            <div class="card-body">
-                 <div class="form-group mb-3">
-                    @Html.LabelFor(model => model.IdResponsavel, new { @class = "control-label" })
-                    @Html.DropDownListFor(model => model.IdResponsavel, ViewBag.ListaResponsaveis as SelectList, "-- Selecione --", new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.IdResponsavel, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-check">
-                    @Html.EditorFor(model => model.AlunoDeMenor, new { htmlAttributes = new { @class = "form-check-input" } })
-                    @Html.LabelFor(model => model.AlunoDeMenor, new { @class = "form-check-label" })
-                </div>
-                
-                <div class="form-check">
-                    @Html.EditorFor(model => model.Atipico, new { htmlAttributes = new { @class = "form-check-input" } })
-                    @Html.LabelFor(model => model.Atipico, new { @class = "form-check-label" })
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">Dados Básicos</div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label asp-for="Nome" class="control-label"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Sobrenome" class="control-label"></label>
+                        <input asp-for="Sobrenome" class="form-control" />
+                        <span asp-validation-for="Sobrenome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label asp-for="Senha" class="control-label"></label>
+                        <input asp-for="Senha" class="form-control" type="password" placeholder="Deixe vazio para manter a senha atual" />
+                        <span asp-validation-for="Senha" class="text-danger"></span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="form-group mt-3">
-            <input type="submit" value="Salvar Alterações" class="btn btn-warning" />
-            @Html.ActionLink("Voltar para Lista", "Index", null, new { @class = "btn btn-secondary" })
+        <div class="col-md-6">
+            <div class="card mb-3 border-info">
+                <div class="card-header bg-info text-white">Vínculo e Condições</div>
+                <div class="card-body">
+                     <div class="form-group mb-3">
+                        <label asp-for="IdResponsavel" class="control-label fw-bold"></label>
+                        <select asp-for="IdResponsavel" class="form-control" asp-items="ViewBag.ListaResponsaveis">
+                            <option value="">-- Selecione o Responsável --</option>
+                        </select>
+                        <span asp-validation-for="IdResponsavel" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" asp-for="AlunoDeMenor" />
+                        <label class="form-check-label" asp-for="AlunoDeMenor">
+                            @Html.DisplayNameFor(model => model.AlunoDeMenor)
+                        </label>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="Atipico" />
+                        <label class="form-check-label" asp-for="Atipico">
+                            @Html.DisplayNameFor(model => model.Atipico)
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-}
+
+    <div class="card mb-3">
+         <div class="card-header">Endereço</div>
+         <div class="card-body row">
+             <div class="col-md-3 mb-2">
+                 <label asp-for="Cep" class="control-label"></label>
+                 <input asp-for="Cep" class="form-control" />
+                 <span asp-validation-for="Cep" class="text-danger"></span>
+             </div>
+             <div class="col-md-9 mb-2">
+                 <label asp-for="Rua" class="control-label"></label>
+                 <input asp-for="Rua" class="form-control" />
+                 <span asp-validation-for="Rua" class="text-danger"></span>
+             </div>
+             <div class="col-md-2 mb-2">
+                 <label asp-for="Numero" class="control-label"></label>
+                 <input asp-for="Numero" class="form-control" />
+             </div>
+             <div class="col-md-4 mb-2">
+                 <label asp-for="Bairro" class="control-label"></label>
+                 <input asp-for="Bairro" class="form-control" />
+             </div>
+              <div class="col-md-4 mb-2">
+                 <label asp-for="Cidade" class="control-label"></label>
+                 <input asp-for="Cidade" class="form-control" />
+             </div>
+              <div class="col-md-2 mb-2">
+                 <label asp-for="Estado" class="control-label"></label>
+                 <input asp-for="Estado" class="form-control" />
+             </div>
+         </div>
+    </div>
+
+    <div class="form-group mt-3 mb-5">
+        <input type="submit" value="Salvar Alterações" class="btn btn-warning btn-lg" />
+        <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

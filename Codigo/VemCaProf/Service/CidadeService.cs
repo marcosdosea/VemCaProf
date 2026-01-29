@@ -1,46 +1,48 @@
-﻿
-using AutoMapper;
-using Core;
+﻿using Core;
 using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Service;
 
 public class CidadeService : ICidadeService
 {
     private readonly VemCaProfContext _context;
-    private readonly IMapper _mapper;
-    private readonly ILogger<CidadeService> _logger;
 
-    public CidadeService(
-        VemCaProfContext context,
-        IMapper mapper,
-        ILogger<CidadeService> logger)
+    public CidadeService(VemCaProfContext context)
     {
         _context = context;
-        _mapper = mapper;
-        _logger = logger;
     }
 
+    /// <summary>
+    /// Retorna todas as cidades cadastradas
+    /// </summary>
+    /// <returns>lista de cidades</returns>
     public IEnumerable<CidadeDTO> GetAll()
     {
         try
         {
-            var cidades = _context.Cidades
+            return _context.Cidades
                 .AsNoTracking()
+                .Select(c => new CidadeDTO
+                {
+                    Id = c.Id,
+                    Nome = c.Nome,
+                    Estado = c.Estado
+                })
                 .ToList();
-
-            return _mapper.Map<IEnumerable<CidadeDTO>>(cidades);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar todas as cidades");
             throw new ServiceException("Erro ao buscar cidades", ex);
         }
     }
 
+    /// <summary>
+    /// Busca uma cidade pelo identificador
+    /// </summary>
+    /// <param name="id">id da cidade</param>
+    /// <returns>dados da cidade</returns>
     public CidadeDTO? Get(int id)
     {
         try
@@ -52,15 +54,25 @@ public class CidadeService : ICidadeService
             if (cidade == null)
                 return null;
 
-            return _mapper.Map<CidadeDTO>(cidade);
+            return new CidadeDTO
+            {
+                Id = cidade.Id,
+                Nome = cidade.Nome,
+                Estado = cidade.Estado
+            };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar cidade com ID {Id}", id);
             throw new ServiceException($"Erro ao buscar cidade com ID {id}", ex);
         }
     }
 
+    /// <summary>
+    /// Busca uma cidade pelo nome e estado
+    /// </summary>
+    /// <param name="nome">nome da cidade</param>
+    /// <param name="estado">sigla do estado</param>
+    /// <returns>dados da cidade</returns>
     public CidadeDTO? GetByNomeEstado(string nome, string estado)
     {
         try
@@ -74,33 +86,51 @@ public class CidadeService : ICidadeService
             if (cidade == null)
                 return null;
 
-            return _mapper.Map<CidadeDTO>(cidade);
+            return new CidadeDTO
+            {
+                Id = cidade.Id,
+                Nome = cidade.Nome,
+                Estado = cidade.Estado
+            };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar cidade {Nome}/{Estado}", nome, estado);
             throw new ServiceException($"Erro ao buscar cidade {nome}/{estado}", ex);
         }
     }
 
+    /// <summary>
+    /// Cadastra uma nova cidade na base de dados
+    /// </summary>
+    /// <param name="cidadeDto">dados da cidade</param>
+    /// <returns>id da cidade</returns>
     public int Create(CidadeDTO cidadeDto)
     {
         try
         {
-            // Validação
-            if (string.IsNullOrWhiteSpace(cidadeDto.Nome))
+            
+            if (cidadeDto == null)
+                throw new ServiceException("Dados da cidade não podem ser nulos");
+
+            
+            var nome = cidadeDto.Nome?.Trim() ?? "";
+            var estado = cidadeDto.Estado?.Trim().ToUpper() ?? "";
+
+            if (string.IsNullOrWhiteSpace(nome))
                 throw new ServiceException("Nome da cidade é obrigatório");
 
-            if (string.IsNullOrWhiteSpace(cidadeDto.Estado) || cidadeDto.Estado.Length != 2)
+            if (string.IsNullOrWhiteSpace(estado) || estado.Length != 2)
                 throw new ServiceException("Estado deve ter 2 caracteres");
 
-            // Verifica se já existe
-            var existing = GetByNomeEstado(cidadeDto.Nome, cidadeDto.Estado);
+            var existing = GetByNomeEstado(nome, estado);
             if (existing != null)
-                throw new ServiceException($"Cidade {cidadeDto.Nome}/{cidadeDto.Estado} já cadastrada");
+                throw new ServiceException($"Cidade {nome}/{estado} já cadastrada");
 
-            var cidade = _mapper.Map<Cidade>(cidadeDto);
-            cidade.Estado = cidade.Estado.Trim().ToUpper();
+            var cidade = new Cidade
+            {
+                Nome = nome,
+                Estado = estado
+            };
 
             _context.Cidades.Add(cidade);
             _context.SaveChanges();
@@ -113,34 +143,43 @@ public class CidadeService : ICidadeService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar cidade");
             throw new ServiceException("Erro ao criar cidade", ex);
         }
     }
 
+    /// <summary>
+    /// Atualiza os dados de uma cidade existente
+    /// </summary>
+    /// <param name="cidadeDto">dados atualizados da cidade</param>
+    /// <returns>true se atualizado com sucesso</returns>
     public bool Update(CidadeDTO cidadeDto)
     {
         try
         {
-            // Validação
-            if (string.IsNullOrWhiteSpace(cidadeDto.Nome))
+            
+            if (cidadeDto == null)
+                throw new ServiceException("Dados da cidade não podem ser nulos");
+
+            
+            var nome = cidadeDto.Nome?.Trim() ?? "";
+            var estado = cidadeDto.Estado?.Trim().ToUpper() ?? "";
+
+            if (string.IsNullOrWhiteSpace(nome))
                 throw new ServiceException("Nome da cidade é obrigatório");
 
-            if (string.IsNullOrWhiteSpace(cidadeDto.Estado) || cidadeDto.Estado.Length != 2)
+            if (string.IsNullOrWhiteSpace(estado) || estado.Length != 2)
                 throw new ServiceException("Estado deve ter 2 caracteres");
 
             var cidade = _context.Cidades.Find(cidadeDto.Id);
             if (cidade == null)
                 return false;
 
-            // Verifica se o novo nome/estado já existe para outra cidade
-            var existing = GetByNomeEstado(cidadeDto.Nome, cidadeDto.Estado);
+            var existing = GetByNomeEstado(nome, estado);
             if (existing != null && existing.Id != cidadeDto.Id)
-                throw new ServiceException($"Cidade {cidadeDto.Nome}/{cidadeDto.Estado} já cadastrada");
+                throw new ServiceException($"Cidade {nome}/{estado} já cadastrada");
 
-            // Atualiza os valores
-            cidade.Nome = cidadeDto.Nome.Trim();
-            cidade.Estado = cidadeDto.Estado.Trim().ToUpper();
+            cidade.Nome = nome;
+            cidade.Estado = estado;
 
             _context.Cidades.Update(cidade);
             _context.SaveChanges();
@@ -153,11 +192,15 @@ public class CidadeService : ICidadeService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao atualizar cidade ID {Id}", cidadeDto.Id);
             throw new ServiceException($"Erro ao atualizar cidade ID {cidadeDto.Id}", ex);
         }
     }
 
+    /// <summary>
+    /// Remove uma cidade da base de dados
+    /// </summary>
+    /// <param name="id">id da cidade</param>
+    /// <returns>true se removida com sucesso</returns>
     public bool Delete(int id)
     {
         try
@@ -173,7 +216,6 @@ public class CidadeService : ICidadeService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao excluir cidade ID {Id}", id);
             throw new ServiceException($"Erro ao excluir cidade ID {id}", ex);
         }
     }

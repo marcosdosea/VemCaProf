@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/VemCaProfWeb.styles.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
@@ -59,6 +60,11 @@
                             <a class="nav-link" asp-controller="Penalidade" asp-action="Index">
                                 <i class="fas fa-book"></i>
                                 <span>Penalidade</span>
+                        </li>
+                        <li class="nav-item">  
+                            <a class="nav-link" asp-controller="DisponibilidadeHorario" asp-action="Index">
+                                <i class="fas fa-book"></i>
+                                <span>Horário</span>
                             </a>
                         </li>
                     </ul>
