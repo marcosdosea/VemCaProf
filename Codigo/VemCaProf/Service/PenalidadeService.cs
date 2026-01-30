@@ -9,10 +9,13 @@ namespace Service
     public class PenalidadeService : IPenalidadeService
     {
         private readonly VemCaProfContext _context;
+        private readonly IPessoaService _pessoaService;
 
-        public PenalidadeService(VemCaProfContext context)
+
+        public PenalidadeService(VemCaProfContext context, IPessoaService pessoaService)
         {
             _context = context;
+            _pessoaService = pessoaService;
         }
 
         /// <summary>
@@ -22,11 +25,54 @@ namespace Service
         ///<returns> id do autor </returns>
         public int Create(PenalidadeDTO penalidade)
         {
-           _context.Add(penalidade);
-           _context.SaveChanges();
+            try
+            {
+                if (penalidade == null)
+                    throw new ServiceException("Os dados não podem ser nulos");
 
-            return penalidade.Id;
-           
+
+                var data = penalidade.DataHorarioInicio;
+                var descricao = penalidade.Descricao;
+
+
+                if (penalidade.DataHorarioInicio == default(DateTime))
+                    throw new ServiceException("A data é obrigatória");
+
+                if (string.IsNullOrWhiteSpace(descricao))
+                    throw new ServiceException("A descrição é obrigatória");
+
+
+                if (_pessoaService.GetProfessor(penalidade.IdProfessor) == null)
+                    throw new ServiceException($"Professor de ID {penalidade.IdProfessor} não existe");
+
+                if (_pessoaService.GetResponsavel(penalidade.IdResponsavel) == null)
+                    throw new ServiceException($"Responsável de ID {penalidade.IdResponsavel} não existe");
+
+                var entity = new Penalidade
+                {
+                    DataHorarioInicio = penalidade.DataHorarioInicio,
+                    DataHoraFim = penalidade.DataHoraFim,
+                    Tipo = penalidade.Tipo,
+                    Descricao = penalidade.Descricao,
+                    IdProfessor = penalidade.IdProfessor,
+                    IdResponsavel = penalidade.IdResponsavel
+                };
+
+                _context.Penalidades.Add(entity);
+                _context.SaveChanges();
+
+                return entity.Id;
+            }
+            catch (ServiceException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new ServiceException("Erro ao criar cidade", ex);
+            }
+
+
         }
 
         /// <summary>
