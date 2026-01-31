@@ -73,38 +73,38 @@ public class AulaController : Controller
         return View();
     }
 
-    // POST: Cidade/Create
+    // POST: Aula/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create([Bind("Nome,Estado")] CidadeModel cidadeModel)
+    public IActionResult Create([Bind(" DataHorarioInicio,DataHorarioFinal,Descricao,Local,Valor,IdDisciplina,IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
     {
         if (!ModelState.IsValid)
         {
-            return View(cidadeModel);
+            return View(aulaModel);
         }
 
         try
         {
-            var cidadeDto = _mapper.Map<CidadeDTO>(cidadeModel);
-            _cidadeService.Create(cidadeDto);
+            var aulaDto = _mapper.Map<AulaDTO>(aulaModel);
+            _aulaService.Create(aulaDto);
 
-            TempData["SuccessMessage"] = "Cidade cadastrada com sucesso!";
+            TempData["SuccessMessage"] = "Aula cadastrada com sucesso!";
             return RedirectToAction(nameof(Index));
         }
         catch (ServiceException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
-            return View(cidadeModel);
+            return View(aulaModel);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar cidade");
-            TempData["ErrorMessage"] = "Erro ao criar cidade";
-            return View(cidadeModel);
+            _logger.LogError(ex, "Erro ao criar aula");
+            TempData["ErrorMessage"] = "Erro ao criar aula";
+            return View(aulaModel);
         }
     }
 
-    // GET: Cidade/Edit/5
+    // GET: Aula/Edit/5
     public IActionResult Edit(int? id)
     {
         if (id == null)
@@ -114,65 +114,65 @@ public class AulaController : Controller
 
         try
         {
-            var cidadeDto = _cidadeService.Get(id.Value);
-            if (cidadeDto == null)
+            var aulaDto = _aulaService.Get(id.Value);
+            if (aulaDto == null)
             {
                 return NotFound();
             }
 
-            var cidadeModel = _mapper.Map<CidadeModel>(cidadeDto);
-            return View(cidadeModel);
+            var aulaModel = _mapper.Map<AulaModel>(aulaDto);
+            return View(aulaModel);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar cidade para edição ID {Id}", id);
-            TempData["ErrorMessage"] = "Erro ao buscar cidade para edição";
+            _logger.LogError(ex, "Erro ao buscar aula para edição ID {Id}", id);
+            TempData["ErrorMessage"] = "Erro ao buscar aula para edição";
             return RedirectToAction(nameof(Index));
         }
     }
 
-    // POST: Cidade/Edit/5
+    // POST: Aula/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, [Bind("Id,Nome,Estado")] CidadeModel cidadeModel)
+    public IActionResult Edit(int id, [Bind("Id,DataHorarioInicio,DataHorarioFinal,Descricao,Local,Valor,IdDisciplina,IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
     {
-        if (id != cidadeModel.Id)
+        if (id != aulaModel.Id)
         {
             return NotFound();
         }
 
         if (!ModelState.IsValid)
         {
-            return View(cidadeModel);
+            return View(aulaModel);
         }
 
         try
         {
-            var cidadeDto = _mapper.Map<CidadeDTO>(cidadeModel);
-            var success = _cidadeService.Update(cidadeDto);
+            var aulaDto = _mapper.Map<AulaDTO>(aulaModel);
+            var success = _aulaService.Update(aulaDto);
 
             if (!success)
             {
                 return NotFound();
             }
 
-            TempData["SuccessMessage"] = "Cidade atualizada com sucesso!";
+            TempData["SuccessMessage"] = "Aula atualizada com sucesso!";
             return RedirectToAction(nameof(Index));
         }
         catch (ServiceException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
-            return View(cidadeModel);
+            return View(aulaModel);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao atualizar cidade ID {Id}", id);
-            TempData["ErrorMessage"] = "Erro ao atualizar cidade";
-            return View(cidadeModel);
+            _logger.LogError(ex, "Erro ao atualizar aula ID {Id}", id);
+            TempData["ErrorMessage"] = "Erro ao atualizar aula";
+            return View(aulaModel);
         }
     }
 
-    // GET: Cidade/Delete/5
+    // GET: Aula/Delete/5
     public IActionResult Delete(int? id)
     {
         if (id == null)
@@ -182,38 +182,38 @@ public class AulaController : Controller
 
         try
         {
-            var cidadeDto = _cidadeService.Get(id.Value);
-            if (cidadeDto == null)
+            var aulaDto = _aulaService.Get(id.Value);
+            if (aulaDto == null)
             {
                 return NotFound();
             }
 
-            var cidadeModel = _mapper.Map<CidadeModel>(cidadeDto);
-            return View(cidadeModel);
+            var aulaModel = _mapper.Map<AulaModel>(aulaDto);
+            return View(aulaModel);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar cidade para exclusão ID {Id}", id);
-            TempData["ErrorMessage"] = "Erro ao buscar cidade para exclusão";
+            _logger.LogError(ex, "Erro ao buscar aula para exclusão ID {Id}", id);
+            TempData["ErrorMessage"] = "Erro ao buscar aula para exclusão";
             return RedirectToAction(nameof(Index));
         }
     }
 
-    // POST: Cidade/Delete/5
+    // POST: Aula/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int id)
     {
         try
         {
-            var success = _cidadeService.Delete(id);
+            var success = _aulaService.Delete(id);
             if (!success)
             {
-                TempData["ErrorMessage"] = "Cidade não encontrada";
+                TempData["ErrorMessage"] = "Aula não encontrada";
                 return RedirectToAction(nameof(Index));
             }
 
-            TempData["SuccessMessage"] = "Cidade excluída com sucesso!";
+            TempData["SuccessMessage"] = "Aula excluída com sucesso!";
             return RedirectToAction(nameof(Index));
         }
         catch (ServiceException ex)
@@ -223,8 +223,8 @@ public class AulaController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao excluir cidade ID {Id}", id);
-            TempData["ErrorMessage"] = "Erro ao excluir cidade";
+            _logger.LogError(ex, "Erro ao excluir aula ID {Id}", id);
+            TempData["ErrorMessage"] = "Erro ao excluir aula";
             return RedirectToAction(nameof(Index));
         }
     }
