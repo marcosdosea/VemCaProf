@@ -2,6 +2,8 @@ using Core;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using Microsoft.AspNetCore.Identity;
+using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWeb;
 
@@ -26,12 +28,18 @@ public class Program
         
         // Banco de Dados
         var connectionString = builder.Configuration.GetConnectionString("VemCaProfConnection");
+        var connectionStringIdentity = builder.Configuration.GetConnectionString("IdentityDatabase");
         if (string.IsNullOrEmpty(connectionString))
             throw new InvalidOperationException("A string de conexão 'VemCaProfConnection' não foi encontrada.");
 
         // 2. BUILD
         builder.Services.AddDbContext<VemCaProfContext>(options =>
             options.UseMySQL(connectionString));
+        // Identity
+        builder.Services.AddDbContext<IdentityContext>(options =>
+            options.UseMySQL(connectionStringIdentity));
+
+        builder.Services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<IdentityContext>();
         
         // 3. PIPELINE
         var app = builder.Build();
@@ -50,6 +58,8 @@ public class Program
 
         app.UseAuthorization();
         app.UseAuthentication();
+
+        app.MapRazorPages();
         
 
         app.MapControllerRoute(
