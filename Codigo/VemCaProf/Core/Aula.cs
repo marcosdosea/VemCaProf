@@ -13,6 +13,8 @@ public partial class Aula
 
     public string Descricao { get; set; } = null!;
 
+    public string Local { get; set; } = null!;
+
     public DateTime DataHoraPagamento { get; set; }
 
     public double Valor { get; set; }
@@ -40,6 +42,7 @@ public partial class Aula
     public int IdAluno { get; set; }
 
     public int IdProfessor { get; set; }
+
 
     public virtual Pessoa IdAlunoNavigation { get; set; } = null!;
 
