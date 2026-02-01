@@ -29,8 +29,8 @@ public class AulaController : Controller
         try
         {
             var aulaDto = _aulaService.GetAll();
-            var aulaModel = _mapper.Map<IEnumerable<AulaModel>>(aulasDto);
-            return View(aulasModel);
+            var aulaModel = _mapper.Map<IEnumerable<AulaModel>>(aulaDto);
+            return View(aulaModel);
         }
         catch (Exception ex)
         {

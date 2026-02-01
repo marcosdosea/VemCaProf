@@ -20,6 +20,7 @@ public class Program
         builder.Services.AddTransient<IDisciplinaService, DisciplinaService>();
         builder.Services.AddTransient<ICidadeService, CidadeService>();
         builder.Services.AddTransient<IDisponibilidadeHorarioService, DisponibilidadeHorarioService>();
+        builder.Services.AddTransient<IAulaService, AulaService>();
         builder.Services.AddTransient<IPessoaService, PessoaService>();
         builder.Services.AddTransient<IPenalidadeService,PenalidadeService>();
 

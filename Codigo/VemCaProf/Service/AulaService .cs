@@ -1,6 +1,6 @@
 ﻿using Core;
 using Core.DTO;
-using Core.Enuns;
+using Core.Enums;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -149,7 +149,7 @@ public class AulaService : IAulaService
             };
           
 
-            _context.Aula.Add(aula);
+            _context.Aulas.Add(aula);
             _context.SaveChanges();
 
             return aula.Id;
@@ -220,7 +220,7 @@ public class AulaService : IAulaService
                 IdProfessor = aulaDto.IdProfessor
             };
 
-            _context.Aula.Update(aula);
+            _context.Aulas.Update(aula);
             _context.SaveChanges();
 
             return true;
@@ -244,7 +244,7 @@ public class AulaService : IAulaService
     {
         try
         {
-            var aula = _context.Aula.Find(id);
+            var aula = _context.Aulas.Find(id);
             if (aula == null)
                 return false;
             if (aula.Status != StatusEnum.AguardandoPagamento) 
