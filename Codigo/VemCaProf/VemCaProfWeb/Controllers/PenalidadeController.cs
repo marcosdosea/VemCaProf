@@ -3,7 +3,9 @@ using Core;
 using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Service;
 using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers
@@ -11,13 +13,15 @@ namespace VemCaProfWeb.Controllers
     public class PenalidadeController : Controller
     {
         private readonly IPenalidadeService _penalidadeService;
+        private readonly IPessoaService _pessoaService;
         private readonly IMapper _mapper;
         private readonly ILogger<PenalidadeController> _logger;
 
 
-        public PenalidadeController(IPenalidadeService penalidadeService, IMapper mapper, ILogger<PenalidadeController> logger)
+        public PenalidadeController(IPenalidadeService penalidadeService, IPessoaService pessoaService, IMapper mapper, ILogger<PenalidadeController> logger)
         {
             _penalidadeService = penalidadeService;
+            _pessoaService = pessoaService;
             _mapper = mapper;
             _logger = logger;
 
@@ -41,8 +45,8 @@ namespace VemCaProfWeb.Controllers
             {
                 return NotFound();
             }
-            PenalidadeModel autorModel = _mapper.Map<PenalidadeModel>(penalidade);
-            return View(autorModel);
+            PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
+            return View(penalidadeModel);
 
         }
 
@@ -55,10 +59,12 @@ namespace VemCaProfWeb.Controllers
         // GET: Penalidade/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind ("DataHorarioInicio,DataHoraFim,Tipo,Descricao")]PenalidadeModel penalidadeM)
+        public ActionResult Create(PenalidadeModel penalidadeM)
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Professores = new SelectList(_pessoaService.GetAllProfessores(),"Id", "Nome");
+                ViewBag.Professores = new SelectList(_pessoaService.GetAllResponsaveis(), "Id", "Nome");
                 return View(penalidadeM);
             }
             try
@@ -72,6 +78,8 @@ namespace VemCaProfWeb.Controllers
             catch (ServiceException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
+                ViewBag.Professores = new SelectList(_pessoaService.GetAllProfessores(), "Id", "Nome");
+                ViewBag.Professores = new SelectList(_pessoaService.GetAllResponsaveis(), "Id", "Nome");
                 return View(penalidadeM);
             }
             catch (Exception ex)
