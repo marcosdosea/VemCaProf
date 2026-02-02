@@ -2,11 +2,13 @@ using AutoMapper;
 using Core;
 using Core.DTO;
 using Core.Service;
+using Microsoft.AspNetCore.Identity; 
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using VemCaProfWeb.Controllers;
 using VemCaProfWeb.Mappers;
 using VemCaProfWeb.Models;
+using VemCaProfWeb.Areas.Identity.Data; 
 
 namespace VemCaProfWebTests.Controllers
 {
@@ -15,12 +17,18 @@ namespace VemCaProfWebTests.Controllers
     {
         private static ResponsavelPessoaController controller = null!;
         private Mock<IPessoaService> mockService = null!;
+        private Mock<UserManager<Usuario>> mockUserManager = null!; 
+        private readonly string _fakeGuid = Guid.NewGuid().ToString(); 
 
         [TestInitialize]
         public void Initialize()
         {
             // Arrange
             mockService = new Mock<IPessoaService>();
+
+            // Configuração do Mock do UserManager (Exigido pelo novo construtor da Controller)
+            var store = new Mock<IUserStore<Usuario>>();
+            mockUserManager = new Mock<UserManager<Usuario>>(store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
 
             // Configuração Real do AutoMapper
             IMapper mapper = new MapperConfiguration(cfg =>
@@ -42,7 +50,8 @@ namespace VemCaProfWebTests.Controllers
             mockService.Setup(service => service.Delete(It.IsAny<int>()))
                 .Verifiable();
 
-            controller = new ResponsavelPessoaController(mockService.Object, mapper);
+            // Invocado com os 3 parâmetros agora exigidos (Service, Mapper, UserManager)
+            controller = new ResponsavelPessoaController(mockService.Object, mapper, mockUserManager.Object);
         }
 
         [TestMethod]
@@ -89,11 +98,18 @@ namespace VemCaProfWebTests.Controllers
         [TestMethod]
         public void CreateTest_Get_Valido()
         {
-            // Act
-            var result = controller.Create();
+            // Act 
+            var result = controller.Create(_fakeGuid, "pai@email.com");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var viewResult = result as ViewResult;
+            Assert.IsNotNull(viewResult);
+
+            var model = viewResult.Model as ResponsavelPessoaModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(_fakeGuid, model.IdUsuario);
+            Assert.AreEqual("pai@email.com", model.Email);
         }
 
         [TestMethod]
@@ -200,7 +216,6 @@ namespace VemCaProfWebTests.Controllers
         [TestMethod]
         public void DeleteTest_Post_Valid()
         {
-           
             var result = controller.Delete(1, null!);
 
             // Assert
@@ -219,11 +234,11 @@ namespace VemCaProfWebTests.Controllers
             return new ResponsavelPessoaModel
             {
                 Id = 3,
+                IdUsuario = _fakeGuid, 
                 Nome = "Novo Responsável",
                 Sobrenome = "Teste",
                 Cpf = "11122233344",
                 Email = "novo@resp.com",
-                Senha = "123",
                 QuantidadeDeDependentes = 1,
 
                 Telefone = "11999999999",
@@ -244,10 +259,10 @@ namespace VemCaProfWebTests.Controllers
             return new ResponsavelPessoaModel
             {
                 Id = 1,
+                IdUsuario = _fakeGuid, 
                 Nome = "Pai Responsável",
                 Sobrenome = "Silva",
                 Email = "pai@email.com",
-                Senha = "", 
                 QuantidadeDeDependentes = 2,
 
                 // Dados Obrigatórios (PessoaDTO)
@@ -269,6 +284,7 @@ namespace VemCaProfWebTests.Controllers
             return new Pessoa
             {
                 Id = 1,
+                IdUsuario = Guid.NewGuid().ToString(), 
                 Nome = "Pai Responsável",
                 Sobrenome = "Silva",
                 Email = "pai@email.com",
@@ -295,6 +311,7 @@ namespace VemCaProfWebTests.Controllers
                 new Pessoa
                 {
                     Id = 1,
+                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Pai Responsável",
                     Sobrenome = "Silva",
                     QuantidadeDeDependentes = 2,
@@ -304,6 +321,7 @@ namespace VemCaProfWebTests.Controllers
                 new Pessoa
                 {
                     Id = 2,
+                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Mãe Responsável",
                     Sobrenome = "Souza",
                     QuantidadeDeDependentes = 1,

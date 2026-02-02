@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Core.Service;
 using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DisciplinaController : Controller
     {
 
@@ -36,6 +38,7 @@ namespace VemCaProfWeb.Controllers
         }
 
         // GET: DisciplinaController/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -44,6 +47,7 @@ namespace VemCaProfWeb.Controllers
         // POST: DisciplinaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create(DisciplinaModel disciplinaModel)
         {
             if (ModelState.IsValid)

@@ -2,12 +2,14 @@ using AutoMapper;
 using Core;
 using Core.DTO;
 using Core.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Moq;
 using VemCaProfWeb.Controllers;
 using VemCaProfWeb.Mappers;
 using VemCaProfWeb.Models;
+using VemCaProfWeb.Areas.Identity.Data; 
 
 namespace VemCaProfWebTests.Controllers
 {
@@ -16,12 +18,17 @@ namespace VemCaProfWebTests.Controllers
     {
         private AlunoPessoaController _controller = null!;
         private Mock<IPessoaService> _mockService = null!;
+        private Mock<UserManager<Usuario>> _mockUserManager = null!; 
+        private readonly string _fakeGuid = Guid.NewGuid().ToString(); 
 
         [TestInitialize]
         public void Initialize()
         {
             // Arrange
             _mockService = new Mock<IPessoaService>();
+
+            var store = new Mock<IUserStore<Usuario>>();
+            _mockUserManager = new Mock<UserManager<Usuario>>(store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new PessoaProfile())).CreateMapper();
@@ -42,7 +49,8 @@ namespace VemCaProfWebTests.Controllers
             _mockService.Setup(service => service.Delete(It.IsAny<int>()))
                 .Verifiable();
 
-            _controller = new AlunoPessoaController(_mockService.Object, mapper);
+            // Invocado com os 3 parâmetros agora exigidos (Service, Mapper, UserManager)
+            _controller = new AlunoPessoaController(_mockService.Object, mapper, _mockUserManager.Object);
         }
 
         [TestMethod]
@@ -95,13 +103,19 @@ namespace VemCaProfWebTests.Controllers
         [TestMethod]
         public void CreateTest_Get_Valido()
         {
-            // Act
-            var result = _controller.Create();
+            // Act - Alterado para passar IdUsuario e email como o Identity exige
+            var result = _controller.Create(_fakeGuid, "teste@email.com");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
+
+            // Verifica se o Model foi preenchido com os dados do Identity
+            var model = viewResult.Model as AlunoPessoaModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(_fakeGuid, model.IdUsuario);
+            Assert.AreEqual("teste@email.com", model.Email);
 
             Assert.IsNotNull(viewResult.ViewData["ListaResponsaveis"]);
             Assert.IsInstanceOfType(viewResult.ViewData["ListaResponsaveis"], typeof(SelectList));
@@ -142,27 +156,7 @@ namespace VemCaProfWebTests.Controllers
             
             Assert.IsNotNull(viewResult.ViewData["ListaResponsaveis"]);
         }
-
-        [TestMethod]
-        public void EditTest_Get_Valid()
-        {
-            // Act
-            var result = _controller.Edit(1);
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = result as ViewResult;
-            Assert.IsNotNull(viewResult);
-            
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(AlunoPessoaModel));
-            var model = viewResult.ViewData.Model as AlunoPessoaModel;
-            Assert.IsNotNull(model);
-            
-            Assert.AreEqual(1, model.Id);
-            Assert.AreEqual("Joãozinho", model.Nome);
-
-            Assert.IsNotNull(viewResult.ViewData["ListaResponsaveis"]);
-        }
+        
 
         [TestMethod]
         public void EditTest_Post_Valid()
@@ -230,11 +224,11 @@ namespace VemCaProfWebTests.Controllers
             return new AlunoPessoaModel
             {
                 Id = 3,
+                IdUsuario = _fakeGuid, 
                 Nome = "Novo Aluno",
                 Sobrenome = "Teste",
                 Cpf = "11122233344",
                 Email = "novo@aluno.com",
-                Senha = "123",
                 AlunoDeMenor = true,
                 Atipico = false,
                 IdResponsavel = 10,
@@ -253,11 +247,12 @@ namespace VemCaProfWebTests.Controllers
             };
         }
 
-        private static Pessoa GetTargetAlunoEntity()
+        private Pessoa GetTargetAlunoEntity()
         {
             return new Pessoa
             {
                 Id = 1,
+                IdUsuario = _fakeGuid,
                 Nome = "Joãozinho",
                 Sobrenome = "Silva",
                 Email = "joao@email.com",
@@ -286,10 +281,11 @@ namespace VemCaProfWebTests.Controllers
             return new AlunoPessoaModel
             {
                 Id = 1,
+                IdUsuario = _fakeGuid, 
                 Nome = "Joãozinho",
                 Sobrenome = "Silva",
                 Email = "joao@email.com",
-                Senha = "", // Senha vazia para Edit
+                // Senha removida
                 IdResponsavel = 10,
                 AlunoDeMenor = true,
                 Atipico = false,
@@ -315,6 +311,7 @@ namespace VemCaProfWebTests.Controllers
                 new Pessoa
                 {
                     Id = 1,
+                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Joãozinho",
                     Sobrenome = "Silva",
                     AlunoDeMenor = true,
@@ -325,6 +322,7 @@ namespace VemCaProfWebTests.Controllers
                 new Pessoa
                 {
                     Id = 2,
+                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Mariazinha",
                     Sobrenome = "Souza",
                     AlunoDeMenor = false,

@@ -1,83 +1,85 @@
-@model VemCaProfWeb.Models.ProfessorPessoaModel
+@model VemCaProfWeb.Models.ProfessorPessoaModel 
 
-@{
-    ViewData["Title"] = "Detalhes";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+ @{ 
+     ViewData["Title"] = "Detalhes"; 
+     Layout = "~/Views/Shared/_Layout.cshtml"; 
+ } 
 
-<h1>Detalhes do Professor</h1>
+ <h1>Detalhes do Professor</h1> 
 
-<div>
-    <hr />
-    
-    <div class="row">
-        <div class="col-md-6">
-             <h5 class="text-primary">Dados Pessoais</h5>
-             <dl class="row">
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Nome)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Nome) @Html.DisplayFor(model => model.Sobrenome)</dd>
+ <div> 
+     <hr /> 
+      
+     <div class="row"> 
+         <div class="col-md-6"> 
+              <h5 class="text-primary">Dados Pessoais</h5> 
+              <dl class="row"> 
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Nome)</dt> 
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Cpf)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Cpf)</dd>
+                 <dd class="col-sm-8">@Html.DisplayFor(model => model.Nome) @Html.DisplayFor(model => model.Sobrenome)</dd> 
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DataNascimento)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.DataNascimento)</dd>
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Cpf)</dt> 
+                 <dd class="col-sm-8">@Html.DisplayFor(model => model.Cpf)</dd> 
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Genero)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Genero)</dd>
-            </dl>
-            
-            <h5 class="text-primary mt-4">Contato</h5>
-             <dl class="row">
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DataNascimento)</dt> 
+                 <dd class="col-sm-8">@Html.DisplayFor(model => model.DataNascimento)</dd> 
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Telefone)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.Telefone)</dd>
-            </dl>
-        </div>
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Genero)</dt> 
+                 <dd class="col-sm-8">@Html.DisplayFor(model => model.Genero)</dd> 
+             </dl> 
+              
+             <h5 class="text-primary mt-4">Contato</h5> 
+              <dl class="row"> 
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt> 
+                 <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd> 
 
-        <div class="col-md-6">
-             <h5 class="text-success">Dados Profissionais</h5>
-             <dl class="row">
-                <dt class="col-sm-4">Cidade de Atuação (ID)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(model => model.IdCidade)</dd>
-                
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Libras)</dt>
-                <dd class="col-sm-8">@(Model.Libras ? "Sim" : "Não")</dd>
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Telefone)</dt> 
+                 <dd class="col-sm-8">@Html.DisplayFor(model => model.Telefone)</dd> 
+             </dl> 
+         </div> 
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DescricaoProfessor)</dt>
-                <dd class="col-sm-8" style="white-space: pre-wrap;">@Html.DisplayFor(model => model.DescricaoProfessor)</dd>
-            </dl>
-        </div>
-    </div>
+         <div class="col-md-6"> 
+              <h5 class="text-success">Dados Profissionais</h5> 
+              <dl class="row"> 
+                 <dt class="col-sm-4">Cidade de Atuação (ID)</dt> 
+                 <dd class="col-sm-8">@Html.DisplayFor(model => model.IdCidade)</dd> 
+                  
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Libras)</dt> 
+                 <dd class="col-sm-8">@(Model.Libras ? "Sim" : "Não")</dd> 
 
-    <h5 class="text-primary mt-4">Endereço Residencial</h5>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Logradouro</dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Rua), Nº @Html.DisplayFor(model => model.Numero)
-            @if (!string.IsNullOrEmpty(Model.Complemento))
-            {
-                <span> - Compl: @Html.DisplayFor(model => model.Complemento)</span>
-            }
-        </dd>
+                 <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DescricaoProfessor)</dt> 
 
-        <dt class="col-sm-2">Bairro</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Bairro)</dd>
+                 <dd class="col-sm-8" style="white-space: pre-wrap;">@Html.DisplayFor(model => model.DescricaoProfessor)</dd> 
+             </dl> 
+         </div> 
+     </div> 
 
-        <dt class="col-sm-2">Localidade</dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cidade) / @Html.DisplayFor(model => model.Estado)
-        </dd>
+     <h5 class="text-primary mt-4">Endereço Residencial</h5> 
+     <hr /> 
+     <dl class="row"> 
+         <dt class="col-sm-2">Logradouro</dt> 
+         <dd class="col-sm-10"> 
+             @Html.DisplayFor(model => model.Rua), Nº @Html.DisplayFor(model => model.Numero) 
+             @if (!string.IsNullOrEmpty(Model.Complemento)) 
+             { 
+                 <span> - Compl: @Html.DisplayFor(model => model.Complemento)</span> 
+             } 
+         </dd> 
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Cep)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Cep)</dd>
-    </dl>
-</div>
+         <dt class="col-sm-2">Bairro</dt> 
+         <dd class="col-sm-10">@Html.DisplayFor(model => model.Bairro)</dd> 
 
-<div class="mt-4 mb-5">
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning btn-lg">Editar</a> |
-    <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a>
-</div>
+         <dt class="col-sm-2">Localidade</dt> 
+         <dd class="col-sm-10"> 
+             @Html.DisplayFor(model => model.Cidade) / @Html.DisplayFor(model => model.Estado) 
+         </dd> 
+
+         <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Cep)</dt> 
+         <dd class="col-sm-10">@Html.DisplayFor(model => model.Cep)</dd> 
+     </dl> 
+ </div> 
+
+ <div class="mt-4 mb-5"> 
+     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning btn-lg">Editar</a> | 
+     <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a> 
+ </div>

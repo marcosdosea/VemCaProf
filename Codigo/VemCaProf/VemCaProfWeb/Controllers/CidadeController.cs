@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Core.DTO;
 using Core.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers;
-
+[Authorize(Roles = "Admin")]
 public class CidadeController : Controller
 {
     private readonly ICidadeService _cidadeService;
@@ -68,6 +69,7 @@ public class CidadeController : Controller
     }
 
     // GET: Cidade/Create
+    [Authorize]
     public IActionResult Create()
     {
         return View();
@@ -76,6 +78,7 @@ public class CidadeController : Controller
     // POST: Cidade/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize]
     public IActionResult Create([Bind("Nome,Estado")] CidadeModel cidadeModel)
     {
         if (!ModelState.IsValid)
