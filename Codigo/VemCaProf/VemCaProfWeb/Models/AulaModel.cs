@@ -16,11 +16,43 @@ public class AulaModel
     public DateTime DataHorarioFinal { get; set; }
 
     [Required(ErrorMessage = "Descrição é obrigatório")]
-    [StringLength(100, MinimumLength = 2, ErrorMessage = "Descrição deve ter entre 2 e 100 caracteres")]
     [Display(Name = "Descrição")]
     public string Descricao { get; set; } = null!;
 
 
+    [Required(ErrorMessage = "Local é obrigatório")]
+    [Display(Name = "Local")]
+    public string Local { get; set; } = null!;
 
+
+    [Display(Name = "Status")]
+    public string Status { get; set; } = null!;
+
+    [Required(ErrorMessage = "Valor é obrigatório")]
+    [Display(Name = "Valor")]
+    public double Valor { get; set; }
+
+    
+    [Display(Name = "DataHoraPagamento")]
+    public DateTime DataHoraPagamento { get; set; } 
+
+    [Display(Name = "MetodoPagamento")]
+    public string MetodoPagamento { get; set; } = null!;
+
+    [Required(ErrorMessage = "IdDisciplina é obrigatório")]
+    [Display(Name = "IdDisciplina")]
+    public int IdDisciplina { get; set; }
+
+    [Required(ErrorMessage = "IdResponsavel é obrigatório")]
+    [Display(Name = "IdResponsavel")]
+    public int IdResponsavel { get; set; }
+
+    [Required(ErrorMessage = "IdAluno é obrigatório")]
+    [Display(Name = "IdAluno")]
+    public int IdAluno { get; set; }
+
+    [Required(ErrorMessage = "IdProfessor é obrigatório")]
+    [Display(Name = "IdProfessor")]
+    public int IdProfessor { get; set; }
 
 }

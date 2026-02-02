@@ -264,7 +264,7 @@ namespace VemCaProfWebTests.Controllers
                 Cpf = "12345678900",
                 AlunoDeMenor = true,
                 Atipico = false,
-                ResponsavelId = 10, 
+                IdResponsavel = 10, 
                 IdCidade = null,
 
                 // Campos Obrigatórios de PessoaDTO/Entity

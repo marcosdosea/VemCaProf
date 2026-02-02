@@ -203,7 +203,7 @@ public partial class VemCaProfContext : DbContext
 
             entity.ToTable("Pessoa", "VCP");
 
-            entity.HasIndex(e => e.ResponsavelId, "FK_Pessoa_Responsavel");
+            entity.HasIndex(e => e.IdResponsavel, "FK_Pessoa_Responsavel");
 
             entity.HasIndex(e => e.Cpf, "cpf_UNIQUE").IsUnique();
 
@@ -264,7 +264,7 @@ public partial class VemCaProfContext : DbContext
                 .HasMaxLength(45)
                 .HasColumnName("numero");
             entity.Property(e => e.QuantidadeDeDependentes).HasColumnName("quantidadeDeDependentes");
-            entity.Property(e => e.ResponsavelId).HasColumnName("responsavelId");
+            entity.Property(e => e.IdResponsavel).HasColumnName("IdResponsavel");
             entity.Property(e => e.Rua)
                 .HasMaxLength(45)
                 .HasColumnName("rua");
@@ -283,7 +283,7 @@ public partial class VemCaProfContext : DbContext
                 .HasConstraintName("fk_Pessoa_Cidade1");
 
             entity.HasOne(d => d.Responsavel).WithMany(p => p.InverseResponsavel)
-                .HasForeignKey(d => d.ResponsavelId)
+                .HasForeignKey(d => d.IdResponsavel)
                 .HasConstraintName("FK_Pessoa_Responsavel");
 
             entity.HasMany(d => d.IdDisciplinas).WithMany(p => p.IdProfessors)

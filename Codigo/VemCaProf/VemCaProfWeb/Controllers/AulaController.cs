@@ -75,13 +75,11 @@ public class AulaController : Controller
 
     // POST: Aula/Create
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Create([Bind(" DataHorarioInicio,DataHorarioFinal,Descricao,Local,Valor,IdDisciplina,IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
+    
+    public IActionResult Create([Bind("DataHorarioInicio,DataHorarioFinal,Descricao,Local,Status,Valor,MetodoPagamento,IdDisciplina" +
+        ",IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
     {
-        if (!ModelState.IsValid)
-        {
-            return View(aulaModel);
-        }
+     
 
         try
         {
@@ -133,18 +131,15 @@ public class AulaController : Controller
 
     // POST: Aula/Edit/5
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Edit(int id, [Bind("Id,DataHorarioInicio,DataHorarioFinal,Descricao,Local,Valor,IdDisciplina,IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
+    
+    public IActionResult Edit(int id, [Bind("Id,DataHorarioInicio,DataHorarioFinal,Descricao,Local,Status,Valor," +
+        "MetodoPagamento,IdDisciplina,IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
     {
         if (id != aulaModel.Id)
         {
             return NotFound();
         }
 
-        if (!ModelState.IsValid)
-        {
-            return View(aulaModel);
-        }
 
         try
         {
@@ -201,7 +196,7 @@ public class AulaController : Controller
 
     // POST: Aula/Delete/5
     [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
+  
     public IActionResult DeleteConfirmed(int id)
     {
         try

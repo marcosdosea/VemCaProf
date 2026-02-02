@@ -30,7 +30,7 @@ namespace Core.Mappers
             pessoa.AlunoDeMenor = dto.AlunoDeMenor;
             pessoa.Atipico = dto.Atipico;
             
-            pessoa.ResponsavelId = dto.IdResponsavel;
+            pessoa.IdResponsavel = dto.IdResponsavel;
             
             pessoa.IdCidade = null;
             
@@ -101,7 +101,7 @@ namespace Core.Mappers
             dto.AlunoDeMenor = entity.AlunoDeMenor;
             dto.Atipico = entity.Atipico;
             
-            dto.IdResponsavel = entity.ResponsavelId;
+            dto.IdResponsavel = entity.IdResponsavel;
             
             return dto;
         }

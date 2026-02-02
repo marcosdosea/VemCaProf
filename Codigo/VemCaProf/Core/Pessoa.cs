@@ -55,7 +55,7 @@ public partial class Pessoa
 
     public int? IdCidade { get; set; }
 
-    public int? ResponsavelId { get; set; }
+    public int? IdResponsavel { get; set; }
 
     public virtual ICollection<Aula> AulaIdAlunoNavigations { get; set; } = new List<Aula>();
 

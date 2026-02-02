@@ -119,6 +119,7 @@ public class AulaService : IAulaService
 
             aulaDto.Status = StatusEnum.AguardandoPagamento;
 
+
             if (aulaDto.Valor <= 0)
                 throw new ServiceException("Valor maior que 0");
 
@@ -142,6 +143,7 @@ public class AulaService : IAulaService
                 Local = local,
                 Status = aulaDto.Status,
                 Valor = aulaDto.Valor,
+                MetodoPagamento=aulaDto.MetodoPagamento,
                 IdDisciplina = aulaDto.IdDisciplina,
                 IdResponsavel = aulaDto.IdResponsavel,
                 IdAluno = aulaDto.IdAluno,
@@ -212,8 +214,10 @@ public class AulaService : IAulaService
                 DataHorarioInicio = aulaDto.DataHorarioInicio,
                 DataHorarioFinal = aulaDto.DataHorarioFinal,
                 Descricao = descricao,
+                Status= aulaDto.Status,
                 Local = local,
                 Valor = aulaDto.Valor,
+                MetodoPagamento=aulaDto.MetodoPagamento,
                 IdDisciplina = aulaDto.IdDisciplina,
                 IdResponsavel = aulaDto.IdResponsavel,
                 IdAluno = aulaDto.IdAluno,

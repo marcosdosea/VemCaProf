@@ -30,6 +30,9 @@
                 @Html.DisplayNameFor(model => model.Local)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Valor)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
@@ -37,6 +40,18 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.MetodoPagamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdDisciplina)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdResponsavel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdAluno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdProfessor)
             </th>
             <th></th>
         </tr>
@@ -69,6 +84,19 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.MetodoPagamento)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdDisciplina)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdResponsavel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdAluno)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdProfessor)
+                </td>
+
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

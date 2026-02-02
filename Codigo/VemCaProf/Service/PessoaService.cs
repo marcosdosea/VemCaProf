@@ -170,7 +170,7 @@ namespace Service
             pessoaExistente.AlunoDeMenor = dto.AlunoDeMenor;
             pessoaExistente.Atipico = dto.Atipico;
             
-            pessoaExistente.ResponsavelId = dto.IdResponsavel;
+            pessoaExistente.IdResponsavel = dto.IdResponsavel;
 
             if (!string.IsNullOrEmpty(dto.Senha))
             {
