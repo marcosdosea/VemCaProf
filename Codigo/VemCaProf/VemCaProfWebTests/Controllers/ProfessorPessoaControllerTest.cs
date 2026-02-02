@@ -3,12 +3,14 @@ using Core;
 using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Moq;
 using VemCaProfWeb.Controllers;
 using VemCaProfWeb.Mappers;
 using VemCaProfWeb.Models;
+using VemCaProfWeb.Areas.Identity.Data; 
 
 namespace VemCaProfWebTests.Controllers
 {
@@ -18,6 +20,8 @@ namespace VemCaProfWebTests.Controllers
         private ProfessorPessoaController _controller = null!;
         private Mock<IPessoaService> _mockPessoaService = null!;
         private Mock<ICidadeService> _mockCidadeService = null!;
+        private Mock<UserManager<Usuario>> _mockUserManager = null!; 
+        private readonly string _fakeGuid = Guid.NewGuid().ToString(); 
 
         [TestInitialize]
         public void Initialize()
@@ -26,6 +30,9 @@ namespace VemCaProfWebTests.Controllers
             _mockPessoaService = new Mock<IPessoaService>();
             _mockCidadeService = new Mock<ICidadeService>();
             
+            var store = new Mock<IUserStore<Usuario>>();
+            _mockUserManager = new Mock<UserManager<Usuario>>(store.Object, null!, null!, null!, null!, null!, null!, null!, null!);
+
             // Configuração Real do AutoMapper
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new PessoaProfile())).CreateMapper();
@@ -48,8 +55,10 @@ namespace VemCaProfWebTests.Controllers
                 .Verifiable();
             _mockPessoaService.Setup(s => s.Delete(It.IsAny<int>()))
                 .Verifiable();
+            _mockUserManager.Setup(m => m.IsInRoleAsync(It.IsAny<Usuario>(), "Professor"))
+                .ReturnsAsync(true);
 
-            _controller = new ProfessorPessoaController(_mockPessoaService.Object, _mockCidadeService.Object, mapper);
+            _controller = new ProfessorPessoaController(_mockPessoaService.Object, _mockCidadeService.Object, mapper, _mockUserManager.Object);
         }
 
         [TestMethod]
@@ -97,12 +106,18 @@ namespace VemCaProfWebTests.Controllers
         public void CreateTest_Get_Valido()
         {
             // Act
-            var result = _controller.Create();
+            var result = _controller.Create(_fakeGuid, "prof@teste.com");
 
             //Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
+
+            // Verifica se o Model foi preenchido com os dados do Identity
+            var model = viewResult.Model as ProfessorPessoaModel;
+            Assert.IsNotNull(model);
+            Assert.AreEqual(_fakeGuid, model.IdUsuario);
+            Assert.AreEqual("prof@teste.com", model.Email);
 
             Assert.IsNotNull(viewResult.ViewData["ListaDeCidades"]);
             Assert.IsInstanceOfType(viewResult.ViewData["ListaDeCidades"], typeof(SelectList));
@@ -142,38 +157,41 @@ namespace VemCaProfWebTests.Controllers
         }
 
         [TestMethod]
-        public void CreateTest_Post_ArquivoMuitoGrande_LancaExcecao()
+        public void CreateTest_Post_ArquivoMuitoGrande_NaoDeveSalvar()
         {
             // Arrange
             var model = GetNewProfessorModel();
-            var mockFile = CreateMockFile("grande.pdf", 70000); 
+            var mockFile = CreateMockFile("grande.pdf", 70000); // 70KB > 60KB
 
             // Act
-            Action act = () => _controller.Create(model, mockFile, null);
-            var ex = Assert.ThrowsException<InvalidOperationException>(act);
+            var result = _controller.Create(model, mockFile, null);
 
-            //Assert
-            Assert.AreEqual("O arquivo 'grande.pdf' excede o limite de 60KB.", ex.Message);
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.IsFalse(_controller.ModelState.IsValid);
+    
             _mockPessoaService.Verify(s => s.CreateProfessor(It.IsAny<ProfessorPessoaDTO>()), Times.Never);
         }
 
         [TestMethod]
-        public void CreateTest_Post_Invalid_SemSenha()
+        public void CreateTest_Post_Invalid_SemCpf()
         {
             // Arrange
             var model = GetNewProfessorModel();
-            model.Senha = null!; 
+            model.Cpf = ""; 
+
+            _controller.ModelState.AddModelError("Cpf", "Required");
 
             // Act
             var result = _controller.Create(model, null, null);
-            
-            //Assert
+    
+            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
+    
             var viewResult = result as ViewResult;
             Assert.IsNotNull(viewResult);
-
-            Assert.IsTrue(_controller.ModelState.ContainsKey("Senha"));
-            Assert.IsNotNull(viewResult.ViewData["ListaDeCidades"]);
+    
+            _mockPessoaService.Verify(s => s.CreateProfessor(It.IsAny<ProfessorPessoaDTO>()), Times.Never);
         }
 
         [TestMethod]
@@ -200,7 +218,7 @@ namespace VemCaProfWebTests.Controllers
             // Arrange
             var model = GetTargetProfessorModel();
             
-            // Act
+            // Act 
             var result = _controller.Edit(model.Id, model, null, null);
             
             //Assert
@@ -274,15 +292,13 @@ namespace VemCaProfWebTests.Controllers
             return new ProfessorPessoaModel
             {
                 Id = 3,
+                IdUsuario = _fakeGuid, 
                 Nome = "Novo Prof",
                 Sobrenome = "Teste",
                 Cpf = "11111111111",
                 Email = "novo@prof.com",
-                Senha = "123",
                 Libras = false,
-                IdCidade = 100, // ID da cidade de atuação (ProfessorPessoaDTO)
-
-                // Campos Obrigatórios de PessoaDTO (Endereço, etc)
+                IdCidade = 100, 
                 Telefone = "11977777777",
                 Genero = "Feminino",
                 DataNascimento = new DateTime(1985, 5, 5),
@@ -291,7 +307,7 @@ namespace VemCaProfWebTests.Controllers
                 Numero = "123",
                 Complemento = "Casa",
                 Bairro = "Centro",
-                Cidade = "São Paulo", // Cidade do Endereço (String)
+                Cidade = "São Paulo",
                 Estado = "SP"
             };
         }
@@ -301,14 +317,12 @@ namespace VemCaProfWebTests.Controllers
             return new ProfessorPessoaModel
             {
                 Id = 1,
+                IdUsuario = _fakeGuid, 
                 Nome = "Professor Girafales",
                 Sobrenome = "Madruga",
                 Email = "girafales@escola.com",
-                Senha = "", 
                 Libras = true,
-                IdCidade = 100, // ID da cidade de atuação
-
-                // Campos Obrigatórios de PessoaDTO
+                IdCidade = 100,
                 Telefone = "11988888888",
                 Genero = "Masculino",
                 DataNascimento = new DateTime(1980, 1, 1),
@@ -317,7 +331,7 @@ namespace VemCaProfWebTests.Controllers
                 Numero = "10",
                 Complemento = "",
                 Bairro = "Vila Madalena",
-                Cidade = "São Paulo", // Cidade do Endereço
+                Cidade = "São Paulo",
                 Estado = "SP"
             };
         }
@@ -327,15 +341,14 @@ namespace VemCaProfWebTests.Controllers
             return new Pessoa
             {
                 Id = 1,
+                IdUsuario = Guid.NewGuid().ToString(), 
                 Nome = "Professor Girafales",
                 Sobrenome = "Madruga",
                 Email = "girafales@escola.com",
                 Cpf = "12345678900",
                 DescricaoProfessor = "Matemática",
                 Libras = true,
-                IdCidade = 100, // FK da cidade de atuação
-                
-                // Campos Obrigatórios de PessoaDTO/Entity
+                IdCidade = 100,
                 Telefone = "11988888888",
                 Genero = "Masculino",
                 DataNascimento = new DateTime(1980, 1, 1),
@@ -355,16 +368,17 @@ namespace VemCaProfWebTests.Controllers
             {
                 new Pessoa { 
                     Id = 1, 
+                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Professor Girafales", 
                     Sobrenome = "Madruga", 
                     Libras = true, 
                     IdCidade = 100,
-                    // Campos básicos para evitar nulos se a View usar
                     Cidade = "São Paulo",
                     Telefone = "11988888888"
                 },
                 new Pessoa { 
                     Id = 2, 
+                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Professor Xavier", 
                     Sobrenome = "X-Men", 
                     Libras = false, 

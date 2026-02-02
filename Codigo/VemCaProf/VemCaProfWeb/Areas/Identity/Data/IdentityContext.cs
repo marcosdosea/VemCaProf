@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VemCaProfWeb.Areas.Identity.Data;
+using Core;
 
 namespace VemCaProfWeb.Areas.Identity.Data;
 

@@ -11,9 +11,8 @@ namespace VemCaProfWeb.Mappers
         {
 
             CreateMap<Pessoa, ResponsavelPessoaModel>();
-            
-            CreateMap<Pessoa, AlunoPessoaModel>()
-                .ForMember(dest => dest.IdResponsavel, opt => opt.MapFrom(src => src.ResponsavelId));
+
+            CreateMap<Pessoa, AlunoPessoaModel>();
 
             CreateMap<Pessoa, ProfessorPessoaModel>();
             

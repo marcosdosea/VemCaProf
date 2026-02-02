@@ -30,7 +30,7 @@ namespace Core.Mappers
             pessoa.AlunoDeMenor = dto.AlunoDeMenor;
             pessoa.Atipico = dto.Atipico;
             
-            pessoa.ResponsavelId = dto.IdResponsavel;
+            pessoa.ResponsavelId = dto.ResponsavelId;
             
             pessoa.IdCidade = null;
             
@@ -56,6 +56,7 @@ namespace Core.Mappers
             return new Pessoa
             {
                 Id = dto.Id, 
+                IdUsuario = dto.IdUsuario,
                 Nome = dto.Nome,
                 Sobrenome = dto.Sobrenome,
                 Cpf = dto.Cpf,
@@ -101,7 +102,7 @@ namespace Core.Mappers
             dto.AlunoDeMenor = entity.AlunoDeMenor;
             dto.Atipico = entity.Atipico;
             
-            dto.IdResponsavel = entity.ResponsavelId;
+            dto.ResponsavelId = entity.ResponsavelId;
             
             return dto;
         }
@@ -110,10 +111,10 @@ namespace Core.Mappers
         private static void PreencherBase(PessoaDTO dto, Pessoa entity)
         {
             dto.Id = entity.Id;
+            dto.IdUsuario = entity.IdUsuario;
             dto.Nome = entity.Nome;
             dto.Sobrenome = entity.Sobrenome;
             dto.Email = entity.Email;
-            dto.Senha = ""; // Nunca retorna a senha
             dto.Telefone = entity.Telefone;
             dto.Genero = entity.Genero;
             dto.DataNascimento = entity.DataNascimento;

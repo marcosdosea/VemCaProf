@@ -2,22 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWeb.Areas.Identity.Pages.Account
@@ -30,13 +23,15 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<Usuario> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public RegisterModel(
             UserManager<Usuario> userManager,
             IUserStore<Usuario> userStore,
             SignInManager<Usuario> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +39,7 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager; 
         }
 
         /// <summary>
@@ -98,6 +94,10 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+            
+            [Required(ErrorMessage = "Por favor, selecione um perfil.")]
+            [Display(Name = "Tipo de Usuário")]
+            public string TipoUsuario { get; set; }
         }
 
 
@@ -122,6 +122,17 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    
+                    // ADICIONADO: LÓGICA DE ROLES (AspNetUserRoles)
+
+                    if (!string.IsNullOrEmpty(Input.TipoUsuario))
+                    {
+                        if (!await _roleManager.RoleExistsAsync(Input.TipoUsuario))
+                        {
+                            await _roleManager.CreateAsync(new IdentityRole(Input.TipoUsuario));
+                        }
+                        await _userManager.AddToRoleAsync(user, Input.TipoUsuario);
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -142,7 +153,20 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+
+                        // Redirecionamento baseado no perfil escolhido
+                        string controllerName = Input.TipoUsuario switch
+                        {
+                            "Professor" => "ProfessorPessoa",
+                            "Responsavel" => "ResponsavelPessoa",
+                            "Aluno" => "AlunoPessoa",
+                            _ => "Home"
+                        };
+
+                        return RedirectToAction("Create", controllerName, new { 
+                            IdUsuario = user.Id, 
+                            email = user.Email 
+                        });
                     }
                 }
                 foreach (var error in result.Errors)

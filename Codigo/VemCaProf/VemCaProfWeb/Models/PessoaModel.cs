@@ -8,6 +8,10 @@ namespace VemCaProfWeb.Models
         [Display(Name = "Código")]
         [Key]
         public int Id { get; set; }
+        
+        // Adicione esta propriedade ao seu PessoaModel.cs
+        [Display(Name = "ID do Usuário")]
+        public string? IdUsuario { get; set; }
 
         [Required(ErrorMessage = "O nome é obrigatório")]
         [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres")]
@@ -26,11 +30,7 @@ namespace VemCaProfWeb.Models
         [EmailAddress(ErrorMessage = "Digite um e-mail válido")]
         [Display(Name = "E-mail")]
         public string Email { get; set; } = null!;
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Senha")]
-        public string Senha { get; set; } = null!;
-
+        
         // Endereço e outros campos comuns...
         [Required(ErrorMessage = "O telefone é obrigatório")]
         [StringLength(20,ErrorMessage = "O telefone deve ter no máximo 20 caracteres")]
