@@ -5,7 +5,10 @@ namespace VemCaProfWeb.Models;
 
 public class AlunoPessoaModel : PessoaModel
 {
+    
+    [Display(Name = "Responsável")]
     public int? IdResponsavel { get; set; }
+    
     public IEnumerable<SelectListItem> ListaResponsaveis { get; set; }
         = Enumerable.Empty<SelectListItem>();
     
@@ -14,4 +17,5 @@ public class AlunoPessoaModel : PessoaModel
     
     [Display(Name = "Aluno Atípico?")]
     public bool Atipico { get; set; }
+    
 }

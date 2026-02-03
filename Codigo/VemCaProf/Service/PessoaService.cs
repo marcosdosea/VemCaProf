@@ -1,9 +1,8 @@
 using Core;
 using Core.DTO;
-using Core.Mappers; 
+using Core.Mappers;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace Service
 {
@@ -27,11 +26,9 @@ namespace Service
         {
             var pessoa = PessoaMapper.ToEntity(dto);
 
-            pessoa.Senha = dto.Senha;
 
             _context.Pessoas.Add(pessoa);
             _context.SaveChanges();
-            
         }
 
         /// <summary>
@@ -49,11 +46,14 @@ namespace Service
                 throw new ServiceException("Professor não encontrado.");
 
             // Atualização manual simples
+            if (!string.IsNullOrEmpty(dto.IdUsuario))
+            {
+                pessoaExistente.IdUsuario = dto.IdUsuario;
+            }
             pessoaExistente.Nome = dto.Nome;
             pessoaExistente.Sobrenome = dto.Sobrenome;
             pessoaExistente.Cpf = dto.Cpf;
             pessoaExistente.Email = dto.Email;
-            pessoaExistente.Senha = dto.Senha;
             pessoaExistente.Telefone = dto.Telefone;
             pessoaExistente.Genero = dto.Genero;
             
@@ -75,12 +75,6 @@ namespace Service
             if (dto.Diploma != null) pessoaExistente.Diploma = dto.Diploma;
             if (dto.FotoPerfil != null) pessoaExistente.FotoPerfil = dto.FotoPerfil;
 
-            // Senha (só altera se o usuário digitou algo novo)
-            if (!string.IsNullOrEmpty(dto.Senha))
-            {
-                pessoaExistente.Senha = dto.Senha;
-            }
-
             _context.Update(pessoaExistente);
             _context.SaveChanges();
         }
@@ -94,7 +88,7 @@ namespace Service
         {
             var pessoa =  _context.Pessoas.FirstOrDefault(p => p.Id == id) 
                 ?? throw new ServiceException("Professor não encontrado.");
-            pessoa.Senha = "";
+            
             return pessoa;
         }
 
@@ -131,7 +125,7 @@ namespace Service
         public void CreateAluno(AlunoPessoaDTO dto)
         {
             var pessoa = PessoaMapper.ToEntity(dto);
-            pessoa.Senha = dto.Senha;
+            
 
             _context.Pessoas.Add(pessoa);
             _context.SaveChanges();
@@ -149,11 +143,14 @@ namespace Service
             if (pessoaExistente == null) throw new ServiceException("Aluno não encontrado.");
 
             // Atualização manual simples
+            if (!string.IsNullOrEmpty(dto.IdUsuario))
+            {
+                pessoaExistente.IdUsuario = dto.IdUsuario;
+            }
             pessoaExistente.Nome = dto.Nome;
             pessoaExistente.Sobrenome = dto.Sobrenome;
             pessoaExistente.Cpf = dto.Cpf;
             pessoaExistente.Email = dto.Email;
-            pessoaExistente.Senha = dto.Senha;
             pessoaExistente.Telefone = dto.Telefone;
             pessoaExistente.Genero = dto.Genero;
             
@@ -170,12 +167,7 @@ namespace Service
             pessoaExistente.AlunoDeMenor = dto.AlunoDeMenor;
             pessoaExistente.Atipico = dto.Atipico;
             
-            pessoaExistente.ResponsavelId = dto.IdResponsavel;
-
-            if (!string.IsNullOrEmpty(dto.Senha))
-            {
-                pessoaExistente.Senha = dto.Senha;
-            }
+            pessoaExistente.ResponsavelId = dto.ResponsavelId;
 
             _context.Update(pessoaExistente);
             _context.SaveChanges();
@@ -185,7 +177,7 @@ namespace Service
         {
             var pessoa =  _context.Pessoas.FirstOrDefault(p => p.Id == id)
                 ?? throw new ServiceException("Aluno não encontrado.");
-            pessoa.Senha = "";
+            
             return pessoa;
         }
 
@@ -195,7 +187,6 @@ namespace Service
             return _context.Pessoas
                 .AsNoTracking()
                 .Where(p => p.AlunoDeMenor != null);
-            
         }
 
         public IEnumerable<Pessoa> GetAlunosByNome(string nome)
@@ -210,7 +201,6 @@ namespace Service
         public void CreateResponsavel(ResponsavelPessoaDTO dto)
         {
             var pessoa = PessoaMapper.ToEntity(dto);
-            pessoa.Senha = dto.Senha;
 
             _context.Pessoas.Add(pessoa);
             _context.SaveChanges();
@@ -224,11 +214,14 @@ namespace Service
             if (pessoaExistente == null) throw new ServiceException("Responsável não encontrado.");
             
             // Atualização manual simples
+            if (!string.IsNullOrEmpty(dto.IdUsuario))
+            {
+                pessoaExistente.IdUsuario = dto.IdUsuario;
+            }
             pessoaExistente.Nome = dto.Nome;
             pessoaExistente.Sobrenome = dto.Sobrenome;
             pessoaExistente.Cpf = dto.Cpf;
             pessoaExistente.Email = dto.Email;
-            pessoaExistente.Senha = dto.Senha;
             pessoaExistente.Telefone = dto.Telefone;
             pessoaExistente.Genero = dto.Genero;
             
@@ -242,9 +235,6 @@ namespace Service
             pessoaExistente.Estado = dto.Estado;
             
             pessoaExistente.QuantidadeDeDependentes = dto.QuantidadeDeDependentes;
-            
-            if(!string.IsNullOrEmpty(dto.Senha))
-                pessoaExistente.Senha = dto.Senha;
 
             _context.Update(pessoaExistente);
             _context.SaveChanges();
@@ -254,7 +244,7 @@ namespace Service
         {
              var pessoa =  _context.Pessoas.Find(id) 
                     ?? throw new ServiceException("Responsável não encontrado.");
-             pessoa.Senha = "";
+             
              return pessoa;
         }
 
@@ -280,7 +270,6 @@ namespace Service
         
         public void Delete(int id)
         {
-            
                 var pessoa = _context.Pessoas.Find(id);
                 if (pessoa != null)
                 {

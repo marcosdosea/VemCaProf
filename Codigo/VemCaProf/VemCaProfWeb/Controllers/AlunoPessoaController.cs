@@ -1,24 +1,29 @@
 using AutoMapper;
 using Core.DTO;
 using Core.Service;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using VemCaProfWeb.Areas.Identity.Data;
 using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers;
 
+[Authorize(Roles = "Admin,Aluno")] 
 public class AlunoPessoaController : Controller
 {
     IPessoaService _pessoaService;
     IMapper _mapper;
+    UserManager<Usuario> _userManager;
 
-    public AlunoPessoaController(IPessoaService pessoaService, IMapper mapper)
+    public AlunoPessoaController(IPessoaService pessoaService, IMapper mapper, UserManager<Usuario> userManager)
     {
         _pessoaService = pessoaService;
         _mapper = mapper;
+        _userManager = userManager;
     }
 
-    // GET : Aluno
     public ActionResult Index()
     {
         var listaEntities = _pessoaService.GetAllAlunos();
@@ -26,56 +31,50 @@ public class AlunoPessoaController : Controller
         return View(listaModels);
     }
 
-    // GET: Aluno/Details/5
     public ActionResult Details(int id)
     {
         var entity = _pessoaService.GetAluno(id);
         var alunoModel = _mapper.Map<AlunoPessoaModel>(entity);
         return View(alunoModel);
     }
-
-    // GET: Aluno/Create
-    public ActionResult Create()
+    [Authorize] 
+    public ActionResult Create(string IdUsuario, string email)
     {
+        if (string.IsNullOrEmpty(IdUsuario)) return RedirectToAction("Index", "Home");
+        var model = new AlunoPessoaModel
+        {
+            IdUsuario =  IdUsuario,
+            Email = email
+        };
         CarregarResponsaveis();
-        return View();
+        return View(model);
     }
 
-    // POST: Aluno/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize]
     public ActionResult Create(AlunoPessoaModel alunoModel)
     {
         if (ModelState.IsValid)
         {
-            var dto = _mapper.Map<AlunoPessoaDTO>(alunoModel);
-            _pessoaService.CreateAluno(dto);
-            return RedirectToAction(nameof(Index));
+                // 2. Mapeamos para o DTO
+                var dto = _mapper.Map<AlunoPessoaDTO>(alunoModel);
+                
+                _pessoaService.CreateAluno(dto);
+
+                return RedirectToAction(nameof(Index));
         }
 
         CarregarResponsaveis();
         return View(alunoModel);
     }
 
-    // GET: Aluno/Edit/5
-    public ActionResult Edit(int id)
-    {
-        var entity = _pessoaService.GetAluno(id);
-        var alunoModel = _mapper.Map<AlunoPessoaModel>(entity);
-
-        CarregarResponsaveis();
-        return View(alunoModel);
-    }
-
-    // POST: Aluno/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Edit(int id, AlunoPessoaModel alunoModel)
     {
         if (id != alunoModel.Id) return NotFound();
-
-        ModelState.Remove("Senha");
-
+        
         if (ModelState.IsValid)
         {
             var dto = _mapper.Map<AlunoPessoaDTO>(alunoModel);
@@ -87,7 +86,6 @@ public class AlunoPessoaController : Controller
         return View(alunoModel);
     }
 
-    // DELETE
     public ActionResult Delete(int id)
     {
         var entity = _pessoaService.GetAluno(id);
@@ -95,7 +93,6 @@ public class AlunoPessoaController : Controller
         return View(alunoModel);
     }
 
-    // POST: Aluno/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Delete(int id, IFormCollection collection)
@@ -104,17 +101,14 @@ public class AlunoPessoaController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // --- MÉTODO AUXILIAR CARREGAR RESPONSÁVEIS ---
     private void CarregarResponsaveis()
     {
         var lista = _pessoaService.GetAllResponsaveis();
-
         var selectList = lista.Select(p => new
         {
             Id = p.Id,
             NomeExibicao = $"{p.Nome} {p.Sobrenome} (CPF: {p.Cpf})"
         });
-
         ViewBag.ListaResponsaveis = new SelectList(selectList, "Id", "NomeExibicao");
     }
 }

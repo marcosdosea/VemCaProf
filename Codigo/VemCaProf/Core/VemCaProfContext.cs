@@ -212,6 +212,9 @@ public partial class VemCaProfContext : DbContext
             entity.HasIndex(e => e.Id, "id_UNIQUE").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.IdUsuario)
+                .HasMaxLength(255)
+                .HasColumnName("IdUsuario");
             entity.Property(e => e.AlunoDeMenor).HasColumnName("alunoDeMenor");
             entity.Property(e => e.Atipico).HasColumnName("atipico");
             entity.Property(e => e.Bairro)
@@ -268,9 +271,6 @@ public partial class VemCaProfContext : DbContext
             entity.Property(e => e.Rua)
                 .HasMaxLength(45)
                 .HasColumnName("rua");
-            entity.Property(e => e.Senha)
-                .HasMaxLength(45)
-                .HasColumnName("senha");
             entity.Property(e => e.Sobrenome)
                 .HasMaxLength(50)
                 .HasColumnName("sobrenome");

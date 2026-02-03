@@ -1,24 +1,29 @@
 using AutoMapper;
 using Core.DTO;
 using Core.Service;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using VemCaProfWeb.Areas.Identity.Data;
 using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers;
 
+[Authorize(Roles = "Admin,Professor")]
 public class ProfessorPessoaController : Controller
 {
     IPessoaService _pessoaService;
     ICidadeService _cidadeService;
     IMapper _mapper;
+    UserManager<Usuario> _userManager;
 
-
-    public ProfessorPessoaController(IPessoaService pessoaService, ICidadeService cidadeService, IMapper mapper)
+    public ProfessorPessoaController(IPessoaService pessoaService, ICidadeService cidadeService, IMapper mapper, UserManager<Usuario> userManager)
     {
         _pessoaService = pessoaService;
         _cidadeService = cidadeService;
         _mapper = mapper;
+        _userManager = userManager;
     }
 
     // GET: Professor
@@ -38,37 +43,46 @@ public class ProfessorPessoaController : Controller
     }
 
     // GET: Professor/Create
-    public ActionResult Create()
+    [Authorize]
+    public ActionResult Create(string IdUsuario, string email)
     {
+        if (string.IsNullOrEmpty(IdUsuario)) return RedirectToAction("Index", "Home");
+
+        var model = new ProfessorPessoaModel 
+        { 
+            IdUsuario = IdUsuario, 
+            Email = email 
+        };
         CarregarCidades();
-        return View();
+        return View(model);
     }
 
     // POST: Professor/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize]
     public ActionResult Create(ProfessorPessoaModel professorModel, IFormFile? arquivoDiploma, IFormFile? arquivoFoto)
     {
+        // Validação Manual de Tamanho
+        if (arquivoDiploma != null && arquivoDiploma.Length > 60000)
+            ModelState.AddModelError("arquivoDiploma", "O arquivo 'diploma' excede o limite de 60KB.");
+    
+        if (arquivoFoto != null && arquivoFoto.Length > 60000)
+            ModelState.AddModelError("arquivoFoto", "O arquivo 'foto' excede o limite de 60KB.");
+
         if (ModelState.IsValid)
         {
-            var dto = _mapper.Map<ProfessorPessoaDTO>(professorModel);
+                // 3. Mapear para o DTO e converter arquivos
+                var dto = _mapper.Map<ProfessorPessoaDTO>(professorModel);
+                
+                dto.Diploma = ConvertToBytes(arquivoDiploma);
+                dto.FotoPerfil = ConvertToBytes(arquivoFoto);
 
-            // Converte arquivos para bytes
-            dto.Diploma = ConvertToBytes(arquivoDiploma);
-            dto.FotoPerfil = ConvertToBytes(arquivoFoto);
-
-            // Como é Create, a senha é obrigatória (validada no Model ou aqui manualmente)
-            if (string.IsNullOrEmpty(professorModel.Senha))
-            {
-                ModelState.AddModelError("Senha", "Senha é obrigatória");
-                CarregarCidades();
-                return View(professorModel);
-            }
-
-            dto.Senha = professorModel.Senha;
-
-            _pessoaService.CreateProfessor(dto);
-            return RedirectToAction(nameof(Index));
+                // 4. Salvar no banco de negócio SEM o ID do Identity
+                // Isso respeita sua tabela original
+                _pessoaService.CreateProfessor(dto);
+                
+                return RedirectToAction(nameof(Index));
         }
 
         CarregarCidades();
@@ -91,9 +105,7 @@ public class ProfessorPessoaController : Controller
         IFormFile? arquivoFoto)
     {
         if (id != professorModel.Id) return NotFound();
-
-        ModelState.Remove("Senha");
-
+        
         if (ModelState.IsValid)
         {
             var dto = _mapper.Map<ProfessorPessoaDTO>(professorModel);
@@ -126,26 +138,18 @@ public class ProfessorPessoaController : Controller
     
     private void CarregarCidades()
     {
-        // Busca todas as cidades do banco
         var listaCidades = _cidadeService.GetAll(); 
-        
-        // Cria o SelectList que a View espera
-        // "Id" é o valor que vai pro banco (value)
-        // "Nome" é o texto que aparece pro usuário (text)
         ViewBag.ListaDeCidades = new SelectList(listaCidades, "Id", "Nome");
     }
 
-    // Auxiliar para Arquivos
     private byte[]? ConvertToBytes(IFormFile? file)
     {
         if (file == null) return null;
-
-        // DEFININDO O LIMITE (60KB em bytes)
         const long maxSizeBytes = 60000; 
 
         if (file.Length > maxSizeBytes)
         {
-            throw new InvalidOperationException($"O arquivo '{file.FileName}' excede o limite de 60KB.");
+            return null; // Ou trate com erro no ModelState
         }
 
         using (var ms = new MemoryStream())

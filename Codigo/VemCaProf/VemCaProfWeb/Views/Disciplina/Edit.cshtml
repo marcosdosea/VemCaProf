@@ -17,7 +17,7 @@
 
             <div class="card mb-3 border-warning">
                 <div class="card-body">
-                    
+
                     <div class="form-group mb-3">
                         <label asp-for="Nome" class="control-label"></label>
                         <input asp-for="Nome" class="form-control" />
@@ -31,11 +31,31 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label asp-for="Nivel" class="control-label"></label>
-                        <input asp-for="Nivel" class="form-control" />
+                        <label asp-for="Nivel" class="control-label fw-bold mb-2">Nível de Ensino</label>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Nivel" value="F1" id="NivelF1">
+                            <label class="form-check-label" for="NivelF1">
+                                Ensino Fundamental Menor (1º ao 5º ano)
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Nivel" value="F2" id="NivelF2">
+                            <label class="form-check-label" for="NivelF2">
+                                Ensino Fundamental Maior (6º ao 9º ano)
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" asp-for="Nivel" value="M1" id="NivelM1">
+                            <label class="form-check-label" for="NivelM1">
+                                Ensino Médio
+                            </label>
+                        </div>
+
                         <span asp-validation-for="Nivel" class="text-danger"></span>
                     </div>
-
                 </div>
             </div>
 
@@ -48,5 +68,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

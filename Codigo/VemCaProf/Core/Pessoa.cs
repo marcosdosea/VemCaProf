@@ -6,6 +6,8 @@ namespace Core;
 public partial class Pessoa
 {
     public int Id { get; set; }
+    
+    public string? IdUsuario { get; set; }
 
     public string Nome { get; set; } = null!;
 
@@ -16,9 +18,7 @@ public partial class Pessoa
     public string Email { get; set; } = null!;
 
     public string Telefone { get; set; } = null!;
-
-    public string Senha { get; set; } = null!;
-
+    
     public string Genero { get; set; } = null!;
 
     public DateTime DataNascimento { get; set; }
