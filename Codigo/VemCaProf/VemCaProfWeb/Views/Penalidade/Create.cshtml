@@ -19,12 +19,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DataHorarioInicio" class="control-label"></label>
-                <input asp-for="DataHorarioInicio" class="form-control" />
+                <input asp-for="DataHorarioInicio" type="datetime-local" class="form-control" />
                 <span asp-validation-for="DataHorarioInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DataHoraFim" class="control-label"></label>
-                <input asp-for="DataHoraFim" class="form-control" />
+                <input asp-for="DataHoraFim" type="datetime-local" class="form-control" />
                 <span asp-validation-for="DataHoraFim" class="text-danger"></span>
             </div>
             <div class="form-group">
