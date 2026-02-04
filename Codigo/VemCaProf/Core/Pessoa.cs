@@ -7,8 +7,6 @@ public partial class Pessoa
 {
     public int Id { get; set; }
     
-    public string? IdUsuario { get; set; }
-
     public string Nome { get; set; } = null!;
 
     public string Sobrenome { get; set; } = null!;
@@ -56,6 +54,13 @@ public partial class Pessoa
     public int? IdCidade { get; set; }
 
     public int? ResponsavelId { get; set; }
+    
+    /// <summary>
+    /// R = Responsavel
+    /// P = Professor
+    /// A = Aluno
+    /// </summary>
+    public string? TipoPessoa { get; set; }
 
     public virtual ICollection<Aula> AulaIdAlunoNavigations { get; set; } = new List<Aula>();
 

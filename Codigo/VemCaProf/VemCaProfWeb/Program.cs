@@ -16,6 +16,7 @@ public class Program
         // 1. SERVIÇOS
         builder.Services.AddControllersWithViews();
         
+        
         // Injeções de Dependência
         builder.Services.AddTransient<IDisciplinaService, DisciplinaService>();
         builder.Services.AddTransient<ICidadeService, CidadeService>();
@@ -41,12 +42,12 @@ public class Program
         builder.Services.AddDbContext<IdentityContext>(options =>
             options.UseMySQL(connectionStringIdentity));
 
-        // --- CONFIGURAÇÃO DO IDENTITY (APENAS UM BLOCO AQUI) ---
+        // Configuração do Identity, das coisas que pode ser aceita por ele!
         builder.Services.AddIdentity<Usuario, IdentityRole>(options => 
             {
                 options.SignIn.RequireConfirmedAccount = false; 
                 options.Password.RequireDigit = false;          
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 4;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;

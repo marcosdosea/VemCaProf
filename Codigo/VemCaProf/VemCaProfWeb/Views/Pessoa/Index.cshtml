@@ -1,0 +1,90 @@
+﻿@model IEnumerable<VemCaProfWeb.Models.PessoaModel>
+
+@{
+    ViewData["Title"] = "Gestão de Usuários";
+    string tipoAtual = ViewBag.TipoAtual as string;
+}
+
+<h1>Gestão de Usuários</h1>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Novo Cadastro
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" asp-action="Create" asp-route-tipo="P">Professor</a></li>
+                <li><a class="dropdown-item" asp-action="Create" asp-route-tipo="A">Aluno</a></li>
+                <li><a class="dropdown-item" asp-action="Create" asp-route-tipo="R">Responsável</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="col-md-6 text-end">
+        <div class="btn-group" role="group">
+            <a asp-action="Index" asp-route-tipo="P" class="btn @(tipoAtual == "P" ? "btn-primary" : "btn-outline-primary")">Professores</a>
+            <a asp-action="Index" asp-route-tipo="A" class="btn @(tipoAtual == "A" ? "btn-success" : "btn-outline-success")">Alunos</a>
+            <a asp-action="Index" asp-route-tipo="R" class="btn @(tipoAtual == "R" ? "btn-warning" : "btn-outline-warning")">Responsáveis</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Todos</a>
+        </div>
+    </div>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>CPF</th>
+            <th>Email</th>
+            <th>Cidade/UF</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted">Nenhum registro encontrado.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Nome @item.Sobrenome
+                    </td>
+                    <td>
+                        @if(item.TipoPessoa == "P") { <span class="badge bg-primary">Professor</span> }
+                        else if(item.TipoPessoa == "A") { <span class="badge bg-success">Aluno</span> }
+                        else if(item.TipoPessoa == "R") { <span class="badge bg-warning text-dark">Responsável</span> }
+                    </td>
+                    <td>@item.Cpf</td>
+                    <td>@item.Email</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.Cidade))
+                        {
+                            <span>@item.Cidade / @item.Estado</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+                        
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
