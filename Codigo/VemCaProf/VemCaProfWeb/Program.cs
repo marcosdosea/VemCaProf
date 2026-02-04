@@ -54,7 +54,14 @@ public class Program
             .AddEntityFrameworkStores<IdentityContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();
-        
+
+        // Registrar policy que permite três papéis
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("CanCreatePenalidade", policy =>
+                policy.RequireRole("Professor", "Responsavel", "Admin"));
+        });
+
         // 3. PIPELINE
         var app = builder.Build();
 
