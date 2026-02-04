@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core;
+using Core.DTO;
 using VemCaProfWeb.Models;
 
 namespace Mappers
