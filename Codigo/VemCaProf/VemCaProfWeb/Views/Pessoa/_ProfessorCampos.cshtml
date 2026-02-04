@@ -1,0 +1,82 @@
+@model VemCaProfWeb.Models.PessoaModel
+
+<div class="p-3 bg-light border rounded">
+    <h4 class="mb-3 text-primary">Perfil Profissional</h4>
+
+    <div class="form-group mb-3">
+        <label asp-for="DescricaoProfessor" class="control-label">Resumo Profissional</label>
+        <textarea asp-for="DescricaoProfessor" class="form-control" rows="3" placeholder="Conte sobre sua experiência, metodologia e disponibilidade..."></textarea>
+        <span asp-validation-for="DescricaoProfessor" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 form-group mb-3">
+            <label class="control-label fw-bold">Cidade de Atuação (Presencial)</label>
+            <select asp-for="IdCidade" class="form-select" asp-items="ViewBag.ListaDeCidades">
+                <option value="">-- Selecione a Cidade --</option>
+            </select>
+            <span asp-validation-for="IdCidade" class="text-danger"></span>
+        </div>
+        
+        <div class="col-md-6 form-group mb-3 d-flex align-items-center">
+            <div class="form-check form-switch mt-4">
+                <input asp-for="Libras" class="form-check-input" type="checkbox" role="switch" id="librasSwitch" />
+                <label class="form-check-label" for="librasSwitch">Atendo em Libras (Língua de Sinais)</label>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Id == 0)
+    {
+        <div class="alert alert-warning mt-2 mb-3">
+            <i class="fa fa-exclamation-circle"></i> <strong>Atenção:</strong> Por segurança, o envio de documentos (Foto e Diploma) só é permitido no momento do cadastro inicial.
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Foto de Perfil</label>
+                <input type="file" name="arquivoFoto" class="form-control" accept="image/*" />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Diploma (Comprovante)</label>
+                <input type="file" name="arquivoDiploma" class="form-control" />
+            </div>
+        </div>
+    }
+
+    <h5 class="mt-4">Disciplinas que Leciona</h5>
+    <div class="card p-3">
+        <div class="row">
+            @if (ViewBag.ListaDeDisciplinas != null)
+            {
+                // Convertemos para SelectList para acessar Text e Value corretamente
+                var disciplinas = ViewBag.ListaDeDisciplinas as SelectList;
+                
+                if(disciplinas != null) {
+                    foreach (var item in disciplinas)
+                    {
+                        // Lógica: Verifica se o ID desta disciplina está na lista do Model
+                        bool isChecked = Model.DisciplinasSelecionadas != null && 
+                                         Model.DisciplinasSelecionadas.Contains(uint.Parse(item.Value));
+
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" 
+                                       name="DisciplinasSelecionadas" 
+                                       value="@item.Value" 
+                                       id="disc_@item.Value"
+                                       @(isChecked ? "checked" : "")>
+                                <label class="form-check-label" for="disc_@item.Value">
+                                    @item.Text
+                                </label>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <p class="text-muted">Nenhuma disciplina cadastrada no sistema.</p>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+@model VemCaProfWeb.Models.PessoaModel
+
+<div class="p-3 bg-light border rounded" style="border-left: 5px solid #ffc107 !important;">
+    <h4 class="mb-3 text-dark">Informações do Responsável</h4>
+
+    <div class="row">
+        <div class="col-md-4 form-group">
+            <label asp-for="QuantidadeDeDependentes" class="control-label">Quantidade de Dependentes</label>
+            <input asp-for="QuantidadeDeDependentes" class="form-control" type="number" min="0" placeholder="0" />
+            <span asp-validation-for="QuantidadeDeDependentes" class="text-danger"></span>
+        </div>
+    </div>
+    
+    <div class="alert alert-info mt-3 mb-0">
+        <i class="fa fa-info-circle"></i> O cadastro de responsável permite gerenciar pagamentos e acompanhar o progresso de múltiplos alunos dependentes.
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@model VemCaProfWeb.Models.PessoaModel
+
+@{
+    ViewData["Title"] = "Excluir Conta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Excluir Conta</h1>
+
+<h3>Tem certeza que deseja excluir este usuário?</h3>
+<div class="alert alert-danger">
+    <strong>Atenção:</strong> Esta ação não pode ser desfeita.
+</div>
+
+<div>
+    <h4>Dados do Usuário</h4>
+    <hr />
+    
+    <dl class="row">
+        <dt class="col-sm-2">Nome</dt>
+        <dd class="col-sm-10">@Model.Nome @Model.Sobrenome</dd>
+
+        <dt class="col-sm-2">CPF</dt>
+        <dd class="col-sm-10">@Model.Cpf</dd>
+
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Email</dd>
+
+        <dt class="col-sm-2">Tipo</dt>
+        <dd class="col-sm-10">
+            @(Model.TipoPessoa == "P" ? "Professor" : (Model.TipoPessoa == "A" ? "Aluno" : "Responsável"))
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        
+        <input type="submit" value="Confirmar Exclusão" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

@@ -33,7 +33,7 @@ public partial class Aula
     /// </summary>
     public string Status { get; set; } = null!;
 
-    public int IdDisciplina { get; set; }
+    public uint IdDisciplina { get; set; }
 
     public int IdResponsavel { get; set; }
 

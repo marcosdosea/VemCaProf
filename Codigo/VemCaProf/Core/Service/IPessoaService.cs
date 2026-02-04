@@ -1,32 +1,26 @@
-using Core.DTO;
-
-namespace Core.Service;
-// Para o output de dados de pessoas (professores, alunos, responsáveis), seria melhor criar os DTOS específicos para cada tipo de pessoa,
-// mas para simplificar, estamos retornando a entidade Pessoa diretamente. Em um cenário real, seria ideal mapear para DTOS apropriados.
-public interface IPessoaService
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace Core.Service
 {
-    // --- PROFESSOR ---
-    void CreateProfessor(ProfessorPessoaDTO dto); 
-    void EditProfessor(ProfessorPessoaDTO dto);
+    public interface IPessoaService
+    {
+        int Create(Pessoa pessoa);
 
-    Pessoa GetProfessor(int id); 
-    IEnumerable<Pessoa> GetAllProfessores();
-    IEnumerable<Pessoa> GetProfessoresByNome(string nome);
+        void Edit(Pessoa pessoa);
 
-    // --- ALUNO ---
-    void CreateAluno(AlunoPessoaDTO dto);
-    void EditAluno(AlunoPessoaDTO dto);
-    Pessoa GetAluno(int id);
-    IEnumerable<Pessoa> GetAllAlunos();
-    IEnumerable<Pessoa> GetAlunosByNome(string nome);
+        void Delete(int id);
 
-    // --- RESPONSÁVEL ---
-    void CreateResponsavel(ResponsavelPessoaDTO dto);
-    void EditResponsavel(ResponsavelPessoaDTO dto);
-    Pessoa GetResponsavel(int id);
-    IEnumerable<Pessoa> GetAllResponsaveis();
-    IEnumerable<Pessoa> GetResponsaveisByNome(string nome);
+        // --- MÉTODOS DE BUSCA ---
 
-
-    void Delete(int id); 
+        Pessoa Get(int id);
+        
+        Pessoa GetByCpf(string cpf);
+        
+        IEnumerable<Pessoa> GetAll();
+        
+        IEnumerable<Pessoa> GetByNome(string nome);
+    }
 }
