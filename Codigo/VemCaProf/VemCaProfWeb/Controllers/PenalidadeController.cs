@@ -63,8 +63,7 @@ namespace VemCaProfWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Professores = new SelectList(_pessoaService.GetAllProfessores(),"Id", "Nome");
-                ViewBag.Professores = new SelectList(_pessoaService.GetAllResponsaveis(), "Id", "Nome");
+              
                 return View(penalidadeM);
             }
             try
