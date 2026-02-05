@@ -1,8 +1,9 @@
 using Core;
 using Core.Service;
+using Mappers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service;
-using Microsoft.AspNetCore.Identity;
 using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWeb;
@@ -26,7 +27,8 @@ public class Program
 
         // AutoMapper
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        
+        builder.Services.AddAutoMapper(typeof(PenalidadeProfile)); 
+
         // Banco de Dados
         var connectionString = builder.Configuration.GetConnectionString("VemCaProfConnection");
         var connectionStringIdentity = builder.Configuration.GetConnectionString("IdentityDatabase") ?? throw new InvalidOperationException("Connection string 'IdentityDatabase' not found.");   

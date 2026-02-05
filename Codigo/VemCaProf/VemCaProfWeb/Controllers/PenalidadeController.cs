@@ -68,7 +68,7 @@ namespace VemCaProfWeb.Controllers
             return View(penalidadeM);
         }
 
-        // GET: Penalidade/Create
+        // POST: Professor/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "CanCreatePenalidade")]

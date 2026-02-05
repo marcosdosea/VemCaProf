@@ -14,10 +14,9 @@ namespace VemCaProfWeb.Models
         public DateTime DataHorarioInicio { get; set; }
 
         [Display(Name = "Data e hora de fim")]
-
-        [DataType(DataType.DateTime,ErrorMessage = "O campo deve apresentar uma data e hora válida")]
+        [DataType(DataType.DateTime, ErrorMessage = "O campo deve apresentar uma data e hora válida")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}", ApplyFormatInEditMode = true)]
-        public DateTime DataHoraFim { get; set; }
+        public DateTime? DataHoraFim { get; set; }   // <- tornar anulável
 
         [Display(Name = "Tipo de penalidade")]
         public string? Tipo { get; set; }
