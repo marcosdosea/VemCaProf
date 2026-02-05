@@ -9,26 +9,20 @@ namespace VemCaProfWeb.Mappers
         public PessoaProfile()
         {
             CreateMap<PessoaModel, Pessoa>()
-                // 1. IDA (Model -> Entity): Usado no Create/Edit
-                // O AutoMapper mapeia Nome, Sobrenome, CPF, etc. automaticamente.
                 
-                // Mapeamento Mágico: Lista de IDs (int) -> Lista de Objetos (Disciplina)
-                // Criamos objetos "Stub" (apenas com ID) para o Entity Framework entender o vínculo
                 .ForMember(dest => dest.IdDisciplinas, opt => opt.MapFrom(src => 
                     src.DisciplinasSelecionadas != null 
                         ? src.DisciplinasSelecionadas.Select(id => new Disciplina { Id = id }).ToList() 
                         : new List<Disciplina>()))
                 
-                // Ignora campos de arquivo (tratamos manualmente no Controller/Service)
+                // Ignora campos de arquivo 
                 .ForMember(dest => dest.Diploma, opt => opt.Ignore())
                 .ForMember(dest => dest.FotoPerfil, opt => opt.Ignore())
                 .ForMember(dest => dest.FotoDocumento, opt => opt.Ignore())
 
-                // 2. VOLTA (Entity -> Model): Usado no Get/Details/Edit(Get)
                 .ReverseMap()
                 
-                // Mapeamento Mágico Reverso: Lista de Objetos (Disciplina) -> Lista de IDs (int)
-                // Isso serve para preencher os Checkboxes na tela de Edição
+                
                 .ForMember(dest => dest.DisciplinasSelecionadas, opt => opt.MapFrom(src => 
                     src.IdDisciplinas.Select(d => d.Id).ToList()));
         }

@@ -151,8 +151,21 @@ namespace Service
                     
                     foreach (var disciplina in pessoaAtualizada.IdDisciplinas)
                     {
-                        _context.Attach(disciplina); 
-                        pessoaOriginal.IdDisciplinas.Add(disciplina);
+                        var disciplinaLocal = _context.Disciplinas
+                            .Local
+                            .FirstOrDefault(d => d.Id == disciplina.Id);
+
+                        if (disciplinaLocal != null)
+                        {
+                            // Se já existe no contexto, usamos a instância local
+                            pessoaOriginal.IdDisciplinas.Add(disciplinaLocal);
+                        }
+                        else
+                        {
+                            // Se não existe, damos o Attach e usamos essa
+                            _context.Attach(disciplina);
+                            pessoaOriginal.IdDisciplinas.Add(disciplina);
+                        }
                     }
                 }
             }

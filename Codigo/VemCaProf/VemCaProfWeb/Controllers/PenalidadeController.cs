@@ -63,8 +63,11 @@ namespace VemCaProfWeb.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Professores = new SelectList(_pessoaService.GetAllProfessores(),"Id", "Nome");
-                ViewBag.Professores = new SelectList(_pessoaService.GetAllResponsaveis(), "Id", "Nome");
+                // Filtra a lista geral para pegar apenas Professores (P) e Responsáveis (R)
+                var todasPessoas = _pessoaService.GetAll();
+        
+                ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+                ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
                 return View(penalidadeM);
             }
             try
@@ -78,8 +81,11 @@ namespace VemCaProfWeb.Controllers
             catch (ServiceException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                ViewBag.Professores = new SelectList(_pessoaService.GetAllProfessores(), "Id", "Nome");
-                ViewBag.Professores = new SelectList(_pessoaService.GetAllResponsaveis(), "Id", "Nome");
+                // Filtra a lista geral para pegar apenas Professores (P) e Responsáveis (R)
+                var todasPessoas = _pessoaService.GetAll();
+        
+                ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+                ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
                 return View(penalidadeM);
             }
             catch (Exception ex)

@@ -95,7 +95,7 @@ namespace VemCaProfWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var cpfLogado = User.Identity.Name;
+            var cpfLogado = User.Identity.Name ?? string.Empty;
             var model = new PessoaModel
             {
                 TipoPessoa = tipo
