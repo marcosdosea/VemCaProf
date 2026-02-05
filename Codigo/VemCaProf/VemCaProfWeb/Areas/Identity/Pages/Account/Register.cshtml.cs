@@ -2,16 +2,23 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using VemCaProfWeb.Areas.Identity.Data;
+using Microsoft.Extensions.Logging;
+using VemCaProfWeb.Areas.Identity.Data; 
 
 namespace VemCaProfWeb.Areas.Identity.Pages.Account
 {
@@ -39,7 +46,7 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _roleManager = roleManager; 
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -61,12 +68,16 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
         /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required]
+            [Display(Name = "CPF")]
+            public string Cpf { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -81,25 +92,25 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "A senha deve ter pelo menos {2} e no máximo {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Senha")]
             public string Password { get; set; }
-
+            
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmar senha")]
+            [Compare("Password", ErrorMessage = "A senha e a confirmação não conferem.")]
             public string ConfirmPassword { get; set; }
+            
             
             [Required(ErrorMessage = "Por favor, selecione um perfil.")]
             [Display(Name = "Tipo de Usuário")]
             public string TipoUsuario { get; set; }
         }
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -111,29 +122,29 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, Input.Cpf, CancellationToken.None);
+                
+                // O Email continua sendo salvo no campo correto de Email
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    
-                    // ADICIONADO: LÓGICA DE ROLES (AspNetUserRoles)
 
+                    // GERENCIAMENTO DE ROLES 
                     if (!string.IsNullOrEmpty(Input.TipoUsuario))
                     {
-                        if (!await _roleManager.RoleExistsAsync(Input.TipoUsuario))
-                        {
-                            await _roleManager.CreateAsync(new IdentityRole(Input.TipoUsuario));
-                        }
                         await _userManager.AddToRoleAsync(user, Input.TipoUsuario);
                     }
 
+                    // Lógica padrão de confirmação de email ...
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -154,28 +165,27 @@ namespace VemCaProfWeb.Areas.Identity.Pages.Account
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
 
-                        // Redirecionamento baseado no perfil escolhido
-                        string controllerName = Input.TipoUsuario switch
+                        // TRADUZ O NOME DA ROLE PARA A SIGLA ("P", "A", "R")
+                        string tipoSigla = Input.TipoUsuario switch
                         {
-                            "Professor" => "ProfessorPessoa",
-                            "Responsavel" => "ResponsavelPessoa",
-                            "Aluno" => "AlunoPessoa",
-                            _ => "Home"
+                            "Professor" => "P",
+                            "Aluno" => "A",
+                            "Responsavel" => "R",
+                            _ => ""
                         };
 
-                        return RedirectToAction("Create", controllerName, new { 
-                            IdUsuario = user.Id, 
-                            email = user.Email 
-                        });
+                        // REDIRECIONA PARA O CONTROLLER 
+                        return RedirectToAction("Create", "Pessoa", new { tipo = tipoSigla });
                     }
                 }
+                
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            // Se algo falhou, reexibe o formulário
             return Page();
         }
 

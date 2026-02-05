@@ -1,0 +1,26 @@
+@model VemCaProfWeb.Models.PessoaModel
+
+<input type="hidden" asp-for="ResponsavelId" />
+
+<div class="p-3 bg-light border rounded" style="border-left: 5px solid #198754 !important;">
+    <h4 class="mb-3 text-success">Informações do Aluno</h4>
+
+    <p class="text-muted small">
+        <i class="fa fa-info-circle"></i> Este aluno será vinculado automaticamente ao seu perfil.
+    </p>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="form-check">
+                <input asp-for="AlunoDeMenor" class="form-check-input" />
+                <label asp-for="AlunoDeMenor" class="form-check-label">Aluno Menor de Idade</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input asp-for="Atipico" class="form-check-input" />
+                <label asp-for="Atipico" class="form-check-label">Aluno Atípico (Necessidades Especiais)</label>
+            </div>
+        </div>
+    </div>
+</div>

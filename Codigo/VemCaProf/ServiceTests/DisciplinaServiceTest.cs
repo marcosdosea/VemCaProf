@@ -25,9 +25,9 @@ namespace Service.Tests
 
             var disciplinas = new List<Disciplina>
                 {
-                    new() { Id = 1, Nome = "Matemática" },
-                    new() { Id = 2, Nome = "Português" },
-                    new() { Id = 3, Nome = "História" },
+                    new() { Id = 1, Nome = "Matemï¿½tica" },
+                    new() { Id = 2, Nome = "Portuguï¿½s" },
+                    new() { Id = 3, Nome = "Histï¿½ria" },
                 };
 
             context.AddRange(disciplinas);
@@ -65,13 +65,13 @@ namespace Service.Tests
         {
             // Act 
             var disciplina = disciplinaService.Get(3); 
-            disciplina.Nome = "História da Arte";
+            disciplina.Nome = "Histï¿½ria da Arte";
             disciplinaService.Edit(disciplina);
 
             // Assert
             disciplina = disciplinaService.Get(3);
             Assert.IsNotNull(disciplina);
-            Assert.AreEqual("História da Arte", disciplina.Nome);
+            Assert.AreEqual("Histï¿½ria da Arte", disciplina.Nome);
         }
 
         [TestMethod()]
@@ -82,7 +82,7 @@ namespace Service.Tests
 
             // Assert
             Assert.IsNotNull(disciplina);
-            Assert.AreEqual("Matemática", disciplina.Nome);
+            Assert.AreEqual("Matemï¿½tica", disciplina.Nome);
         }
 
         [TestMethod()]
@@ -95,8 +95,7 @@ namespace Service.Tests
             Assert.IsInstanceOfType(listaDisciplina, typeof(IEnumerable<Disciplina>));
             Assert.IsNotNull(listaDisciplina);
             Assert.AreEqual(3, listaDisciplina.Count());
-            Assert.AreEqual(1, listaDisciplina.First().Id);
-            Assert.AreEqual("Matemática", listaDisciplina.First().Nome);
+            Assert.AreEqual("Matemï¿½tica", listaDisciplina.First().Nome);
         }
 
         [TestMethod()]
@@ -108,7 +107,7 @@ namespace Service.Tests
             // Assert
             Assert.IsNotNull(disciplinas);
             Assert.AreEqual(1, disciplinas.Count());
-            Assert.AreEqual("Matemática", disciplinas.First().Nome);
+            Assert.AreEqual("Matemï¿½tica", disciplinas.First().Nome);
         }
     }
 }

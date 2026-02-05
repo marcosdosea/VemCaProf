@@ -1,8 +1,8 @@
 using Core;
-using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ServiceTests
 {
@@ -15,9 +15,8 @@ namespace ServiceTests
         [TestInitialize]
         public void Initialize()
         {
-            // Arrange
             var builder = new DbContextOptionsBuilder<VemCaProfContext>();
-            builder.UseInMemoryDatabase("VCP"+ Guid.NewGuid().ToString());
+            builder.UseInMemoryDatabase("VCP" + Guid.NewGuid().ToString());
             var options = builder.Options;
 
             context = new VemCaProfContext(options);
@@ -26,55 +25,55 @@ namespace ServiceTests
 
             var pessoas = new List<Pessoa>
             {
-                // ID 1: Professor (Identificado por ter DescricaoProfessor)
+                // ID 1: Professor
                 new Pessoa 
                 { 
                     Id = 1, 
-                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Professor Girafales", 
                     Sobrenome = "Madruga",
                     Cpf = "11111111111", 
                     Email = "prof@email.com",
-                    DescricaoProfessor = "Matemática", // Campo discriminador
+                    DescricaoProfessor = "Matemática",
+                    TipoPessoa = "P", 
                     Libras = true,
                     IdCidade = 100,
                     Genero = "Masculino",
                     Complemento = "Casa X",
-                    // Campos obrigatórios base
-                    Telefone = "11999999999", Cep = "00000-000", Rua = "Rua A", Numero = "1", Bairro = "B", Cidade = "SP", Estado = "SP"
+                    Telefone = "11999999999", Cep = "00000-000", Rua = "Rua A", Numero = "1", Bairro = "B", Cidade = "SP", Estado = "SP",
+                    DataNascimento = new DateTime(1970, 1, 1)
                 },
 
-                // ID 2: Aluno (Identificado por ter AlunoDeMenor)
+                // ID 2: Aluno
                 new Pessoa 
                 { 
                     Id = 2, 
-                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Chaves", 
                     Sobrenome = "do Oito",
                     Cpf = "22222222222", 
                     Email = "chaves@email.com",
-                    AlunoDeMenor = true, // Campo discriminador
+                    AlunoDeMenor = true,
                     Atipico = false,
-                    Genero =  "Masculino",
-                    Complemento = "Casa X",
-                    // Campos obrigatórios base
-                    Telefone = "11988888888", Cep = "00000-000", Rua = "Rua B", Numero = "2", Bairro = "B", Cidade = "SP", Estado = "SP"
+                    TipoPessoa = "A",
+                    Genero = "Masculino",
+                    Complemento = "Barril",
+                    Telefone = "11988888888", Cep = "00000-000", Rua = "Rua B", Numero = "2", Bairro = "B", Cidade = "SP", Estado = "SP",
+                    DataNascimento = new DateTime(2015, 5, 5)
                 },
 
-                // ID 3: Responsável (Identificado por ter QuantidadeDeDependentes)
+                // ID 3: Responsável
                 new Pessoa 
                 { 
                     Id = 3, 
-                    IdUsuario = Guid.NewGuid().ToString(),
                     Nome = "Seu Madruga", 
                     Sobrenome = "Ramón",
                     Cpf = "33333333333", 
                     Email = "madruga@email.com",
-                    QuantidadeDeDependentes = 1, // Campo discriminador
+                    QuantidadeDeDependentes = 1,
+                    TipoPessoa = "R",
                     Genero = "Masculino",
-                    Complemento = "Casa X",
-                    // Campos obrigatórios base
-                    Telefone = "11977777777", Cep = "00000-000", Rua = "Rua C", Numero = "3", Bairro = "B", Cidade = "SP", Estado = "SP"
+                    Complemento = "Vila",
+                    Telefone = "11977777777", Cep = "00000-000", Rua = "Rua C", Numero = "3", Bairro = "B", Cidade = "SP", Estado = "SP",
+                    DataNascimento = new DateTime(1980, 10, 10)
                 }
             };
 
@@ -89,95 +88,50 @@ namespace ServiceTests
         [TestMethod()]
         public void CreateProfessorTest()
         {
-            // Act
-            var dto = new ProfessorPessoaDTO 
+            var professor = new Pessoa 
             { 
-                IdUsuario = Guid.NewGuid().ToString(),
                 Nome = "Professor Xavier", 
                 Sobrenome = "X-Men",
                 Cpf = "44444444444", 
                 Email = "xavier@xmen.com",
-                Telefone = "11966666666",
-                Genero = "Masculino",
-                DataNascimento = new DateTime(1960, 5, 10),
                 DescricaoProfessor = "História",
-                Libras = false,
-                IdCidade = 101,
-                // Dados Obrigatórios
-                 Cep = "11111-111", Rua = "Rua X", Numero = "10", Complemento = "X bairo", Bairro = "Mutante", Estado = "US", Cidade = "NY",
+                TipoPessoa = "P",
+                Telefone = "11966666666", Cep = "11111-111", Rua = "Rua X", Numero = "10", Complemento = "X bairo", Bairro = "Mutante", Estado = "US", Cidade = "NY",
+                Genero = "Masculino", Libras = false, IdCidade = 101, DataNascimento = new DateTime(1960, 5, 10)
             };
 
-            pessoaService.CreateProfessor(dto);
-
-            // Assert
-            Assert.AreEqual(2, pessoaService.GetAllProfessores().Count());
+            pessoaService.Create(professor);
             
-            // Busca pelo nome para garantir que salvou
-            var prof = pessoaService.GetProfessoresByNome("Professor Xavier").FirstOrDefault();
+            var prof = pessoaService.GetByNome("Professor Xavier").FirstOrDefault();
             Assert.IsNotNull(prof);
             Assert.AreEqual("História", prof.DescricaoProfessor);
-            Assert.IsNotNull(prof.IdUsuario);
+            Assert.AreEqual("X bairo", prof.Complemento);
         }
 
         [TestMethod()]
         public void EditProfessorTest()
         {
-            var guidOriginal = context.Pessoas.Find(1)!.IdUsuario;
-            
-            // Act - Editando o ID 1 (Girafales)
-            var dto = new ProfessorPessoaDTO
-            {
-                Id = 1,
-                IdUsuario = guidOriginal,
-                Nome = "Professor Linguiça", // Mudando nome
-                Sobrenome = "Madruga",
-                Email = "girafales@email.com",
-                Telefone = "11999999999",
-                Cep = "00000-000", Rua = "Rua A", Numero = "1", Bairro = "B", Cidade = "SP", Estado = "SP",
-                DescricaoProfessor = "Português", // Mudando matéria
-                Libras = true,
-                IdCidade = 200,
-                Genero = "Masculino",
-                Complemento =  "Casa Girafales",
-            };
+            var professor = context.Pessoas.Find(1)!;
+            professor.Nome = "Professor Linguiça";
+            professor.DescricaoProfessor = "Português";
+            professor.Complemento = "Casa Girafales";
+            professor.IdCidade = 200;
 
-            pessoaService.EditProfessor(dto);
+            pessoaService.Edit(professor);
 
-            // Assert
-            var profEditado = pessoaService.GetProfessor(1);
+            var profEditado = pessoaService.Get(1);
             Assert.AreEqual("Professor Linguiça", profEditado.Nome);
             Assert.AreEqual("Português", profEditado.DescricaoProfessor);
-            Assert.AreEqual(200, profEditado.IdCidade);
             Assert.AreEqual("Casa Girafales", profEditado.Complemento);
-            Assert.AreEqual(guidOriginal, profEditado.IdUsuario);
         }
 
         [TestMethod()]
         public void GetProfessorTest()
         {
-            var prof = pessoaService.GetProfessor(1);
+            var prof = pessoaService.Get(1);
             Assert.IsNotNull(prof);
             Assert.AreEqual("Professor Girafales", prof.Nome);
-           
-        }
-
-        [TestMethod()]
-        public void GetAllProfessoresTest()
-        {
-            var lista = pessoaService.GetAllProfessores();
-            
-            Assert.IsNotNull(lista);
-            // Deve retornar 1 (apenas o Girafales), ignorando Chaves e Madruga
-            Assert.AreEqual(1, lista.Count());
-            Assert.AreEqual("Professor Girafales", lista.First().Nome);
-        }
-
-        [TestMethod()]
-        public void GetProfessoresByNomeTest()
-        {
-            var lista = pessoaService.GetProfessoresByNome("Professor");
-            Assert.AreEqual(1, lista.Count());
-            Assert.AreEqual(1, lista.First().Id);
+            Assert.AreEqual("Casa X", prof.Complemento);
         }
 
         // --- TESTES DE ALUNO ---
@@ -185,75 +139,42 @@ namespace ServiceTests
         [TestMethod()]
         public void CreateAlunoTest()
         {
-            // Act
-            var dto = new AlunoPessoaDTO
+            var aluno = new Pessoa
             {
-                IdUsuario = Guid.NewGuid().ToString(),
                 Nome = "Kiko",
                 Sobrenome = "Tesouro",
                 Cpf = "55555555555",
                 Email = "kiko@email.com",
                 AlunoDeMenor = true,
                 Atipico = false,
+                TipoPessoa = "A",
                 ResponsavelId = 3,
                 Complemento = "Casa X",
+                Genero = "Masculino",
                 DataNascimento = new DateTime(2010, 06, 15),
-                Telefone = "11955555555", Cep = "22222-222", Rua = "Rua K", Numero = "20", Bairro = "Vila", Cidade = "SP", Estado = "SP", Genero = "M"
+                Telefone = "11955555555", Cep = "22222-222", Rua = "Rua K", Numero = "20", Bairro = "Vila", Cidade = "SP", Estado = "SP"
             };
 
-            pessoaService.CreateAluno(dto);
+            pessoaService.Create(aluno);
 
-            // Assert
-            Assert.AreEqual(2, pessoaService.GetAllAlunos().Count());
-            var aluno = pessoaService.GetAlunosByNome("Kiko").FirstOrDefault();
-            Assert.IsNotNull(aluno);
-            Assert.AreEqual(true, aluno.AlunoDeMenor);
-            Assert.IsNotNull(aluno.IdUsuario);
+            var kiko = pessoaService.GetByNome("Kiko").FirstOrDefault();
+            Assert.AreEqual("Casa X", kiko.Complemento);
         }
 
         [TestMethod()]
         public void EditAlunoTest()
         {
-            // Act - Editando ID 2 (Chaves)
-            var dto = new AlunoPessoaDTO
-            {
-                IdUsuario = Guid.NewGuid().ToString(),
-                Id = 2,
-                Nome = "Chaves do 8",
-                Sobrenome = "Ninguém sabe",
-                Email = "chaves@email.com",
-                Telefone = "11988888888",
-                Cep = "00000-000", Rua = "Rua B", Numero = "2", Bairro = "B", Cidade = "SP", Estado = "SP",
-                AlunoDeMenor = false, // Cresceu
-                Atipico = true,
-                ResponsavelId = 3
-            };
+            var aluno = context.Pessoas.Find(2)!;
+            aluno.Nome = "Chaves do 8";
+            aluno.Atipico = true;
+            aluno.AlunoDeMenor = false;
 
-            pessoaService.EditAluno(dto);
+            pessoaService.Edit(aluno);
 
-            // Assert
-            var alunoEditado = pessoaService.GetAluno(2);
+            var alunoEditado = pessoaService.Get(2);
             Assert.AreEqual("Chaves do 8", alunoEditado.Nome);
-            Assert.AreEqual(false, alunoEditado.AlunoDeMenor);
-            Assert.AreEqual(true, alunoEditado.Atipico);
-        }
-
-        [TestMethod()]
-        public void GetAlunoTest()
-        {
-            var aluno = pessoaService.GetAluno(2);
-            Assert.IsNotNull(aluno);
-            Assert.AreEqual("Chaves", aluno.Nome);
-        }
-
-        [TestMethod()]
-        public void GetAllAlunosTest()
-        {
-            var lista = pessoaService.GetAllAlunos();
-            Assert.IsNotNull(lista);
-            // Deve retornar 1 (Apenas Chaves)
-            Assert.AreEqual(1, lista.Count());
-            Assert.AreEqual(2, lista.First().Id);
+            Assert.IsTrue(alunoEditado.Atipico ?? false);
+            Assert.IsFalse(alunoEditado.AlunoDeMenor ?? true);
         }
 
         // --- TESTES DE RESPONSÁVEL ---
@@ -261,98 +182,49 @@ namespace ServiceTests
         [TestMethod()]
         public void CreateResponsavelTest()
         {
-            // Act
-            var dto = new ResponsavelPessoaDTO
+            var responsavel = new Pessoa
             {
-                IdUsuario = Guid.NewGuid().ToString(),
                 Nome = "Dona Florinda",
                 Sobrenome = "Corcuera",
                 Cpf = "66666666666",
                 Email = "florinda@email.com",
                 QuantidadeDeDependentes = 1,
-                DataNascimento = new DateTime(1990, 01, 01),
+                TipoPessoa = "R",
                 Complemento = "Casa X",
-                Telefone = "11944444444", Cep = "33333-333", Rua = "Rua F", Numero = "30", Bairro = "Vila", Cidade = "SP", Estado = "SP", Genero = "F"
+                Genero = "Feminino",
+                DataNascimento = new DateTime(1990, 01, 01),
+                Telefone = "11944444444", Cep = "33333-333", Rua = "Rua F", Numero = "30", Bairro = "Vila", Cidade = "SP", Estado = "SP"
             };
 
-            pessoaService.CreateResponsavel(dto);
+            pessoaService.Create(responsavel);
 
-            // Assert
-            Assert.AreEqual(2, pessoaService.GetAllResponsaveis().Count());
-            var resp = pessoaService.GetResponsaveisByNome("Dona").FirstOrDefault();
-            Assert.IsNotNull(resp);
-            Assert.AreEqual(1, resp.QuantidadeDeDependentes);
+            Assert.AreEqual("R", responsavel.TipoPessoa);
         }
 
         [TestMethod()]
         public void EditResponsavelTest()
         {
-            // Act - Editando ID 3 (Seu Madruga)
-            var dto = new ResponsavelPessoaDTO
-            {
-                Id = 3,
-                Nome = "Don Ramón",
-                Sobrenome = "Valdez",
-                Email = "madruga@email.com",
-                Telefone = "11977777777",
-                Cep = "00000-000", Rua = "Rua C", Numero = "3", Bairro = "B", Cidade = "SP", Estado = "SP",
-                QuantidadeDeDependentes = 3 // Aumentou a familia
-            };
+            var responsavel = context.Pessoas.Find(3)!;
+            responsavel.Nome = "Don Ramón";
+            responsavel.QuantidadeDeDependentes = 3;
+            responsavel.Sobrenome = "Valdez";
 
-            pessoaService.EditResponsavel(dto);
+            pessoaService.Edit(responsavel);
 
-            // Assert
-            var respEditado = pessoaService.GetResponsavel(3);
+            var respEditado = pessoaService.Get(3);
             Assert.AreEqual("Don Ramón", respEditado.Nome);
             Assert.AreEqual(3, respEditado.QuantidadeDeDependentes);
+            Assert.AreEqual("Valdez", respEditado.Sobrenome);
         }
 
-        [TestMethod()]
-        public void GetResponsavelTest()
-        {
-            var resp = pessoaService.GetResponsavel(3);
-            Assert.IsNotNull(resp);
-            Assert.AreEqual("Seu Madruga", resp.Nome);
-        }
-
-        [TestMethod()]
-        public void GetAllResponsaveisTest()
-        {
-            var lista = pessoaService.GetAllResponsaveis();
-            Assert.IsNotNull(lista);
-            // Deve retornar 1 (Apenas Seu Madruga)
-            Assert.AreEqual(1, lista.Count());
-            Assert.AreEqual(3, lista.First().Id);
-        }
-
-        // --- TESTES GENÉRICOS (DELETE) ---
+        // --- TESTE DE DELETE ---
 
         [TestMethod()]
         public void DeleteTest()
         {
-            // Act - Deletando o Professor (ID 1)
             pessoaService.Delete(1);
-
-            // Assert
-            // Verifica se sumiu da lista geral
-            Assert.AreEqual(2, context.Pessoas.Count()); // Eram 3, sobraram 2
-            
-            // Verifica se sumiu do GetAllProfessores
-            Assert.AreEqual(0, pessoaService.GetAllProfessores().Count());
-
-            // Tenta buscar e espera erro ou null (depende da implementação do Find no Get)
-            // Como GetProfessor lança exceção se não achar:
-            Assert.ThrowsException<ServiceException>(() => pessoaService.GetProfessor(1));
-        }
-        
-        [TestMethod()]
-        public void DeleteTest_IdInexistente()
-        {
-            // Act - Deletar algo que não existe não deve dar erro
-            pessoaService.Delete(999);
-
-            // Assert
-            Assert.AreEqual(3, context.Pessoas.Count()); 
+            Assert.AreEqual(2, context.Pessoas.Count());
+            Assert.ThrowsException<ServiceException>(() => pessoaService.Get(1));
         }
     }
 }

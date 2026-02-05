@@ -4,68 +4,71 @@ namespace VemCaProfWeb.Models
 {
     public class PessoaModel
     {
-        
-        [Display(Name = "Código")]
-        [Key]
         public int Id { get; set; }
         
-        // Adicione esta propriedade ao seu PessoaModel.cs
-        [Display(Name = "ID do Usuário")]
-        public string? IdUsuario { get; set; }
+        [Required(ErrorMessage = "O Nome é obrigatório")]
+        public string? Nome { get; set; }
 
-        [Required(ErrorMessage = "O nome é obrigatório")]
-        [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres")]
-        [Display(Name = "Nome")]
-        public string Nome { get; set; } = null!;
-
-        [Required(ErrorMessage = "O sobrenome é obrigatório")]
-        [Display(Name = "Sobrenome")]
-        public string Sobrenome { get; set; } = null!;
+        [Required(ErrorMessage = "O Sobrenome é obrigatório")]
+        public string? Sobrenome { get; set; }
 
         [Required(ErrorMessage = "O CPF é obrigatório")]
-        [Display(Name = "CPF")]
-        public string Cpf { get; set; } = null!;
+        public string? Cpf { get; set; } 
 
-        [Required(ErrorMessage = "O e-mail é obrigatório")]
-        [EmailAddress(ErrorMessage = "Digite um e-mail válido")]
-        [Display(Name = "E-mail")]
-        public string Email { get; set; } = null!;
-        
-        // Endereço e outros campos comuns...
+        [Required(ErrorMessage = "O email é obrigatório")]
+        [DataType(DataType.EmailAddress)]
+        public string? Email { get; set; }
+
         [Required(ErrorMessage = "O telefone é obrigatório")]
-        [StringLength(20,ErrorMessage = "O telefone deve ter no máximo 20 caracteres")]
-        [Display(Name = "Telefone / WhatsApp")]
+        [DataType(DataType.PhoneNumber)]
         public string? Telefone { get; set; }
         
         [Required(ErrorMessage = "O gênero é obrigatório")]
-        [Display(Name = "Gênero")]
-        public string Genero { get; set; } = null!;
+        public string? Genero { get; set; }
         
         [Required(ErrorMessage = "A data de nascimento é obrigatória")]
-        [Display(Name = "Data de Nascimento")]
+        [DataType(DataType.Date)]
         public DateTime DataNascimento { get; set; }
-    
+
         [Required(ErrorMessage = "O CEP é obrigatório")]
-        [StringLength(8, ErrorMessage = "O CEP deve conter 8 caracteres")]
-        [Display(Name = "CEP")]
-        public string Cep { get; set; } = null!;
+        public string? Cep { get; set; }
         
         [Required(ErrorMessage = "A rua é obrigatória")]
-        public string Rua { get; set; } = null!;
+        public string? Rua { get; set; }
         
         [Required(ErrorMessage = "O número é obrigatório")]
-        public string Numero { get; set; } = null!;
+        public string? Numero { get; set; }
         
         [Required(ErrorMessage = "O complemento é obrigatório")]
-        public string Complemento { get; set; } = null!;
+        public string? Complemento { get; set; }
         
         [Required(ErrorMessage = "O bairro é obrigatório")]
-        public string Bairro { get; set; } = null!;
+        public string? Bairro { get; set; }
         
         [Required(ErrorMessage = "A cidade é obrigatória")]
-        public string Cidade { get; set; } = null!;
+        public string? Cidade { get; set; }
         
         [Required(ErrorMessage = "O estado é obrigatório")]
-        public string Estado { get; set; } = null!;
+        public string? Estado { get; set; }
+
+        public string? TipoPessoa { get; set; } 
+        
+        // --- PROFESSOR ---
+        public string? DescricaoProfessor { get; set; }
+        public bool Libras { get; set; }
+        public int? IdCidade { get; set; } 
+        public List<uint>? DisciplinasSelecionadas { get; set; } = new List<uint>();
+        
+        public byte[]? FotoPerfil { get; set; }
+        public byte[]? Diploma { get; set; }
+        public byte[]? FotoDocumento { get; set; }
+
+        // --- ALUNO ---
+        public bool AlunoDeMenor { get; set; }
+        public bool Atipico { get; set; }
+        public int? ResponsavelId { get; set; } 
+
+        // --- RESPONSÁVEL ---
+        public int? QuantidadeDeDependentes { get; set; }
     }
 }

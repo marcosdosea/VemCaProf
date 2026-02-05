@@ -1,0 +1,107 @@
+@model VemCaProfWeb.Models.PessoaModel
+
+<h4 class="mb-3 text-secondary">Dados Pessoais</h4>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Nome" class="form-label fw-bold"></label>
+        <input asp-for="Nome" class="form-control" placeholder="Primeiro nome" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Sobrenome" class="form-label fw-bold"></label>
+        <input asp-for="Sobrenome" class="form-control" placeholder="Sobrenome completo" />
+        <span asp-validation-for="Sobrenome" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Cpf" class="form-label fw-bold"></label>
+        @if (Model.TipoPessoa == "A")
+        {
+            <input asp-for="Cpf" class="form-control" placeholder="000.000.000-00" />
+        }
+        else
+        {
+            <input asp-for="Cpf" class="form-control bg-light" readonly />
+        }
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Email" class="form-label fw-bold"></label>
+        @if (Model.TipoPessoa == "A")
+        {
+            <input asp-for="Email" class="form-control" placeholder="email@doaluno.com" />
+        }
+        else
+        {
+            <input asp-for="Email" class="form-control bg-light" readonly />
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="Telefone" class="form-label fw-bold"></label>
+        <input asp-for="Telefone" class="form-control" placeholder="(00) 00000-0000" id="telefone" />
+        <span asp-validation-for="Telefone" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="DataNascimento" class="form-label fw-bold">Data de Nascimento</label>
+        <input asp-for="DataNascimento" class="form-control" type="date" />
+        <span asp-validation-for="DataNascimento" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="Genero" class="form-label fw-bold">Gênero</label>
+        <select asp-for="Genero" class="form-select">
+            <option value="">Selecione...</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="O">Outro</option>
+        </select>
+        <span asp-validation-for="Genero" class="text-danger"></span>
+    </div>
+</div>
+
+<h4 class="mb-3 mt-4 text-secondary">Endereço</h4>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <label asp-for="Cep" class="form-label fw-bold">CEP</label>
+        <input asp-for="Cep" class="form-control" placeholder="00000-000" id="cep" />
+        <span asp-validation-for="Cep" class="text-danger"></span>
+    </div>
+    <div class="col-md-7 mb-3">
+        <label asp-for="Rua" class="form-label fw-bold">Logradouro</label>
+        <input asp-for="Rua" class="form-control" />
+        <span asp-validation-for="Rua" class="text-danger"></span>
+    </div>
+    <div class="col-md-2 mb-3">
+        <label asp-for="Numero" class="form-label fw-bold">Nº</label>
+        <input asp-for="Numero" class="form-control" />
+        <span asp-validation-for="Numero" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <label asp-for="Bairro" class="form-label fw-bold"></label>
+        <input asp-for="Bairro" class="form-control" />
+        <span asp-validation-for="Bairro" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="Cidade" class="form-label fw-bold"></label>
+        <input asp-for="Cidade" class="form-control" />
+        <span asp-validation-for="Cidade" class="text-danger"></span>
+    </div>
+    <div class="col-md-2 mb-3">
+        <label asp-for="Estado" class="form-label fw-bold">UF</label>
+        <input asp-for="Estado" class="form-control" maxlength="2" placeholder="EX: SE" />
+        <span asp-validation-for="Estado" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="Complemento" class="form-label fw-bold"></label>
+        <input asp-for="Complemento" class="form-control" placeholder="Apto, Bloco, etc." />
+        <span asp-validation-for="Complemento" class="text-danger"></span>
+    </div>
+</div>
