@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace VemCaProfWeb.Models
 {
@@ -13,10 +14,9 @@ namespace VemCaProfWeb.Models
         public DateTime DataHorarioInicio { get; set; }
 
         [Display(Name = "Data e hora de fim")]
-
-        [DataType(DataType.DateTime,ErrorMessage = "O campo deve apresentar uma data e hora válida")]
+        [DataType(DataType.DateTime, ErrorMessage = "O campo deve apresentar uma data e hora válida")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}", ApplyFormatInEditMode = true)]
-        public DateTime DataHoraFim { get; set; }
+        public DateTime DataHoraFim { get; set; }  
 
         [Display(Name = "Tipo de penalidade")]
         public string? Tipo { get; set; }
@@ -26,11 +26,14 @@ namespace VemCaProfWeb.Models
 
         [Display(Name = "Código do Professor")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        
-        public int IdProfessor { get; set;}
+        public int IdProfessor { get; set; }
 
         [Display(Name = "Código do Responsável")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int IdResponsavel { get; set; }
+
+        // Propriedades para popular selects na view
+        public SelectList? ListaProfessores { get; set; }
+        public SelectList? ListaResponsaveis { get; set; }
     }
 }
