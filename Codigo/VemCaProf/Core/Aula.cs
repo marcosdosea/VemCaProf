@@ -13,7 +13,6 @@ public partial class Aula
 
     public string Descricao { get; set; } = null!;
 
-    
 
     public DateTime DataHoraPagamento { get; set; }
 

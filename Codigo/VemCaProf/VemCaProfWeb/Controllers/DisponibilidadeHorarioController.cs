@@ -23,7 +23,7 @@ public class DisponibilidadeHorarioController : Controller
         _logger = logger;
     }
 
-   
+
     public IActionResult Index()
     {
         try
@@ -72,9 +72,9 @@ public class DisponibilidadeHorarioController : Controller
         return View();
     }
 
-    
+
     [HttpPost]
-   
+
     public IActionResult Create([Bind("Dia,HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
     {
         if (!ModelState.IsValid)
@@ -129,7 +129,7 @@ public class DisponibilidadeHorarioController : Controller
         }
     }
 
-    
+
     [HttpPost]
     public IActionResult Edit(int id, [Bind("Id,Dia,HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
     {
@@ -195,9 +195,9 @@ public class DisponibilidadeHorarioController : Controller
         }
     }
 
-    
+
     [HttpPost, ActionName("Delete")]
-   
+
     public IActionResult DeleteConfirmed(int id)
     {
         try
@@ -219,8 +219,8 @@ public class DisponibilidadeHorarioController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao excluir cidade ID {Id}", id);
-            TempData["ErrorMessage"] = "Erro ao excluir cidade";
+            _logger.LogError(ex, "Erro ao excluir Horario ID {Id}", id);
+            TempData["ErrorMessage"] = "Erro ao excluir Horario";
             return RedirectToAction(nameof(Index));
         }
     }

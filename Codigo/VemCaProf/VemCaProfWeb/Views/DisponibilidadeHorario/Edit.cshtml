@@ -1,4 +1,4 @@
-﻿@model VemCaProfWeb.Models.DisponibilidadeHorarioModel
+﻿@model VemCaProfWeb.Models.AulaModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Editar</h1>
+<h1>Edit</h1>
 
-<h4>Horário</h4>
+<h4>Aula</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -20,19 +20,50 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Dia" class="control-label"></label>
-                <input asp-for="Dia" class="form-control" />
-                <span asp-validation-for="Dia" class="text-danger"></span>
+                <label asp-for="DataHorarioInicio" class="control-label"></label>
+                <input asp-for="DataHorarioInicio" class="form-control" />
+                <span asp-validation-for="DataHorarioInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HorarioInicio" class="control-label"></label>
-                <input asp-for="HorarioInicio" class="form-control" />
-                <span asp-validation-for="HorarioInicio" class="text-danger"></span>
+                <label asp-for="DataHorarioFinal" class="control-label"></label>
+                <input asp-for="DataHorarioFinal" class="form-control" />
+                <span asp-validation-for="DataHorarioFinal" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HorarioFim" class="control-label"></label>
-                <input asp-for="HorarioFim" class="form-control" />
-                <span asp-validation-for="HorarioFim" class="text-danger"></span>
+                <label asp-for="Descricao" class="control-label"></label>
+                <input asp-for="Descricao" class="form-control" />
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Valor" class="control-label"></label>
+                <input asp-for="Valor" class="form-control" />
+                <span asp-validation-for="Valor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetodoPagamento" class="control-label"></label>
+                <input asp-for="MetodoPagamento" class="form-control" />
+                <span asp-validation-for="MetodoPagamento" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" readonly />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdDisciplina" class="control-label"></label>
+                <input asp-for="IdDisciplina" class="form-control" />
+                <span asp-validation-for="IdDisciplina" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdResponsavel" class="control-label"></label>
+                <input asp-for="IdResponsavel" class="form-control" />
+                <span asp-validation-for="IdResponsavel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdAluno" class="control-label"></label>
+                <input asp-for="IdAluno" class="form-control" />
+                <span asp-validation-for="IdAluno" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdProfessor" class="control-label"></label>
@@ -40,16 +71,18 @@
                 <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Salvar" class="btn btn-primary" />
-                <a asp-action="Index">Voltar para lista</a>
-
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
-
-
