@@ -115,14 +115,21 @@ namespace VemCaProfWeb.Controllers
         // GET: PenalidadeController/Edit/5
         public ActionResult Edit(int id)
         {
+            if (id == null) return NotFound();
 
             Penalidade penalidade = _penalidadeService.Get(id);
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
+
+            IEnumerable<Pessoa> listaProfessores = _pessoaService.GetAllProfessores();
+            IEnumerable<Pessoa> listaResponsaveis = _pessoaService.GetAllResponsaveis();
+
+            penalidadeModel.ListaProfessores = new SelectList(listaProfessores, "Id", "Nome", null);
+            penalidadeModel.ListaResponsaveis = new SelectList(listaResponsaveis, "Id", "Nome", null);
             return View(penalidadeModel);
         }
 
 
-        // GET: PenalidadeController/Edit/5
+        // POST: PenalidadeController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id,PenalidadeModel penalidadeModel)
@@ -137,6 +144,11 @@ namespace VemCaProfWeb.Controllers
 
             }
 
+            IEnumerable<Pessoa> listaProfessores = _pessoaService.GetAllProfessores();
+            IEnumerable<Pessoa> listaResponsaveis = _pessoaService.GetAllResponsaveis();
+
+            penalidadeModel.ListaProfessores = new SelectList(listaProfessores, "Id", "Nome", null);
+            penalidadeModel.ListaResponsaveis = new SelectList(listaResponsaveis, "Id", "Nome", null);
             return View(penalidadeModel);
             
 
@@ -145,6 +157,7 @@ namespace VemCaProfWeb.Controllers
         // GET: PenalidadeController/Delete/5
         public ActionResult Delete(int id)
         {
+            if (id == null) return NotFound();
             Penalidade penalidade = _penalidadeService.Get(id);
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
             return View(penalidadeModel);

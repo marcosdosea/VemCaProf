@@ -98,15 +98,31 @@ namespace Service
         /// <param name="penalidadeNova"></param>
         public void Edit(PenalidadeDTO penalidadeNova)
         {
-            if(penalidadeNova.Id == 0)
-                throw new ServiceException("ID da penalidade inválido.");
+            if (penalidadeNova.DataHorarioInicio == default(DateTime))
+                throw new ServiceException("A data é obrigatória");
+
+            if (string.IsNullOrWhiteSpace(penalidadeNova.Descricao))
+                throw new ServiceException("A descrição é obrigatória");
+
+
+            if (_pessoaService.GetProfessor(penalidadeNova.IdProfessor) == null)
+                throw new ServiceException($"Professor de ID {penalidadeNova.IdProfessor} não existe");
+
+            if (_pessoaService.GetResponsavel(penalidadeNova.IdResponsavel) == null)
+                throw new ServiceException($"Responsável de ID {penalidadeNova.IdResponsavel} não existe");
 
             var penalidadeExistente = _context.Penalidades.Find(penalidadeNova.Id);
             if (penalidadeExistente == null)
                 throw new ServiceException("Penalidade não encontrada.");
 
+            penalidadeExistente.DataHorarioInicio = penalidadeNova.DataHorarioInicio;
+            penalidadeExistente.DataHoraFim = penalidadeNova.DataHoraFim;
+            penalidadeExistente.Tipo = penalidadeNova.Tipo;
+            penalidadeExistente.Descricao = penalidadeNova.Descricao;
+            penalidadeExistente.IdProfessor = penalidadeNova.IdProfessor;
+            penalidadeExistente.IdResponsavel = penalidadeNova.IdResponsavel;
             
-            _context.Update(penalidadeNova);
+            _context.Update(penalidadeExistente);
             _context.SaveChanges();
 
         }
