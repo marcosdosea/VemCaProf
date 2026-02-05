@@ -20,7 +20,7 @@ public class AulaModel
     public string Descricao { get; set; } = null!;
 
 
-    
+
 
 
     [Display(Name = "Status")]
@@ -30,16 +30,16 @@ public class AulaModel
     [Display(Name = "Valor")]
     public double Valor { get; set; }
 
-    
+
     [Display(Name = "DataHoraPagamento")]
-    public DateTime DataHoraPagamento { get; set; } 
+    public DateTime DataHoraPagamento { get; set; }
 
     [Display(Name = "MetodoPagamento")]
     public string MetodoPagamento { get; set; } = null!;
 
     [Required(ErrorMessage = "IdDisciplina é obrigatório")]
     [Display(Name = "IdDisciplina")]
-    public uint IdDisciplina { get; set; }
+    public int IdDisciplina { get; set; }
 
     [Required(ErrorMessage = "IdResponsavel é obrigatório")]
     [Display(Name = "IdResponsavel")]
