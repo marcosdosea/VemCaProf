@@ -33,9 +33,20 @@
             <td>@Html.DisplayFor(modelItem => item.DataHorarioInicio)</td>
             <td>@Html.DisplayFor(modelItem => item.DataHoraFim)</td>
             <td>@Html.DisplayFor(modelItem => item.Tipo)</td>
-            <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
-            <td>@Html.DisplayNameFor(model => model.IdProfessor)</td>
-            <td>@Html.DisplayNameFor(model => model.IdResponsavel)</td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.Descricao) && item.Descricao.Length > 50)
+                {
+                    <span>@item.Descricao.Substring(0, 50)...</span>
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.Descricao)
+                }
+            </td>
+
+            @* Mostrar nome do professor/responsável quando disponível *@
+            <td>@(item.IdProfessor.ToString())</td>
+            <td>@(item.IdResponsavel.ToString())</td>
 
             <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

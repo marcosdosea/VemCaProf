@@ -16,12 +16,14 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DataHorarioInicio" class="control-label"></label>
-                <input asp-for="DataHorarioInicio" class="form-control" />
+                <input asp-for="DataHorarioInicio" class="form-control" type="datetime-local"
+                 value="@(Model.DataHorarioInicio == default(System.DateTime) ? string.Empty : Model.DataHorarioInicio.ToString("yyyy-MM-ddTHH:mm"))" />
                 <span asp-validation-for="DataHorarioInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DataHoraFim" class="control-label"></label>
-                <input asp-for="DataHoraFim" class="form-control" />
+                <input asp-for="DataHoraFim" class="form-control" type="datetime-local"
+                       value="@(Model.DataHoraFim.HasValue ? Model.DataHoraFim.Value.ToString("yyyy-MM-ddTHH:mm") : string.Empty)" />
                 <span asp-validation-for="DataHoraFim" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -34,7 +36,16 @@
                 <input asp-for="Descricao" class="form-control" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
-
+            <div class="form-group">
+                <label asp-for="IdProfessor" class="control-label"></label>
+                <select asp-for="IdProfessor" asp-items="@Model.ListaProfessores" class="form-control"></select>
+                <span asp-validation-for="IdProfessor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdResponsavel" class="control-label"></label>
+                <select asp-for="IdResponsavel" asp-items="@Model.ListaResponsaveis" class="form-control"></select>
+                <span asp-validation-for="IdResponsavel" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Salvar Alterações" class="btn btn-warning btn-lg" />
                 <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a>
