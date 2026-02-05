@@ -67,6 +67,36 @@
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
 
+                    @if (item.Status != StatusEnum.Realizada && item.Status != StatusEnum.Cancelada && item.Status != StatusEnum.Confirmada)
+                    {
+                        <span>|</span>
+                        <a href="#" class="text-success" data-bs-toggle="modal" data-bs-target="#modalConfirmar-@item.Id">
+                            Confirmar
+                        </a>
+
+                        <div class="modal fade" id="modalConfirmar-@item.Id" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Confirmar Realização de Aula</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <p>Deseja confirma a aula <strong>@item.Descricao</strong>?</p>
+                                        <p class="small text-muted">Regra: A confirmação só pode ser feita até 2hrs antes do início da aula.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+
+                                        <form asp-action="Confirmar" asp-route-id="@item.Id" method="post">
+                                            <button type="submit" class="btn btn-success">Sim, Confirmar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
                     @if (item.Status != StatusEnum.Realizada && item.Status != StatusEnum.Cancelada)
                     {
                         <span>|</span>

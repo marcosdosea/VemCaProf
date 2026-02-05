@@ -261,7 +261,7 @@ public class AulaService : IAulaService
     /// Cancela Aula
     /// </summary>
     /// <param name="id">id da aula</param>
-    /// <returns></returns>
+    /// <returns>true se for confirmada com sucesso</returns>
     public void CancelarAula(int id)
     {
         var aula = _context.Aulas.Find(id);
@@ -285,8 +285,60 @@ public class AulaService : IAulaService
             throw new ServiceException("Não é possível cancelar aulas de datas passadas.");
         }
 
-        aula.Status = StatusEnum.Cancelada;
+        try 
+        {
+            aula.Status = StatusEnum.Cancelada; 
+            _context.SaveChanges();
+        }
+        catch (ServiceException ex)
+        {
+            throw new ServiceException("Erro interno ao salvar o cancelamento da aula.", ex);
+        }
 
-        _context.SaveChanges();
+    }
+
+    /// <summary>
+    /// Confirma a realização de uma aula
+    /// </summary>
+    /// <param name="id">id da aula</param>
+    public void ConfirmarAula(int id)
+    {
+        var aula = _context.Aulas.Find(id);
+    
+        if (aula == null)
+            throw new ServiceException("Aula não encontrada.");
+    
+        if (aula.Status == StatusEnum.Realizada)
+            throw new ServiceException("Esta aula já foi realizada anteriormente.");
+    
+        if (aula.Status == StatusEnum.Confirmada)
+            throw new ServiceException("Esta aula já está confirmada.");
+    
+        if (aula.Status == StatusEnum.Cancelada)
+            throw new ServiceException("Não é possível confirmar uma aula que foi cancelada. É necessário reativá-la ou agendar uma nova.");
+    
+        if (aula.Status == StatusEnum.AguardandoPagamento || aula.DataHoraPagamento == default(DateTime))
+        {
+            throw new ServiceException("Não é possível confirmar uma aula que está aguardando pagamento. Por favor, verifique o status financeiro primeiro.");
+        }
+        
+        var agora = DateTime.Now;
+        var horarioMinimoParaConfirmar = aula.DataHorarioInicio.AddHours(-2);
+    
+        if (agora < horarioMinimoParaConfirmar)
+        {
+            var tempoRestante = horarioMinimoParaConfirmar - agora;
+            throw new ServiceException($"A confirmação só será permitida a partir das {horarioMinimoParaConfirmar:HH:mm}. (Faltam {tempoRestante.Hours}h {tempoRestante.Minutes}min)");
+        }
+    
+        try 
+        {
+            aula.Status = StatusEnum.Confirmada; 
+            _context.SaveChanges();
+        }
+        catch (ServiceException ex)
+        {
+            throw new ServiceException("Erro interno ao salvar a confirmação da aula.", ex);
+        }
     }
 }

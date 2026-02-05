@@ -30,7 +30,7 @@ public partial class Aula
     /// RE = Realizada
     /// PG = Paga
     /// AP = Aguardando Pagamento
-    /// CE = Cancelada
+    /// CA = Cancelada
     /// CO = Confirmada
     /// 
     /// </summary>
