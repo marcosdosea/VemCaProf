@@ -106,10 +106,12 @@ namespace Service
                 throw new ServiceException("A descrição é obrigatória");
 
 
-            if (_pessoaService.GetProfessor(penalidadeNova.IdProfessor) == null)
+            var professor = _pessoaService.Get(penalidadeNova.IdProfessor);
+            if (professor == null || professor.TipoPessoa != "P")
                 throw new ServiceException($"Professor de ID {penalidadeNova.IdProfessor} não existe");
 
-            if (_pessoaService.GetResponsavel(penalidadeNova.IdResponsavel) == null)
+            var responsavel = _pessoaService.Get(penalidadeNova.IdResponsavel);
+            if (responsavel == null || responsavel.TipoPessoa != "R")
                 throw new ServiceException($"Responsável de ID {penalidadeNova.IdResponsavel} não existe");
 
             var penalidadeExistente = _context.Penalidades.Find(penalidadeNova.Id);

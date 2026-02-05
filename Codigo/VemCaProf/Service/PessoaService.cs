@@ -251,5 +251,23 @@ namespace Service
                 .OrderBy(p => p.Nome)
                 .ToList();
         }
+
+        public IEnumerable<Pessoa> GetAllProfessores()
+        {
+            return _context.Pessoas
+                .AsNoTracking()
+                .Where(p => p.TipoPessoa == "P")
+                .OrderBy(p => p.Nome)
+                .ToList();
+        }
+
+        public IEnumerable<Pessoa> GetAllResponsaveis()
+        {
+            return _context.Pessoas
+                .AsNoTracking()
+                .Where(p => p.TipoPessoa == "R")
+                .OrderBy(p => p.Nome)
+                .ToList();
+        }
     }
 }
