@@ -1,0 +1,61 @@
+﻿@model Core.DTO.AulaDTO
+@using VemCaProfWeb.Helpers
+@using Core.Enums
+
+@{
+    ViewData["Title"] = "Detalhes do Pagamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0">Detalhes do Pagamento</h4>
+        </div>
+
+        <div class="card-body">
+            <dl class="row">
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Id)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Id)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Descricao)</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(m => m.Descricao)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Valor)</dt>
+                <dd class="col-sm-8">R$ @Html.DisplayFor(m => m.Valor)</dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.MetodoPagamento)</dt>
+                <dd class="col-sm-8">
+                    @PagamentoDisplayHelper.MetodoLabel(Model.MetodoPagamento)
+                </dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Status)</dt>
+                <dd class="col-sm-8">
+                    @PagamentoDisplayHelper.StatusLabel(Model.Status)
+                </dd>
+
+                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.DataHoraPagamento)</dt>
+                <dd class="col-sm-8">
+                    @if (Model.Status == StatusEnum.Paga)
+                    {
+                        <span class="badge bg-success">
+                            @Model.DataHoraPagamento.ToString("dd/MM/yyyy HH:mm:ss")
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">Pendente</span>
+                    }
+                </dd>
+
+            </dl>
+        </div>
+
+        <div class="card-footer text-end">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                Voltar para lista
+            </a>
+        </div>
+    </div>
+</div>
