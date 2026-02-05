@@ -202,20 +202,20 @@ public class AulaService : IAulaService
             if (aulaDto.IdProfessor <= 0)
                 throw new ServiceException("campo obrigatório");
 
-            var aula = new Aula
-            {
-                DataHorarioInicio = aulaDto.DataHorarioInicio,
-                DataHorarioFinal = aulaDto.DataHorarioFinal,
-                Descricao = descricao,
-                Status= aulaDto.Status,
+            var aula = _context.Aulas.Find(aulaDto.Id);
+            
+
+                aula.DataHorarioInicio = aulaDto.DataHorarioInicio;
+                aula.DataHorarioFinal = aulaDto.DataHorarioFinal;
+                aula.Descricao = descricao;
+                aula.Status = aulaDto.Status;
                 
-                Valor = aulaDto.Valor,
-                MetodoPagamento=aulaDto.MetodoPagamento,
-                IdDisciplina = aulaDto.IdDisciplina,
-                IdResponsavel = aulaDto.IdResponsavel,
-                IdAluno = aulaDto.IdAluno,
-                IdProfessor = aulaDto.IdProfessor
-            };
+                aula.Valor = aulaDto.Valor;
+                aula.MetodoPagamento = aulaDto.MetodoPagamento;
+                aula.IdDisciplina = aulaDto.IdDisciplina;
+                aula.IdResponsavel = aulaDto.IdResponsavel;
+                aula.IdAluno = aulaDto.IdAluno;
+                aula.IdProfessor = aulaDto.IdProfessor;
 
             _context.Aulas.Update(aula);
             _context.SaveChanges();

@@ -125,6 +125,10 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
             var disponibilidadeHorario = _context.DisponibilidadeHorarios.Find(disponibilidadeHorarioDto.Id);
             if (disponibilidadeHorario == null)
                 return false;
+            disponibilidadeHorario.HorarioInicio = disponibilidadeHorarioDto.HorarioInicio;
+            disponibilidadeHorario.Dia = disponibilidadeHorarioDto.Dia;
+            disponibilidadeHorario.HorarioFim = disponibilidadeHorarioDto.HorarioFim;
+            disponibilidadeHorario.IdProfessor = disponibilidadeHorarioDto.IdProfessor;
 
             _context.DisponibilidadeHorarios.Update(disponibilidadeHorario);
             _context.SaveChanges();
