@@ -2,7 +2,6 @@
 using Core;
 using Core.DTO;
 using Core.Service;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -11,8 +10,6 @@ using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers
 {
-
-    [Authorize(Roles = "Admin,Professor,Responsavel")]
     public class PenalidadeController : Controller
     {
         private readonly IPenalidadeService _penalidadeService;
@@ -54,35 +51,23 @@ namespace VemCaProfWeb.Controllers
         }
 
         // GET: Penalidade/Create
-        [Authorize(Policy = "CanCreatePenalidade")]
         public IActionResult Create()
         {
-            var penalidadeM = new PenalidadeModel();
-
-            IEnumerable<Pessoa> listaProfessores = _pessoaService.GetAllProfessores();
-            IEnumerable<Pessoa> listaResponsaveis = _pessoaService.GetAllResponsaveis();
-
-            penalidadeM.ListaProfessores = new SelectList(listaProfessores, "Id", "Nome",null);
-            penalidadeM.ListaResponsaveis = new SelectList(listaResponsaveis, "Id", "Nome",null);
-
-            return View(penalidadeM);
+            return View();
         }
 
-        // POST: Professor/Create
+        // GET: Penalidade/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "CanCreatePenalidade")]
         public ActionResult Create(PenalidadeModel penalidadeM)
         {
             if (!ModelState.IsValid)
             {
-                // repopular selects antes de retornar a view
-                IEnumerable<Pessoa> listaProfessores = _pessoaService.GetAllProfessores();
-                IEnumerable<Pessoa> listaResponsaveis = _pessoaService.GetAllResponsaveis();
-
-                penalidadeM.ListaProfessores = new SelectList(listaProfessores, "Id", "Nome", null);
-                penalidadeM.ListaResponsaveis = new SelectList(listaResponsaveis, "Id", "Nome", null);
-
+                // Filtra a lista geral para pegar apenas Professores (P) e Responsáveis (R)
+                var todasPessoas = _pessoaService.GetAll();
+        
+                ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+                ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
                 return View(penalidadeM);
             }
             try
@@ -96,12 +81,11 @@ namespace VemCaProfWeb.Controllers
             catch (ServiceException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-
-                IEnumerable<Pessoa> listaProfessores = _pessoaService.GetAllProfessores();
-                IEnumerable<Pessoa> listaResponsaveis = _pessoaService.GetAllResponsaveis();
-
-                penalidadeM.ListaProfessores = new SelectList(listaProfessores, "Id", "Nome", null);
-                penalidadeM.ListaResponsaveis = new SelectList(listaResponsaveis, "Id", "Nome", null);
+                // Filtra a lista geral para pegar apenas Professores (P) e Responsáveis (R)
+                var todasPessoas = _pessoaService.GetAll();
+        
+                ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+                ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
                 return View(penalidadeM);
             }
             catch (Exception ex)
@@ -134,13 +118,10 @@ namespace VemCaProfWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id,PenalidadeModel penalidadeModel)
         {
-            if (id != penalidadeModel.Id) return NotFound();
-
             if (ModelState.IsValid)
             {
                 var penalidade = _mapper.Map<PenalidadeDTO>(penalidadeModel);
                 _penalidadeService.Edit(penalidade);
-                return RedirectToAction(nameof(Index));
 
             }
 

@@ -1,9 +1,8 @@
 using Core;
 using Core.Service;
-using Mappers;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service;
+using Microsoft.AspNetCore.Identity;
 using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWeb;
@@ -28,8 +27,7 @@ public class Program
 
         // AutoMapper
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        builder.Services.AddAutoMapper(typeof(PenalidadeProfile)); 
-
+        
         // Banco de Dados
         var connectionString = builder.Configuration.GetConnectionString("VemCaProfConnection");
         var connectionStringIdentity = builder.Configuration.GetConnectionString("IdentityDatabase") ?? throw new InvalidOperationException("Connection string 'IdentityDatabase' not found.");   
@@ -57,14 +55,7 @@ public class Program
             .AddEntityFrameworkStores<IdentityContext>()
             .AddDefaultTokenProviders()
             .AddDefaultUI();
-
-        // Registrar policy que permite três papéis
-        builder.Services.AddAuthorization(options =>
-        {
-            options.AddPolicy("CanCreatePenalidade", policy =>
-                policy.RequireRole("Professor", "Responsavel", "Admin"));
-        });
-
+        
         // 3. PIPELINE
         var app = builder.Build();
 

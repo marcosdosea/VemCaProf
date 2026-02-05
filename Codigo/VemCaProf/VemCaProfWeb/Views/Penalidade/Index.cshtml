@@ -16,6 +16,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
             <th>@Html.DisplayNameFor(model => model.DataHorarioInicio)</th>
             <th>@Html.DisplayNameFor(model => model.DataHoraFim)</th>
             <th>@Html.DisplayNameFor(model => model.Tipo)</th>
@@ -28,6 +29,7 @@
     <tbody>
     @foreach (var item in Model) {
         <tr>
+            <td>@Html.DisplayFor(modelItem => item.Id)</td>
             <td>@Html.DisplayFor(modelItem => item.DataHorarioInicio)</td>
             <td>@Html.DisplayFor(modelItem => item.DataHoraFim)</td>
             <td>@Html.DisplayFor(modelItem => item.Tipo)</td>
