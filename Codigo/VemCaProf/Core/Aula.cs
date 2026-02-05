@@ -31,6 +31,8 @@ public partial class Aula
     /// RE = Realizada
     /// PG = Paga
     /// AP = Aguardando Pagamento
+    /// CE = Cancelada
+    /// CO = Confirmada
     /// 
     /// </summary>
     public string Status { get; set; } = null!;

@@ -223,4 +223,14 @@ public class AulaController : Controller
             return RedirectToAction(nameof(Index));
         }
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Cancelar(int id)
+    {
+        _aulaService.CancelarAula(id);
+
+        TempData["SuccessMessage"] = "Aula cancelada com sucesso!";
+        return RedirectToAction(nameof(Index));
+    }
 }

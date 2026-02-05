@@ -257,4 +257,37 @@ public class AulaService : IAulaService
             throw new ServiceException($"Erro ao excluir aula ID {id}", ex);
         }
     }
+
+    /// <summary>
+    /// Cancela Aula
+    /// </summary>
+    /// <param name="id">id da aula</param>
+    /// <returns></returns>
+    public void CancelarAula(int id)
+    {
+        var aula = _context.Aulas.Find(id);
+
+        if (aula == null)
+            throw new ServiceException("Aula não encontrada.");
+
+        if (aula.Status == StatusEnum.Realizada)
+            throw new ServiceException("Não é possível cancelar uma aula que já foi realizada.");
+
+        if (aula.Status == StatusEnum.Cancelada)
+            throw new ServiceException("Esta aula já está cancelada.");
+
+        if (aula.DataHorarioInicio.Date == DateTime.Now.Date)
+        {
+            throw new ServiceException("Não é permitido cancelar a aula no dia do agendamento. O cancelamento deve ser feito com antecedência.");
+        }
+
+        if (aula.DataHorarioInicio.Date < DateTime.Now.Date)
+        {
+            throw new ServiceException("Não é possível cancelar aulas de datas passadas.");
+        }
+
+        aula.Status = StatusEnum.Cancelada;
+
+        _context.SaveChanges();
+    }
 }
