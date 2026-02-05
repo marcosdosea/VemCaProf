@@ -15,8 +15,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="DataHorarioInicio" class="control-label"></label>
@@ -40,12 +39,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="IdProfessor" class="control-label"></label>
-                <select asp-for="IdProfessor" asp-items="@Model.ListaProfessores" class="form-control"></select>
+                <input asp-for="IdProfessor" class="form-control" />
                 <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdResponsavel" class="control-label"></label>
-                <select asp-for="IdResponsavel" asp-items="@Model.ListaResponsaveis" class="form-control"></select>
+                <input asp-for="IdResponsavel" class="form-control" />
                 <span asp-validation-for="IdResponsavel" class="text-danger"></span>
             </div>
             <div class="form-group">
