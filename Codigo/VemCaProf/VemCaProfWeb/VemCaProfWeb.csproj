@@ -32,6 +32,24 @@
       <_ContentIncludedByDefault Remove="Views\AlunoPessoa\Details.cshtml" />
       <_ContentIncludedByDefault Remove="Views\AlunoPessoa\Edit.cshtml" />
       <_ContentIncludedByDefault Remove="Views\AlunoPessoa\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ProfessorPessoa\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ProfessorPessoa\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ProfessorPessoa\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ProfessorPessoa\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ProfessorPessoa\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ResponsavelPessoa\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ResponsavelPessoa\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ResponsavelPessoa\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ResponsavelPessoa\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ResponsavelPessoa\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Views\Pessoa\Create.cshtml" />
+      <AdditionalFiles Include="Views\Pessoa\Delete.cshtml" />
+      <AdditionalFiles Include="Views\Pessoa\Details.cshtml" />
+      <AdditionalFiles Include="Views\Pessoa\Edit.cshtml" />
+      <AdditionalFiles Include="Views\Pessoa\Index.cshtml" />
     </ItemGroup>
 
 </Project>

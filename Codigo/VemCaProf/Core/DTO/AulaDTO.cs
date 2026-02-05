@@ -13,7 +13,7 @@ namespace Core.DTO
         public Double Valor { get; set; }
         public DateTime DataHoraPagamento { get; set; }
         public string MetodoPagamento { get; set; } = null!; 
-        public int IdDisciplina { get; set; }
+        public uint IdDisciplina { get; set; }
         public int IdResponsavel { get; set; }
         public int IdAluno { get; set; }
         public int IdProfessor { get; set; }

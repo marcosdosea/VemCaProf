@@ -39,7 +39,7 @@ public class AulaModel
 
     [Required(ErrorMessage = "IdDisciplina é obrigatório")]
     [Display(Name = "IdDisciplina")]
-    public int IdDisciplina { get; set; }
+    public uint IdDisciplina { get; set; }
 
     [Required(ErrorMessage = "IdResponsavel é obrigatório")]
     [Display(Name = "IdResponsavel")]

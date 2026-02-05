@@ -27,7 +27,7 @@ namespace Service
         {
             _context.Disciplinas.Add(disciplina);
             _context.SaveChanges();
-            return (uint)disciplina.Id;
+            return disciplina.Id;
         }
 
         /// <summary>
@@ -36,8 +36,7 @@ namespace Service
         /// <param name="id">id da Disciplina</param>
         public void Delete(uint id)
         {
-            int intId = (int)id;
-            var disciplina = _context.Disciplinas.Find(intId);
+            var disciplina = _context.Disciplinas.Find(id);
             if (disciplina != null)
             {
                 _context.Disciplinas.Remove(disciplina);

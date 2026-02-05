@@ -8,7 +8,7 @@ using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Professor")]
     public class DisciplinaController : Controller
     {
 

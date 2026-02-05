@@ -25,12 +25,12 @@
     <tbody>
         @foreach (var item in Model)
         {
-            string textoNivel = item.Nivel switch
+            string textoNivel = (item.Nivel ?? "") switch
             {
                 "F1" => "Fundamental Menor",
                 "F2" => "Fundamental Maior",
                 "M1" => "Ensino Médio",
-                _ => item.Nivel
+                _ => item.Nivel ?? "Não Definido"
             };
 
             <tr>

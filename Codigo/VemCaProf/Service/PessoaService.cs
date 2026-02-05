@@ -1,8 +1,7 @@
-using Core;
-using Core.DTO;
-using Core.Mappers;
-using Core.Service;
+using Core;          
+using Core.Service; 
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Service
 {
@@ -14,268 +13,243 @@ namespace Service
         {
             _context = context;
         }
-
-        // PROFESSOR
-
+        
         /// <summary>
-        /// Criar um novo professor na base de dados
+        /// Cria uma nova Pessoa.
+        /// O Controller já deve ter preenchido o TipoPessoa ("P", "A" ou "R").
         /// </summary>
-        /// <param name="dto">DTO com dados do professor</param>
-        /// <returns>id do professor criado</returns>
-        public void CreateProfessor(ProfessorPessoaDTO dto)
+        /// <param name="pessoa"> Criação de uma nova pessoa dependente do tipo</param>
+        public int Create(Pessoa pessoa)
         {
-            var pessoa = PessoaMapper.ToEntity(dto);
+            // Regra Geral: CPF Único (Vale para todos)
+            if (_context.Pessoas.AsNoTracking().Any(p => p.Cpf == pessoa.Cpf))
+            {
+                throw new ServiceException("Já existe um usuário cadastrado com este CPF.");
+            }
+            // Unicidade do E-mail
+            if (_context.Pessoas.AsNoTracking().Any(p => p.Email == pessoa.Email))
+            {
+                throw new ServiceException("Este e-mail já está sendo utilizado por outro usuário.");
+            }
 
+            // 2. Validações por Tipo
+            switch (pessoa.TipoPessoa)
+            {
+                case "P": // PROFESSOR
+                    if (string.IsNullOrEmpty(pessoa.DescricaoProfessor))
+                        throw new ServiceException("O perfil de professor exige uma descrição profissional.");
+            
+                    // Tratamento das Disciplinas (N:M)
+                    if (pessoa.IdDisciplinas != null && pessoa.IdDisciplinas.Any())
+                    {
+                        foreach (var disciplina in pessoa.IdDisciplinas)
+                        {
+                            _context.Attach(disciplina);
+                        }
+                    }
+                    break;
+
+                case "A": // ALUNO
+                    // Validação de Vínculo: Aluno precisa de um responsavel
+                    if (pessoa.ResponsavelId == null || pessoa.ResponsavelId <= 0)
+                    {
+                        throw new ServiceException("Um aluno não pode ser cadastrado sem um responsável vinculado.");
+                    }
+
+                    // Busca o Responsavel para validar a cota de dependentes
+                    var responsavel = _context.Pessoas
+                        .AsNoTracking()
+                        .FirstOrDefault(p => p.Id == pessoa.ResponsavelId && p.TipoPessoa == "R");
+
+                    if (responsavel == null)
+                    {
+                        throw new ServiceException("O responsável informado é inválido ou não existe.");
+                    }
+
+                    // Verificação da Cota de Dependentes
+                    int dependentesAtuais = _context.Pessoas
+                        .Count(p => p.ResponsavelId == pessoa.ResponsavelId && p.TipoPessoa == "A");
+
+                    if (dependentesAtuais >= responsavel.QuantidadeDeDependentes)
+                    {
+                        throw new ServiceException($"Limite de dependentes atingido ({responsavel.QuantidadeDeDependentes}). Aumente o limite no perfil do responsável.");
+                    }
+                    break;
+
+                case "R": // RESPONSÁVEL
+                    if (pessoa.QuantidadeDeDependentes < 0)
+                        throw new ServiceException("A quantidade de dependentes não pode ser negativa.");
+                    break;
+
+                default:
+                    throw new ServiceException("Tipo de pessoa inválido.");
+            }
 
             _context.Pessoas.Add(pessoa);
             _context.SaveChanges();
+            return pessoa.Id;
         }
 
         /// <summary>
-        /// Editar dados do professor
+        /// Edita uma Pessoa.
+        /// Implementação manual para garantir integridade de Arquivos e Relacionamentos.
         /// </summary>
-        /// <param name="dto">DTO com dados atualizados</param>
-        /// <exception cref="ServiceException">lançada quando não encontrado</exception>
-        public void EditProfessor(ProfessorPessoaDTO dto)
+        /// <param name="pessoaAtualizada"> Os novos atributos de Pessoa</param>
+        public void Edit(Pessoa pessoaAtualizada)
         {
-            if (dto.Id == 0)
-                throw new ServiceException("ID do professor inválido.");
+            var pessoaOriginal = _context.Pessoas
+                .Include(p => p.IdDisciplinas) 
+                .FirstOrDefault(p => p.Id == pessoaAtualizada.Id);
 
-            var pessoaExistente = _context.Pessoas.Find(dto.Id);
-            if (pessoaExistente == null)
-                throw new ServiceException("Professor não encontrado.");
+            if (pessoaOriginal == null)
+                throw new ServiceException("Pessoa não encontrada.");
 
-            // Atualização manual simples
-            if (!string.IsNullOrEmpty(dto.IdUsuario))
-            {
-                pessoaExistente.IdUsuario = dto.IdUsuario;
-            }
-            pessoaExistente.Nome = dto.Nome;
-            pessoaExistente.Sobrenome = dto.Sobrenome;
-            pessoaExistente.Cpf = dto.Cpf;
-            pessoaExistente.Email = dto.Email;
-            pessoaExistente.Telefone = dto.Telefone;
-            pessoaExistente.Genero = dto.Genero;
-            
+            // Atualiza Dados Comuns 
+            pessoaOriginal.Nome = pessoaAtualizada.Nome;
+            pessoaOriginal.Sobrenome = pessoaAtualizada.Sobrenome;
+            pessoaOriginal.Email = pessoaAtualizada.Email;
+            pessoaOriginal.Telefone = pessoaAtualizada.Telefone;
+            pessoaOriginal.Genero = pessoaAtualizada.Genero;
+            pessoaOriginal.DataNascimento = pessoaAtualizada.DataNascimento;
+
             // Endereço
-            pessoaExistente.Cep = dto.Cep;
-            pessoaExistente.Rua = dto.Rua;
-            pessoaExistente.Numero = dto.Numero;
-            pessoaExistente.Bairro = dto.Bairro;
-            pessoaExistente.Complemento = dto.Complemento;
-            pessoaExistente.Cidade = dto.Cidade; 
-            pessoaExistente.Estado = dto.Estado;
+            pessoaOriginal.Cep = pessoaAtualizada.Cep;
+            pessoaOriginal.Rua = pessoaAtualizada.Rua;
+            pessoaOriginal.Numero = pessoaAtualizada.Numero;
+            pessoaOriginal.Complemento = pessoaAtualizada.Complemento;
+            pessoaOriginal.Bairro = pessoaAtualizada.Bairro;
+            pessoaOriginal.Cidade = pessoaAtualizada.Cidade;
+            pessoaOriginal.Estado = pessoaAtualizada.Estado;
+
+            // Proteção de Arquivos (Uploads)
             
-            // Dados específicos
-            pessoaExistente.DescricaoProfessor = dto.DescricaoProfessor;
-            pessoaExistente.Libras = dto.Libras;
-            pessoaExistente.IdCidade = dto.IdCidade;
-
-            // Arquivos (só atualiza se vier novo)
-            if (dto.Diploma != null) pessoaExistente.Diploma = dto.Diploma;
-            if (dto.FotoPerfil != null) pessoaExistente.FotoPerfil = dto.FotoPerfil;
-
-            _context.Update(pessoaExistente);
-            _context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Buscar professor pelo id
-        /// </summary>
-        /// <param name="id">id do professor</param>
-        /// <returns>Entidade Pessoa (Professor)</returns>
-        public Pessoa GetProfessor(int id)
-        {
-            var pessoa =  _context.Pessoas.FirstOrDefault(p => p.Id == id) 
-                ?? throw new ServiceException("Professor não encontrado.");
-            
-            return pessoa;
-        }
-
-        /// <summary>
-        /// Buscar todos os professores
-        /// </summary>
-        /// <returns>lista de professores</returns>
-        public IEnumerable<Pessoa> GetAllProfessores()
-        {
-            // Filtra onde DescricaoProfessor não é nulo (indica que é professor)
-            return _context.Pessoas
-                .AsNoTracking()
-                .Where(p => p.DescricaoProfessor != null);
-        }
-
-        /// <summary>
-        /// Obtém professores pelo nome
-        /// </summary>
-        /// <param name="nome">parte do nome</param>
-        /// <returns>lista de professores filtrada</returns>
-        public IEnumerable<Pessoa> GetProfessoresByNome(string nome)
-        {
-            return _context.Pessoas
-                .AsNoTracking()
-                .Where(p => p.DescricaoProfessor != null && p.Nome.StartsWith(nome));
-        }
-
-        // ALUNO
-
-        /// <summary>
-        /// Criar um novo aluno na base de dados
-        /// </summary>
-        /// <param name="dto">DTO com dados do aluno</param>
-        public void CreateAluno(AlunoPessoaDTO dto)
-        {
-            var pessoa = PessoaMapper.ToEntity(dto);
-            
-
-            _context.Pessoas.Add(pessoa);
-            _context.SaveChanges();
-        }
-
-        /// <summary>
-        /// Editar dados do aluno
-        /// </summary>
-        /// <param name="dto">DTO com dados do aluno</param>
-        public void EditAluno(AlunoPessoaDTO dto)
-        {
-            if (dto.Id == 0) throw new ServiceException("ID inválido.");
-
-            var pessoaExistente = _context.Pessoas.Find(dto.Id);
-            if (pessoaExistente == null) throw new ServiceException("Aluno não encontrado.");
-
-            // Atualização manual simples
-            if (!string.IsNullOrEmpty(dto.IdUsuario))
+            if (pessoaAtualizada.Diploma != null && pessoaAtualizada.Diploma.Length > 0)
             {
-                pessoaExistente.IdUsuario = dto.IdUsuario;
+                pessoaOriginal.Diploma = pessoaAtualizada.Diploma;
             }
-            pessoaExistente.Nome = dto.Nome;
-            pessoaExistente.Sobrenome = dto.Sobrenome;
-            pessoaExistente.Cpf = dto.Cpf;
-            pessoaExistente.Email = dto.Email;
-            pessoaExistente.Telefone = dto.Telefone;
-            pessoaExistente.Genero = dto.Genero;
-            
-            // Endereço
-            pessoaExistente.Cep = dto.Cep;
-            pessoaExistente.Rua = dto.Rua;
-            pessoaExistente.Numero = dto.Numero;
-            pessoaExistente.Bairro = dto.Bairro;
-            pessoaExistente.Complemento = dto.Complemento;
-            pessoaExistente.Cidade = dto.Cidade; 
-            pessoaExistente.Estado = dto.Estado;
-            
-            // Dados específicos
-            pessoaExistente.AlunoDeMenor = dto.AlunoDeMenor;
-            pessoaExistente.Atipico = dto.Atipico;
-            
-            pessoaExistente.ResponsavelId = dto.ResponsavelId;
 
-            _context.Update(pessoaExistente);
-            _context.SaveChanges();
-        }
-
-        public Pessoa GetAluno(int id)
-        {
-            var pessoa =  _context.Pessoas.FirstOrDefault(p => p.Id == id)
-                ?? throw new ServiceException("Aluno não encontrado.");
-            
-            return pessoa;
-        }
-
-        public IEnumerable<Pessoa> GetAllAlunos()
-        {
-            // Filtra onde AlunoDeMenor tem valor (indica que é aluno)
-            return _context.Pessoas
-                .AsNoTracking()
-                .Where(p => p.AlunoDeMenor != null);
-        }
-
-        public IEnumerable<Pessoa> GetAlunosByNome(string nome)
-        {
-            return _context.Pessoas
-                .AsNoTracking()
-                .Where(p => p.AlunoDeMenor != null && p.Nome.StartsWith(nome));
-        }
-
-        // RESPONSÁVEL
-
-        public void CreateResponsavel(ResponsavelPessoaDTO dto)
-        {
-            var pessoa = PessoaMapper.ToEntity(dto);
-
-            _context.Pessoas.Add(pessoa);
-            _context.SaveChanges();
-        }
-
-        public void EditResponsavel(ResponsavelPessoaDTO dto)
-        {
-            if (dto.Id == 0) throw new ServiceException("ID inválido.");
-            
-            var pessoaExistente = _context.Pessoas.Find(dto.Id);
-            if (pessoaExistente == null) throw new ServiceException("Responsável não encontrado.");
-            
-            // Atualização manual simples
-            if (!string.IsNullOrEmpty(dto.IdUsuario))
+            if (pessoaAtualizada.FotoPerfil != null && pessoaAtualizada.FotoPerfil.Length > 0)
             {
-                pessoaExistente.IdUsuario = dto.IdUsuario;
+                pessoaOriginal.FotoPerfil = pessoaAtualizada.FotoPerfil;
             }
-            pessoaExistente.Nome = dto.Nome;
-            pessoaExistente.Sobrenome = dto.Sobrenome;
-            pessoaExistente.Cpf = dto.Cpf;
-            pessoaExistente.Email = dto.Email;
-            pessoaExistente.Telefone = dto.Telefone;
-            pessoaExistente.Genero = dto.Genero;
             
-            // Endereço
-            pessoaExistente.Cep = dto.Cep;
-            pessoaExistente.Rua = dto.Rua;
-            pessoaExistente.Numero = dto.Numero;
-            pessoaExistente.Bairro = dto.Bairro;
-            pessoaExistente.Complemento = dto.Complemento;
-            pessoaExistente.Cidade = dto.Cidade; 
-            pessoaExistente.Estado = dto.Estado;
-            
-            pessoaExistente.QuantidadeDeDependentes = dto.QuantidadeDeDependentes;
+            if (pessoaAtualizada.FotoDocumento != null && pessoaAtualizada.FotoDocumento.Length > 0)
+            {
+                pessoaOriginal.FotoDocumento = pessoaAtualizada.FotoDocumento;
+            }
 
-            _context.Update(pessoaExistente);
+            // 4. Atualização Específica baseada no Tipo 
+            if (pessoaOriginal.TipoPessoa == "P") // Professor
+            {
+                pessoaOriginal.DescricaoProfessor = pessoaAtualizada.DescricaoProfessor;
+                pessoaOriginal.Libras = pessoaAtualizada.Libras;
+                pessoaOriginal.IdCidade = pessoaAtualizada.IdCidade;
+
+                if (pessoaAtualizada.IdDisciplinas != null)
+                {
+                    pessoaOriginal.IdDisciplinas.Clear();
+                    
+                    foreach (var disciplina in pessoaAtualizada.IdDisciplinas)
+                    {
+                        var disciplinaLocal = _context.Disciplinas
+                            .Local
+                            .FirstOrDefault(d => d.Id == disciplina.Id);
+
+                        if (disciplinaLocal != null)
+                        {
+                            // Se já existe no contexto, usamos a instância local
+                            pessoaOriginal.IdDisciplinas.Add(disciplinaLocal);
+                        }
+                        else
+                        {
+                            // Se não existe, damos o Attach e usamos essa
+                            _context.Attach(disciplina);
+                            pessoaOriginal.IdDisciplinas.Add(disciplina);
+                        }
+                    }
+                }
+            }
+            else if (pessoaOriginal.TipoPessoa == "A") // Aluno
+            {
+                pessoaOriginal.AlunoDeMenor = pessoaAtualizada.AlunoDeMenor;
+                pessoaOriginal.Atipico = pessoaAtualizada.Atipico;
+                pessoaOriginal.ResponsavelId = pessoaAtualizada.ResponsavelId;
+            }
+            else if (pessoaOriginal.TipoPessoa == "R") // Responsável
+            {
+                pessoaOriginal.QuantidadeDeDependentes = pessoaAtualizada.QuantidadeDeDependentes;
+            }
+
+            // 5. Salva as alterações
+            _context.Update(pessoaOriginal);
             _context.SaveChanges();
         }
-
-        public Pessoa GetResponsavel(int id)
-        {
-             var pessoa =  _context.Pessoas.Find(id) 
-                    ?? throw new ServiceException("Responsável não encontrado.");
-             
-             return pessoa;
-        }
-
-        public IEnumerable<Pessoa> GetAllResponsaveis()
-        {
-            return _context.Pessoas.AsNoTracking()
-                .Where(p => p.QuantidadeDeDependentes != null);
-        }
-
-        public IEnumerable<Pessoa> GetResponsaveisByNome(string nome)
-        {
-            return _context.Pessoas.AsNoTracking()
-                .Where(p => p.QuantidadeDeDependentes != null && p.Nome.StartsWith(nome));
-        }
-
-        // DELETE GENERICO PARA TODOS
-    
-
         /// <summary>
-        /// Remover pessoa (professor, aluno ou responsável) da base de dados
+        /// Remove uma Pessoa.
         /// </summary>
         /// <param name="id">id da Pessoa</param>
-        
         public void Delete(int id)
         {
-                var pessoa = _context.Pessoas.Find(id);
-                if (pessoa != null)
-                {
-                    _context.Remove(pessoa);
-                    _context.SaveChanges();
-                }
+            var pessoa = _context.Pessoas.Find(id);
+            if (pessoa != null)
+            {
+                _context.Pessoas.Remove(pessoa);
+                _context.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Busca uma Pessoa pelo id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="ServiceException"></exception>
+        public Pessoa Get(int id)
+        {
+            return _context.Pessoas
+                .AsNoTracking()
+                .Include(p => p.IdDisciplinas) 
+                .FirstOrDefault(p => p.Id == id) 
+                ?? throw new ServiceException("Pessoa não encontrada.");
+        }
+
+        /// <summary>
+        /// Busca uma pessoa pelo CPF 
+        /// </summary>
+        /// <param name="cpf">Busca a pessoa pelo CPF</param>
+        public Pessoa? GetByCpf(string cpf)
+        {
+            return _context.Pessoas
+                .AsNoTracking()
+                .Include(p => p.IdDisciplinas)
+                .FirstOrDefault(p => p.Cpf == cpf);
+        }
+        
+        /// <summary>
+        /// Retorna todas as Pessoas.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Pessoa> GetAll()
+        {
+            return _context.Pessoas
+                .AsNoTracking()
+                .Include(p => p.IdCidadeNavigation)
+                .OrderBy(p => p.Nome)
+                .ToList(); 
+        }
+    
+        /// <summary>
+        /// Retorna Pessoas pelo nome.
+        /// </summary>
+        /// <param name="nome"> Retorna a pessoa de acordo com o nome</param>
+        /// <returns></returns>
+        public IEnumerable<Pessoa> GetByNome(string nome)
+        {
+            return _context.Pessoas
+                .AsNoTracking()
+                .Where(p => p.Nome.Contains(nome))
+                .OrderBy(p => p.Nome)
+                .ToList();
         }
     }
 }

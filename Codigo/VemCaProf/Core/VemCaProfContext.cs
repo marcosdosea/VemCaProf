@@ -212,9 +212,6 @@ public partial class VemCaProfContext : DbContext
             entity.HasIndex(e => e.Id, "id_UNIQUE").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IdUsuario)
-                .HasMaxLength(255)
-                .HasColumnName("IdUsuario");
             entity.Property(e => e.AlunoDeMenor).HasColumnName("alunoDeMenor");
             entity.Property(e => e.Atipico).HasColumnName("atipico");
             entity.Property(e => e.Bairro)
@@ -277,6 +274,10 @@ public partial class VemCaProfContext : DbContext
             entity.Property(e => e.Telefone)
                 .HasMaxLength(45)
                 .HasColumnName("telefone");
+            entity.Property(e => e.TipoPessoa)
+                .HasComment("R = Responsável\nP = Professor\nA = Aluno")
+                .HasColumnType("enum('R','P','A')")
+                .HasColumnName("tipoPessoa");
 
             entity.HasOne(d => d.IdCidadeNavigation).WithMany(p => p.Pessoas)
                 .HasForeignKey(d => d.IdCidade)
@@ -304,7 +305,7 @@ public partial class VemCaProfContext : DbContext
                         j.HasIndex(new[] { "IdDisciplina" }, "fk_Pessoa_has_Disciplina_Disciplina1_idx");
                         j.HasIndex(new[] { "IdProfessor" }, "fk_Pessoa_has_Disciplina_Pessoa1_idx");
                         j.IndexerProperty<int>("IdProfessor").HasColumnName("idProfessor");
-                        j.IndexerProperty<int>("IdDisciplina").HasColumnName("idDisciplina");
+                        j.IndexerProperty<uint>("IdDisciplina").HasColumnName("idDisciplina");
                     });
         });
 
