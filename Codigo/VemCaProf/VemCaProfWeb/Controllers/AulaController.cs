@@ -233,7 +233,7 @@ public class AulaController : Controller
             _aulaService.CancelarAula(id);
             TempData["SuccessMessage"] = "Aula cancelada com sucesso!";
         }
-        catch (Exception ex)
+        catch (ServiceException ex)
         {
             TempData["ErrorMessage"] = ex.Message;
         }
@@ -254,11 +254,7 @@ public class AulaController : Controller
         {
             TempData["ErrorMessage"] = ex.Message;
         }
-        catch (Exception ex)
-        {
-            TempData["ErrorMessage"] = "Erro ao confirmar participação na aula";
-        }
-
+        
         return RedirectToAction(nameof(Index));
     }
 }
