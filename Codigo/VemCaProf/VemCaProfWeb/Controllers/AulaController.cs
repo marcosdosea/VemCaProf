@@ -228,9 +228,37 @@ public class AulaController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Cancelar(int id)
     {
-        _aulaService.CancelarAula(id);
+        try
+        {
+            _aulaService.CancelarAula(id);
+            TempData["SuccessMessage"] = "Aula cancelada com sucesso!";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+       
+        return RedirectToAction(nameof(Index));
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Confirmar(int id)
+    {
+        try
+        {
+            _aulaService.ConfirmarAula(id);
+            TempData["SuccessMessage"] = "Participação confirmada com sucesso!";
+        }
+        catch (ServiceException ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = "Erro ao confirmar participação na aula";
+        }
 
-        TempData["SuccessMessage"] = "Aula cancelada com sucesso!";
         return RedirectToAction(nameof(Index));
     }
 }
