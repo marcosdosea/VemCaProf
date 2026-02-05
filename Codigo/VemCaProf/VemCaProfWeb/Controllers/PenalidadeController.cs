@@ -127,14 +127,18 @@ namespace VemCaProfWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id,PenalidadeModel penalidadeModel)
         {
+            if (id != penalidadeModel.Id) return NotFound();
+
             if (ModelState.IsValid)
             {
                 var penalidade = _mapper.Map<PenalidadeDTO>(penalidadeModel);
                 _penalidadeService.Edit(penalidade);
+                return RedirectToAction(nameof(Index));
 
             }
 
-            return RedirectToAction(nameof(Index));
+            return View(penalidadeModel);
+            
 
         }
 
