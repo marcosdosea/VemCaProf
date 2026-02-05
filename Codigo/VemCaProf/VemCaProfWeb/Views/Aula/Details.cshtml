@@ -1,51 +1,35 @@
 ﻿@model VemCaProfWeb.Models.AulaModel
-@using Core.Enums
+
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 @section Styles {
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Details</h1>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
+<h1>Details</h1>
 
 <div>
     <h4>Aula</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DataHorarioInicio)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DataHorarioInicio)
         </dd>
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DataHorarioFinal)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DataHorarioFinal)
         </dd>
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Descricao)
         </dt>
@@ -59,28 +43,24 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Valor)
         </dd>
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdDisciplina)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IdDisciplina)
         </dd>
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdResponsavel)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IdResponsavel)
         </dd>
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdAluno)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IdAluno)
         </dd>
-
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.IdProfessor)
         </dt>
@@ -90,38 +70,7 @@
 
     </dl>
 </div>
-
-<div class="mt-3">
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a> |
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-
-    @if (Model.Status != StatusEnum.Realizada && Model.Status != StatusEnum.Cancelada)
-    {
-        <span>|</span>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCancelar">
-            Cancelar Aula
-        </button>
-
-        <div class="modal fade" id="modalCancelar" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirmar Cancelamento</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Tem certeza que deseja cancelar esta aula?</p>
-                        <p class="text-danger small">Atenção: Aulas no mesmo dia não podem ser canceladas.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-
-                        <form asp-action="Cancelar" asp-route-id="@Model.Id" method="post">
-                            <button type="submit" class="btn btn-danger">Confirmar Cancelamento</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
 </div>

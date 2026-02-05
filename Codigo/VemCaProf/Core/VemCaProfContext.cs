@@ -66,8 +66,8 @@ public partial class VemCaProfContext : DbContext
                 .HasColumnType("enum('P','C','D')")
                 .HasColumnName("metodoPagamento");
             entity.Property(e => e.Status)
-                .HasComment("AG = Agendada\nRE = Realizada\nPG = Paga\nAP = Aguardando Pagamento\n")
-                .HasColumnType("enum('AG','RE','PG','AP')")
+                .HasComment("AG = Agendada\nRE = Realizada\nPG = Paga\nAP = Aguardando Pagamento\nCA = Cancelada\nCO = Confirmada")
+                .HasColumnType("enum('AG','RE','PG','AP','CA','CO')")
                 .HasColumnName("status");
             entity.Property(e => e.Valor).HasColumnName("valor");
 
