@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.DTO
 {
-    public class PenalidadeDTO 
+    public class PenalidadeDTO : Pessoa
     {
         public int Id { get; set; }
         public DateTime DataHorarioInicio { get; set; }
