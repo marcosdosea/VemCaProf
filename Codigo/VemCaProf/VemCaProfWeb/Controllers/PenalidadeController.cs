@@ -28,10 +28,10 @@ namespace VemCaProfWeb.Controllers
         }
 
         //GET: Penalidade
-        public ActionResult Index()
+        public IActionResult Index()
         {
             var listaPenalidades = _penalidadeService.GetAll();
-            var listaPenalidadeModel = _mapper.Map<List<PenalidadeModel>>(listaPenalidades);
+            var listaPenalidadeModel = _mapper.Map<IEnumerable<PenalidadeModel>>(listaPenalidades);
             return View(listaPenalidadeModel);
 
         }
@@ -53,6 +53,10 @@ namespace VemCaProfWeb.Controllers
         // GET: Penalidade/Create
         public IActionResult Create()
         {
+            var todasPessoas = _pessoaService.GetAll();
+
+            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
             return View();
         }
 
@@ -64,10 +68,9 @@ namespace VemCaProfWeb.Controllers
             if (!ModelState.IsValid)
             {
                 // Filtra a lista geral para pegar apenas Professores (P) e Responsáveis (R)
-                var todasPessoas = _pessoaService.GetAll();
+                
         
-                ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
-                ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
+                
                 return View(penalidadeM);
             }
             try
@@ -97,18 +100,18 @@ namespace VemCaProfWeb.Controllers
         }
 
         // GET: PenalidadeController/Edit/5
-        public ActionResult Edit(int id)
+        public IActionResult Edit(int id)
         {
             if (id == null) return NotFound();
 
+            var todasPessoas = _pessoaService.GetAll();
+
+            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
+
             Penalidade penalidade = _penalidadeService.Get(id);
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
-
-            IEnumerable<Pessoa> listaProfessores = _pessoaService.GetAllProfessores();
-            IEnumerable<Pessoa> listaResponsaveis = _pessoaService.GetAllResponsaveis();
-
-            penalidadeModel.ListaProfessores = new SelectList(listaProfessores, "Id", "Nome", null);
-            penalidadeModel.ListaResponsaveis = new SelectList(listaResponsaveis, "Id", "Nome", null);
+                                   
             return View(penalidadeModel);
         }
 
@@ -125,11 +128,10 @@ namespace VemCaProfWeb.Controllers
 
             }
 
-            IEnumerable<Pessoa> listaProfessores = _pessoaService.GetAllProfessores();
-            IEnumerable<Pessoa> listaResponsaveis = _pessoaService.GetAllResponsaveis();
+            var todasPessoas = _pessoaService.GetAll();
 
-            penalidadeModel.ListaProfessores = new SelectList(listaProfessores, "Id", "Nome", null);
-            penalidadeModel.ListaResponsaveis = new SelectList(listaResponsaveis, "Id", "Nome", null);
+            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
             return View(penalidadeModel);
             
 
