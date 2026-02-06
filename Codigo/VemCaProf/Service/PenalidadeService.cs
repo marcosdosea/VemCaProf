@@ -23,7 +23,7 @@ namespace Service
         ///</summary>
         ///<param name="penalidade"></param>
         ///<returns> id do autor </returns>
-        public int Create(PenalidadeDTO penalidade)
+        public int Create(Penalidade penalidade)
         {
             try
             {
@@ -41,21 +41,12 @@ namespace Service
                 var responsavel = _pessoaService.Get(penalidade.IdResponsavel);
                 if (responsavel == null || responsavel.TipoPessoa != "R")
                     throw new ServiceException($"Responsável de ID {penalidade.IdResponsavel} não existe");
+                
 
-                var entity = new Penalidade
-                {
-                    DataHorarioInicio = penalidade.DataHorarioInicio,
-                    DataHoraFim = penalidade.DataHoraFim,
-                    Tipo = penalidade.Tipo,
-                    Descricao = penalidade.Descricao,
-                    IdProfessor = penalidade.IdProfessor,
-                    IdResponsavel = penalidade.IdResponsavel
-                };
-
-                _context.Penalidades.Add(entity);
+                _context.Penalidades.Add(penalidade);
                 _context.SaveChanges();
 
-                return entity.Id;
+                return penalidade.Id;
             }
             catch (ServiceException)
             {
@@ -90,7 +81,7 @@ namespace Service
         /// Editar penalidade existente
         /// </summary>
         /// <param name="penalidadeNova"></param>
-        public void Edit(PenalidadeDTO penalidadeNova)
+        public void Edit(Penalidade penalidadeNova)
         {
            
 

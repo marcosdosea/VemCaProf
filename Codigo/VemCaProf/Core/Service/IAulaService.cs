@@ -10,5 +10,7 @@ namespace Core.Service
         int Create(AulaDTO aula);
         bool Update(AulaDTO aula);
         bool Delete(int id);
+        void CancelarAula(int id);
+        void ConfirmarAula(int id);
     }
 }

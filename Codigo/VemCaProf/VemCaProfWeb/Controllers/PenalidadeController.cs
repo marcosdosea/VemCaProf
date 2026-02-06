@@ -75,7 +75,7 @@ namespace VemCaProfWeb.Controllers
             }
             try
             {
-                var penalidade = _mapper.Map<PenalidadeDTO>(penalidadeM);
+                var penalidade = _mapper.Map<Penalidade>(penalidadeM);
                 _penalidadeService.Create(penalidade);
 
                 TempData["SuccessMessage"] = "Penalidade cadastrada com sucesso!";
@@ -123,7 +123,7 @@ namespace VemCaProfWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var penalidade = _mapper.Map<PenalidadeDTO>(penalidadeModel);
+                var penalidade = _mapper.Map<Penalidade>(penalidadeModel);
                 _penalidadeService.Edit(penalidade);
 
             }

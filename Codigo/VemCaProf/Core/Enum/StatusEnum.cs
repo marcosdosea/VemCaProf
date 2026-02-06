@@ -12,5 +12,7 @@ namespace Core.Enums
         public const string Realizada = "RE";
         public const string Paga = "PG";
         public const string AguardandoPagamento = "AP";
+        public const string Cancelada = "CA";
+        public const string Confirmada = "CO";
     }
 }

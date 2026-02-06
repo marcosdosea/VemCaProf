@@ -6,9 +6,9 @@ namespace Core.Service
 {
     public interface IPenalidadeService
     {
-        int Create(PenalidadeDTO penalidade);
+        int Create(Penalidade penalidade);
         void Delete(int id);
-        void Edit(PenalidadeDTO penalidade);
+        void Edit(Penalidade penalidade);
 
         IEnumerable<Penalidade> GetAll();
         Penalidade Get(int id);

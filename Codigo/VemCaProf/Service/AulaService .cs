@@ -31,7 +31,6 @@ public class AulaService : IAulaService
                     DataHorarioInicio = c.DataHorarioInicio,
                     DataHorarioFinal = c.DataHorarioFinal,
                     Descricao = c.Descricao,
-                    
                     Status = c.Status,
                     Valor = c.Valor,
                     DataHoraPagamento = c.DataHoraPagamento,
@@ -71,7 +70,7 @@ public class AulaService : IAulaService
                 DataHorarioInicio = aula.DataHorarioInicio,
                 DataHorarioFinal = aula.DataHorarioFinal,
                 Descricao = aula.Descricao,
-                
+
                 Status = aula.Status,
                 Valor = aula.Valor,
                 DataHoraPagamento = aula.DataHoraPagamento,
@@ -97,7 +96,7 @@ public class AulaService : IAulaService
     {
         try
         {
-            
+
             if (aulaDto == null)
                 throw new ServiceException("Dados da aula não podem ser nulos");
 
@@ -106,13 +105,13 @@ public class AulaService : IAulaService
 
             if (aulaDto.DataHorarioFinal == DateTime.MinValue)
                 throw new ServiceException("campo obrigatório");
-            
+
             var descricao = aulaDto.Descricao?.Trim() ?? "";
 
             if (string.IsNullOrWhiteSpace(descricao))
                 throw new ServiceException("A descrição da aula é obrigatório");
 
-            
+
 
             aulaDto.Status = StatusEnum.AguardandoPagamento;
 
@@ -126,7 +125,7 @@ public class AulaService : IAulaService
             if (aulaDto.IdResponsavel <= 0)
                 throw new ServiceException("campo obrigatório");
 
-            if (aulaDto.IdAluno<= 0)
+            if (aulaDto.IdAluno <= 0)
                 throw new ServiceException("campo obrigatório");
 
             if (aulaDto.IdProfessor <= 0)
@@ -137,16 +136,16 @@ public class AulaService : IAulaService
                 DataHorarioInicio = aulaDto.DataHorarioInicio,
                 DataHorarioFinal = aulaDto.DataHorarioFinal,
                 Descricao = descricao,
-                
+
                 Status = aulaDto.Status,
                 Valor = aulaDto.Valor,
-                MetodoPagamento=aulaDto.MetodoPagamento,
+                MetodoPagamento = aulaDto.MetodoPagamento,
                 IdDisciplina = aulaDto.IdDisciplina,
                 IdResponsavel = aulaDto.IdResponsavel,
                 IdAluno = aulaDto.IdAluno,
                 IdProfessor = aulaDto.IdProfessor
             };
-          
+
 
             _context.Aulas.Add(aula);
             _context.SaveChanges();
@@ -186,7 +185,7 @@ public class AulaService : IAulaService
             if (string.IsNullOrWhiteSpace(descricao))
                 throw new ServiceException("A descrição da aula é obrigatório");
 
-            
+
             if (aulaDto.Valor <= 0)
                 throw new ServiceException("Valor maior que 0");
 
@@ -202,20 +201,20 @@ public class AulaService : IAulaService
             if (aulaDto.IdProfessor <= 0)
                 throw new ServiceException("campo obrigatório");
 
-            var aula = new Aula
-            {
-                DataHorarioInicio = aulaDto.DataHorarioInicio,
-                DataHorarioFinal = aulaDto.DataHorarioFinal,
-                Descricao = descricao,
-                Status= aulaDto.Status,
-                
-                Valor = aulaDto.Valor,
-                MetodoPagamento=aulaDto.MetodoPagamento,
-                IdDisciplina = aulaDto.IdDisciplina,
-                IdResponsavel = aulaDto.IdResponsavel,
-                IdAluno = aulaDto.IdAluno,
-                IdProfessor = aulaDto.IdProfessor
-            };
+            var aula = _context.Aulas.Find(aulaDto.Id);
+
+
+            aula.DataHorarioInicio = aulaDto.DataHorarioInicio;
+            aula.DataHorarioFinal = aulaDto.DataHorarioFinal;
+            aula.Descricao = descricao;
+            aula.Status = aulaDto.Status;
+
+            aula.Valor = aulaDto.Valor;
+            aula.MetodoPagamento = aulaDto.MetodoPagamento;
+            aula.IdDisciplina = aulaDto.IdDisciplina;
+            aula.IdResponsavel = aulaDto.IdResponsavel;
+            aula.IdAluno = aulaDto.IdAluno;
+            aula.IdProfessor = aulaDto.IdProfessor;
 
             _context.Aulas.Update(aula);
             _context.SaveChanges();
@@ -244,7 +243,7 @@ public class AulaService : IAulaService
             var aula = _context.Aulas.Find(id);
             if (aula == null)
                 return false;
-            if (aula.Status != StatusEnum.AguardandoPagamento) 
+            if (aula.Status != StatusEnum.AguardandoPagamento)
                 throw new ServiceException("Somente aulas com status 'Aguardando Pagamento' podem ser excluídas.");
 
             _context.Aulas.Remove(aula);
@@ -255,6 +254,91 @@ public class AulaService : IAulaService
         catch (Exception ex)
         {
             throw new ServiceException($"Erro ao excluir aula ID {id}", ex);
+        }
+    }
+
+    /// <summary>
+    /// Cancela Aula
+    /// </summary>
+    /// <param name="id">id da aula</param>
+    /// <returns>true se for confirmada com sucesso</returns>
+    public void CancelarAula(int id)
+    {
+        var aula = _context.Aulas.Find(id);
+
+        if (aula == null)
+            throw new ServiceException("Aula não encontrada.");
+
+        if (aula.Status == StatusEnum.Realizada)
+            throw new ServiceException("Não é possível cancelar uma aula que já foi realizada.");
+
+        if (aula.Status == StatusEnum.Cancelada)
+            throw new ServiceException("Esta aula já está cancelada.");
+
+        if (aula.DataHorarioInicio.Date == DateTime.Now.Date)
+        {
+            throw new ServiceException("Não é permitido cancelar a aula no dia do agendamento. O cancelamento deve ser feito com antecedência.");
+        }
+
+        if (aula.DataHorarioInicio.Date < DateTime.Now.Date)
+        {
+            throw new ServiceException("Não é possível cancelar aulas de datas passadas.");
+        }
+
+        try 
+        {
+            aula.Status = StatusEnum.Cancelada; 
+            _context.SaveChanges();
+        }
+        catch (ServiceException ex)
+        {
+            throw new ServiceException("Erro interno ao salvar o cancelamento da aula.", ex);
+        }
+
+    }
+
+    /// <summary>
+    /// Confirma a realização de uma aula
+    /// </summary>
+    /// <param name="id">id da aula</param>
+    public void ConfirmarAula(int id)
+    {
+        var aula = _context.Aulas.Find(id);
+    
+        if (aula == null)
+            throw new ServiceException("Aula não encontrada.");
+    
+        if (aula.Status == StatusEnum.Realizada)
+            throw new ServiceException("Esta aula já foi realizada anteriormente.");
+    
+        if (aula.Status == StatusEnum.Confirmada)
+            throw new ServiceException("Esta aula já está confirmada.");
+    
+        if (aula.Status == StatusEnum.Cancelada)
+            throw new ServiceException("Não é possível confirmar uma aula que foi cancelada. É necessário reativá-la ou agendar uma nova.");
+    
+        if (aula.Status == StatusEnum.AguardandoPagamento || aula.DataHoraPagamento == default(DateTime))
+        {
+            throw new ServiceException("Não é possível confirmar uma aula que está aguardando pagamento. Por favor, verifique o status financeiro primeiro.");
+        }
+        
+        var agora = DateTime.Now;
+        var horarioMinimoParaConfirmar = aula.DataHorarioInicio.AddHours(-2);
+    
+        if (agora < horarioMinimoParaConfirmar)
+        {
+            var tempoRestante = horarioMinimoParaConfirmar - agora;
+            throw new ServiceException($"A confirmação só será permitida a partir das {horarioMinimoParaConfirmar:HH:mm}. (Faltam {tempoRestante.Hours}h {tempoRestante.Minutes}min)");
+        }
+    
+        try 
+        {
+            aula.Status = StatusEnum.Confirmada; 
+            _context.SaveChanges();
+        }
+        catch (ServiceException ex)
+        {
+            throw new ServiceException("Erro interno ao salvar a confirmação da aula.", ex);
         }
     }
 }

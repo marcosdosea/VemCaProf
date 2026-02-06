@@ -25,6 +25,7 @@ public class Program
         builder.Services.AddTransient<IPessoaService, PessoaService>();
         builder.Services.AddTransient<IPenalidadeService, PenalidadeService>();
         builder.Services.AddTransient<IAulaService, AulaService>();
+        builder.Services.AddTransient<IPagamentoService, PagamentoService>();
 
         // AutoMapper
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

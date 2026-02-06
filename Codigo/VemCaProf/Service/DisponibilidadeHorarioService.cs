@@ -23,7 +23,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         _mapper = mapper;
         _logger = logger;
     }
-   
+
     public IEnumerable<DisponibilidadeHorarioDTO> GetAll()
     {
         try
@@ -40,7 +40,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
             throw new ServiceException("Erro ao buscar ", ex);
         }
     }
-    
+
     public DisponibilidadeHorarioDTO? Get(int id)
     {
         try
@@ -61,9 +61,9 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
     }
 
- 
-    
- 
+
+
+
     public int Create(DisponibilidadeHorarioDTO disponibilidadeHorarioDto)
     {
         try
@@ -82,10 +82,10 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
             if (disponibilidadeHorarioDto.IdProfessor <= 0)
                 throw new ServiceException("campo obrigatório");
 
-           
+
 
             var disponibilidadeHorario = _mapper.Map<DisponibilidadeHorario>(disponibilidadeHorarioDto);
-           
+
 
             _context.DisponibilidadeHorarios.Add(disponibilidadeHorario);
             _context.SaveChanges();
@@ -103,7 +103,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
     }
 
-  
+
     public bool Update(DisponibilidadeHorarioDTO disponibilidadeHorarioDto)
     {
         try
@@ -125,6 +125,10 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
             var disponibilidadeHorario = _context.DisponibilidadeHorarios.Find(disponibilidadeHorarioDto.Id);
             if (disponibilidadeHorario == null)
                 return false;
+            disponibilidadeHorario.HorarioInicio = disponibilidadeHorarioDto.HorarioInicio;
+            disponibilidadeHorario.Dia = disponibilidadeHorarioDto.Dia;
+            disponibilidadeHorario.HorarioFim = disponibilidadeHorarioDto.HorarioFim;
+            disponibilidadeHorario.IdProfessor = disponibilidadeHorarioDto.IdProfessor;
 
             _context.DisponibilidadeHorarios.Update(disponibilidadeHorario);
             _context.SaveChanges();
@@ -142,7 +146,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
     }
 
-    
+
     public bool Delete(int id)
     {
         try

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace VemCaProfWeb.Models
 {
@@ -32,5 +33,9 @@ namespace VemCaProfWeb.Models
         [Display(Name = "Código do Responsável")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int IdResponsavel { get; set; }
+        
+        public SelectList? ListaProfessores { get; set; }
+        public SelectList? ListaResponsaveis { get; set; }
+        
     }
 }

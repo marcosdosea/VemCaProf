@@ -22,5 +22,9 @@ namespace Core.Service
         IEnumerable<Pessoa> GetAll();
         
         IEnumerable<Pessoa> GetByNome(string nome);
+
+        IEnumerable<Pessoa> GetAllProfessores();
+
+        IEnumerable<Pessoa> GetAllResponsaveis();
     }
 }

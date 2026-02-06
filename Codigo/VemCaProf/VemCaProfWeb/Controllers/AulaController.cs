@@ -75,11 +75,11 @@ public class AulaController : Controller
 
     // POST: Aula/Create
     [HttpPost]
-    
+
     public IActionResult Create([Bind("DataHorarioInicio,DataHorarioFinal,Descricao,Status,Valor,MetodoPagamento,IdDisciplina" +
         ",IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
     {
-     
+
 
         try
         {
@@ -131,7 +131,7 @@ public class AulaController : Controller
 
     // POST: Aula/Edit/5
     [HttpPost]
-    
+
     public IActionResult Edit(int id, [Bind("Id,DataHorarioInicio,DataHorarioFinal,Descricao,Status,Valor," +
         "MetodoPagamento,IdDisciplina,IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
     {
@@ -196,7 +196,7 @@ public class AulaController : Controller
 
     // POST: Aula/Delete/5
     [HttpPost, ActionName("Delete")]
-  
+
     public IActionResult DeleteConfirmed(int id)
     {
         try
@@ -222,5 +222,39 @@ public class AulaController : Controller
             TempData["ErrorMessage"] = "Erro ao excluir aula";
             return RedirectToAction(nameof(Index));
         }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Cancelar(int id)
+    {
+        try
+        {
+            _aulaService.CancelarAula(id);
+            TempData["SuccessMessage"] = "Aula cancelada com sucesso!";
+        }
+        catch (ServiceException ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+       
+        return RedirectToAction(nameof(Index));
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Confirmar(int id)
+    {
+        try
+        {
+            _aulaService.ConfirmarAula(id);
+            TempData["SuccessMessage"] = "Participação confirmada com sucesso!";
+        }
+        catch (ServiceException ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
+        
+        return RedirectToAction(nameof(Index));
     }
 }

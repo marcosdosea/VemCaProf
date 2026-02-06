@@ -13,7 +13,6 @@ public partial class Aula
 
     public string Descricao { get; set; } = null!;
 
-    
 
     public DateTime DataHoraPagamento { get; set; }
 
@@ -31,6 +30,8 @@ public partial class Aula
     /// RE = Realizada
     /// PG = Paga
     /// AP = Aguardando Pagamento
+    /// CA = Cancelada
+    /// CO = Confirmada
     /// 
     /// </summary>
     public string Status { get; set; } = null!;
