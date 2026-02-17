@@ -1,0 +1,6 @@
+@VemCaProfAPI_HostAddress = http://localhost:5067
+
+GET {{VemCaProfAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
