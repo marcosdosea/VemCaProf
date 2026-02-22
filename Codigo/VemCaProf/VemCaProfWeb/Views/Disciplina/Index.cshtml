@@ -5,33 +5,59 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
+
+    <style>
+        .dataTables_filter input {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 5px 10px;
+        }
+    </style>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <span class="me-3 text-muted">Geral</span>
+        <span class="me-3 fw-bold border-bottom border-primary border-2 pb-1">Disciplinas</span>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-primary fw-bold">
+            + Nova Disciplina
+        </a>
+    </div>
+</div>
+
 <div class="admin-table-container">
-    <table class="table table-borderless table-hover">
-        <thead>
+    <table id="tabelaDisciplinas" class="table table-borderless table-hover w-100">
+        <thead class="border-bottom">
             <tr>
                 <th>Disciplina</th>
                 <th>Descrição</th>
                 <th>Nível</th>
-                <th></th>
+                <th class="text-end">Ações</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
-                string textoNivel = (item.Nivel ?? "") switch
-
+                string textoNivel = item.Nivel switch
                 {
                     "F1" => "Fundamental Menor",
                     "F2" => "Fundamental Maior",
                     "M1" => "Ensino Médio",
-                    _ => item.Nivel ?? "Não Definido"
+                    _ => "Não definido"
                 };
+
                 <tr>
-                    <td class="fw-bold">@Html.DisplayFor(modelItem => item.Nome)</td>
-                    <td class="text-muted">@Html.DisplayFor(modelItem => item.Descricao)</td>
-                    <td><small>@textoNivel</small></td>
-                    <td class="text-end">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm text-muted">•••</a>
+                    <td class="fw-bold align-middle">@item.Nome</td>
+                    <td class="text-muted align-middle">@item.Descricao</td>
+                    <td class="align-middle"><span class="badge bg-light text-dark border">@textoNivel</span></td>
+                    <td class="text-end align-middle">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Detalhes</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
                     </td>
                 </tr>
             }
@@ -39,12 +65,24 @@
     </table>
 </div>
 
-<nav class="mt-4">
-    <ul class="pagination justify-content-center">
-        <li class="page-item disabled"><a class="page-link border-0 bg-transparent text-muted" href="#">&lt; Anterior</a></li>
-        <li class="page-item"><a class="page-link border-0 text-primary fw-bold" href="#">1</a></li>
-        <li class="page-item"><a class="page-link border-0 text-primary" href="#">2</a></li>
-        <li class="page-item"><a class="page-link border-0 text-primary" href="#">3</a></li>
-        <li class="page-item active"><a class="page-link" href="#">4</a></li>
-    </ul>
-</nav>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/datatables.net/dataTables.min.js"></script>
+
+    <script src="~/lib/datatables.net/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#tabelaDisciplinas').DataTable({
+                "language": {
+                    // Tradução local
+                    "url": "/lib/datatables.net/pt-BR.json"
+                },
+                "pageLength": 10,
+                "ordering": true,
+                "info": true
+            });
+        });
+    </script>
+}

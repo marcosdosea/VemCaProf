@@ -1,5 +1,38 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - VemCáProf Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <div class="admin-wrapper">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                🛡️ VemCáProf<br>
+                <small class="text-muted fw-normal">Administrativo</small>
+            </div>
+
+            <nav class="admin-menu mt-4">
+                <a href="#" class="active">Disciplinas</a>
+            </nav>
+
+            <a asp-controller="Home" asp-action="Index" class="btn btn-sair d-flex align-items-center justify-content-center text-decoration-none">SAIR</a>
+        </aside>
+
+        <main class="admin-main">
+
+            @RenderBody()
+
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.css"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
