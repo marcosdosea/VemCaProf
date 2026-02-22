@@ -16,7 +16,9 @@ namespace Core.Mappers
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => src.Tipo))
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
                 .ForMember(dest => dest.IdProfessor, opt => opt.MapFrom(src => src.IdProfessor))
-                .ForMember(dest => dest.IdResponsavel, opt => opt.MapFrom(src => src.IdResponsavel));
+                .ForMember(dest => dest.IdResponsavel, opt => opt.MapFrom(src => src.IdResponsavel))
+                .ForMember(dest => dest.NomeProfessor,opt => opt.MapFrom(src => src.IdProfessorNavagation.Nome))
+                .ForMember(dest => dest.NomeResponsavel,opt => opt.MapFrom(src => src.IdResponsavelNavigation.Nome));
 
             CreateMap<PenalidadeDTO ,Penalidade>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -25,7 +27,9 @@ namespace Core.Mappers
                 .ForMember(dest => dest.Tipo, opt => opt.MapFrom(src => src.Tipo))
                 .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
                 .ForMember(dest => dest.IdProfessor, opt => opt.MapFrom(src => src.IdProfessor))
-                .ForMember(dest => dest.IdResponsavel, opt => opt.MapFrom(src => src.IdResponsavel));
+                .ForMember(dest => dest.IdResponsavel, opt => opt.MapFrom(src => src.IdResponsavel))
+                .ForMember(dest => dest.NomeProfessor, opt => opt.MapFrom(src => src.IdProfessorNavagation.Nome))
+                .ForMember(dest => dest.NomeResponsavel, opt => opt.MapFrom(src => src.IdResponsavelNavigation.Nome));
 
         }
     }

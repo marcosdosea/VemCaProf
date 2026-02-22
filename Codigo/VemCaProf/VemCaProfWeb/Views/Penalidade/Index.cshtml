@@ -6,23 +6,26 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/Cidade.css" />
+    <link rel="stylesheet" href="~/css/PagePenalidade.css" />
 }
 
-<h1>Index</h1>
+<h1>Penalidades</h1>
+
+
 <p>
-    <a asp-action="Create">Criar Nova</a>
+    <a asp-action="Create" class="btn btn-primary">Criar Nova Penalidade</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Id)</th>
-            <th>@Html.DisplayNameFor(model => model.DataHorarioInicio)</th>
-            <th>@Html.DisplayNameFor(model => model.DataHoraFim)</th>
-            <th>@Html.DisplayNameFor(model => model.Tipo)</th>
-            <th>@Html.DisplayNameFor(model => model.Descricao)</th>
-            <th>@Html.DisplayNameFor(model => model.IdProfessor)</th>
-            <th>@Html.DisplayNameFor(model => model.IdResponsavel)</th>
+            <th>Código</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Tipo</th>
+            <th>Descrição</th>
+            <th>Professor</th>
+            <th>Responsável</th>
+            <th>Ações</th>
             
         </tr>
     </thead>
@@ -45,13 +48,18 @@
             </td>
 
             @* Mostrar nome do professor/responsável quando disponível *@
-            <td>@(item.IdProfessor.ToString())</td>
-            <td>@(item.IdResponsavel.ToString())</td>
+            <td>@(item.IdProfessor)</td>
+            <td>@(item.NomeResponsavel)</td>
 
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="delete-icon" >
+                        <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.99998 8.99998L5.00001 5.00001M5.00001 5.00001L1 1M5.00001 5.00001L9.00002 1M5.00001 5.00001L1 9.00002" 
+                            stroke="#FE0404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
             </td>
         </tr>
 }

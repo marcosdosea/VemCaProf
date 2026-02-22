@@ -101,8 +101,10 @@ namespace Service
         /// <returns>Lista de penalidades</returns>
         public IEnumerable<Penalidade> GetAll()
         {
-            var penalidade =  _context.Penalidades.AsNoTracking().ToList();
-            return penalidade;
+            return _context.Penalidades
+                .Include(p => p.IdProfessorNavigation)
+                .Include(p => p.IdResponsavelNavigation)
+                .ToList();
 
         }
 
