@@ -18,5 +18,8 @@ namespace Core.DTO
 
         public int IdResponsavel { get; set; }
 
+        public string NomeProfessor { get; set; } = null!;
+        public string NomeResponsavel { get; set; } = null!;
+
     }
 }

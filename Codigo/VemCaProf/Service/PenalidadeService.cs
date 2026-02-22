@@ -27,21 +27,8 @@ namespace Service
         {
             try
             {
-                if (penalidade == null)
-                    throw new ServiceException("Os dados não podem ser nulos");
-
-
-                var data = penalidade.DataHorarioInicio;
-                var descricao = penalidade.Descricao;
-
-                var professor = _pessoaService.Get(penalidade.IdProfessor);
-                if (professor == null || professor.TipoPessoa != "P")
-                    throw new ServiceException($"Professor de ID {penalidade.IdProfessor} não existe");
-                
-                var responsavel = _pessoaService.Get(penalidade.IdResponsavel);
-                if (responsavel == null || responsavel.TipoPessoa != "R")
-                    throw new ServiceException($"Responsável de ID {penalidade.IdResponsavel} não existe");
-                
+                VerificarPessoaExistente(penalidade);
+                VerificarData(penalidade);
 
                 _context.Penalidades.Add(penalidade);
                 _context.SaveChanges();
@@ -54,7 +41,7 @@ namespace Service
             }
             catch (Exception ex)
             {
-                throw new ServiceException("Erro ao criar cidade", ex);
+                throw new ServiceException("Erro ao criar penalidade", ex);
             }
 
 
@@ -67,12 +54,13 @@ namespace Service
         public void Delete(int id)
         {
             var penalidade = _context.Penalidades.Find(id);
-            if (penalidade != null)
-            {
-               _context.Remove(penalidade);
-               _context.SaveChanges();
+            if (penalidade == null)
+                throw new ServiceException("Penalidade não encontrada.");
 
-            }
+            _context.Penalidades.Remove(penalidade);
+            _context.SaveChanges();
+
+            
                 
             
         }
@@ -83,29 +71,26 @@ namespace Service
         /// <param name="penalidadeNova"></param>
         public void Edit(Penalidade penalidadeNova)
         {
-           
-
-            var professor = _pessoaService.Get(penalidadeNova.IdProfessor);
-            if (professor == null || professor.TipoPessoa != "P")
-                throw new ServiceException($"Professor de ID {penalidadeNova.IdProfessor} não existe");
-
-            var responsavel = _pessoaService.Get(penalidadeNova.IdResponsavel);
-            if (responsavel == null || responsavel.TipoPessoa != "R")
-                throw new ServiceException($"Responsável de ID {penalidadeNova.IdResponsavel} não existe");
-
-            var penalidadeExistente = _context.Penalidades.Find(penalidadeNova.Id);
-            if (penalidadeExistente == null)
+         try{
+                VerificarPessoaExistente(penalidadeNova);
+                var penalidadeExistente = Get(penalidadeNova.Id);
+                 if (penalidadeExistente == null)
                 throw new ServiceException("Penalidade não encontrada.");
+                VerificarData(penalidadeNova);
 
-            penalidadeExistente.DataHorarioInicio = penalidadeNova.DataHorarioInicio;
-            penalidadeExistente.DataHoraFim = penalidadeNova.DataHoraFim;
-            penalidadeExistente.Tipo = penalidadeNova.Tipo;
-            penalidadeExistente.Descricao = penalidadeNova.Descricao;
-            penalidadeExistente.IdProfessor = penalidadeNova.IdProfessor;
-            penalidadeExistente.IdResponsavel = penalidadeNova.IdResponsavel;
-            
-            _context.Update(penalidadeExistente);
-            _context.SaveChanges();
+                penalidadeExistente.DataHorarioInicio = penalidadeNova.DataHorarioInicio;
+                penalidadeExistente.DataHoraFim = penalidadeNova.DataHoraFim;
+                penalidadeExistente.Tipo = penalidadeNova.Tipo;
+                penalidadeExistente.Descricao = penalidadeNova.Descricao;
+                penalidadeExistente.IdProfessor = penalidadeNova.IdProfessor;
+                penalidadeExistente.IdResponsavel = penalidadeNova.IdResponsavel;
+           
+                _context.SaveChanges();
+          }
+          catch (ServiceException)
+          {
+               throw;
+          }
 
         }
 
@@ -116,8 +101,10 @@ namespace Service
         /// <returns>Lista de penalidades</returns>
         public IEnumerable<Penalidade> GetAll()
         {
-            var penalidade =  _context.Penalidades.AsNoTracking().ToList();
-            return penalidade;
+            return _context.Penalidades
+                .Include(p => p.IdProfessorNavigation)
+                .Include(p => p.IdResponsavelNavigation)
+                .ToList();
 
         }
 
@@ -129,13 +116,40 @@ namespace Service
         /// <exception cref="NotImplementedException"></exception>
         public Penalidade Get(int id)
         {
-            var penalidade = _context.Penalidades.FirstOrDefault(p => p.Id == id);
+            return _context.Penalidades.Find(id);
 
+        }
+
+        // <summary>
+        /// Verificar se penalidade é nula, se professor ou responsável existem
+        /// </summary>
+        /// <param name="penalidade"></param>
+        /// <returns></returns>
+        /// <exception cref="ServiceException"></exception>"
+        public void VerificarPessoaExistente(Penalidade penalidade)
+        {
             if (penalidade == null)
-                return null;
+                throw new ServiceException("Os dados não podem ser nulos");
 
-            return penalidade;
+            var professor = _pessoaService.Get(penalidade.IdProfessor);
+            if (professor == null || professor.TipoPessoa != "P")
+                throw new ServiceException($"Professor de ID {penalidade.IdProfessor} não existe");
 
+            var responsavel = _pessoaService.Get(penalidade.IdResponsavel);
+            if (responsavel == null || responsavel.TipoPessoa != "R")
+                throw new ServiceException($"Responsável de ID {penalidade.IdResponsavel} não existe");
+        }
+
+        //<sumary>
+        ///verifica data de início e fim da penalidade
+        ///</sumary>
+        ///<param name="penalidade"></param>
+        ///<returns></returns>
+        ///<exception cref="ServiceException"></exception>
+        public void VerificarData(Penalidade penalidade)
+        {
+            if (penalidade.DataHorarioInicio >= penalidade.DataHoraFim)
+                throw new ServiceException("Data de início deve ser anterior à data de fim.");
         }
 
         /// <summary>
@@ -147,8 +161,8 @@ namespace Service
         {
             var penalidades = _context.Penalidades
                 .AsNoTracking()
-                .Where(p => p.Id == pessoaId);
-            if(penalidades == null)
+                .Where(p => p.IdProfessor == pessoaId || p.IdResponsavel == pessoaId);
+            if(!penalidades.Any())
                 throw new ServiceException("Nenhuma penalidade encontrada para essa pessoa.");
 
 

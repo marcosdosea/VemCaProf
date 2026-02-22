@@ -1,10 +1,10 @@
 using Core;
 using Core.Service;
-using Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using VemCaProfWeb.Areas.Identity.Data;
+using VemCaProfWeb.Mappers;
 
 namespace VemCaProfWeb;
 
@@ -29,7 +29,6 @@ public class Program
 
         // AutoMapper
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        builder.Services.AddAutoMapper(typeof(PenalidadeProfile));
         builder.Services.AddAutoMapper(typeof(PenalidadeProfile).Assembly);
 
 
