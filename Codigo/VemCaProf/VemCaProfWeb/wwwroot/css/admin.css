@@ -1,0 +1,74 @@
+﻿body {
+    background-color: #E9ECEF; 
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background-color: #FFFFFF;
+    border-right: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.admin-logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.admin-menu a {
+    display: block;
+    color: #495057;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+    .admin-menu a:hover, .admin-menu a.active {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+    }
+
+.btn-sair {
+    margin-top: auto; 
+    background-color: #0d6efd;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    border-radius: 0; 
+}
+
+.admin-main {
+    flex-grow: 1;
+    padding: 40px;
+}
+
+.admin-table-container {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.table thead th {
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.table td {
+    vertical-align: middle;
+}

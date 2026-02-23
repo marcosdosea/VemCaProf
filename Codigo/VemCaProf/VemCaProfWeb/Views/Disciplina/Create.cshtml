@@ -2,68 +2,76 @@
 
 @{
     ViewData["Title"] = "Cadastrar Disciplina";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Cadastrar Disciplina</h1>
-<h4>Nova Disciplina</h4>
-<hr />
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <span class="me-3 text-muted">Geral</span>
+        <span class="me-3 fw-bold border-bottom border-primary border-2 pb-1">Cadastrar Disciplina</span>
+    </div>
+    <div>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Voltar para Lista</a>
+    </div>
+</div>
 
 <div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-lg-8">
+        <div class="admin-table-container">
 
-            <div class="card mb-3">
-                <div class="card-header bg-primary text-white">Informações</div>
-                <div class="card-body">
+            <h5 class="mb-4 fw-bold">Informações da Nova Disciplina</h5>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Nome" class="control-label"></label>
-                        <input asp-for="Nome" class="form-control" placeholder="Ex: Matemática, Português..." />
-                        <span asp-validation-for="Nome" class="text-danger"></span>
-                    </div>
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Descricao" class="control-label"></label>
-                        <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
-                        <span asp-validation-for="Descricao" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label asp-for="Nivel" class="control-label mb-2">Nível de Ensino</label>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="Nivel" value="F1" id="NivelF1">
-                            <label class="form-check-label" for="NivelF1">
-                                Ensino Fundamental Menor
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="Nivel" value="F2" id="NivelF2">
-                            <label class="form-check-label" for="NivelF2">
-                                Ensino Fundamental Maior
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="Nivel" value="M1" id="NivelM1">
-                            <label class="form-check-label" for="NivelM1">
-                                Ensino Médio
-                            </label>
-                        </div>
-
-                        <span asp-validation-for="Nivel" class="text-danger"></span>
-                    </div>
+                <div class="form-group mb-4">
+                    <label asp-for="Nome" class="form-label text-muted small fw-bold text-uppercase"></label>
+                    <input asp-for="Nome" class="form-control form-control-lg bg-light border-0" placeholder="Ex: Matemática, Português..." />
+                    <span asp-validation-for="Nome" class="text-danger small"></span>
                 </div>
-            </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Salvar" class="btn btn-primary btn-lg" />
-                <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a>
-            </div>
-        </form>
+                <div class="form-group mb-4">
+                    <label asp-for="Descricao" class="form-label text-muted small fw-bold text-uppercase"></label>
+                    <textarea asp-for="Descricao" class="form-control bg-light border-0" rows="3" placeholder="Descreva brevemente a disciplina..."></textarea>
+                    <span asp-validation-for="Descricao" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label text-muted small fw-bold text-uppercase d-block mb-3">Nível de Ensino</label>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" asp-for="Nivel" value="F1" id="NivelF1">
+                        <label class="form-check-label" for="NivelF1">
+                            Ensino Fundamental Menor <span class="text-muted small">(1º ao 5º ano)</span>
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" asp-for="Nivel" value="F2" id="NivelF2">
+                        <label class="form-check-label" for="NivelF2">
+                            Ensino Fundamental Maior <span class="text-muted small">(6º ao 9º ano)</span>
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" asp-for="Nivel" value="M1" id="NivelM1">
+                        <label class="form-check-label" for="NivelM1">
+                            Ensino Médio
+                        </label>
+                    </div>
+
+                    <span asp-validation-for="Nivel" class="text-danger small"></span>
+                </div>
+
+                <hr class="text-muted my-4" />
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-light px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">Salvar Disciplina</button>
+                </div>
+
+            </form>
+        </div>
     </div>
 </div>
 
