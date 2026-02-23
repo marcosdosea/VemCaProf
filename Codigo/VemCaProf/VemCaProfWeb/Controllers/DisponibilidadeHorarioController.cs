@@ -23,7 +23,7 @@ public class DisponibilidadeHorarioController : Controller
         _logger = logger;
     }
 
-
+    //GET : DisponibilidadeHorario
     public IActionResult Index()
     {
         try
@@ -40,6 +40,7 @@ public class DisponibilidadeHorarioController : Controller
         }
     }
 
+    // GET: DisponibilidadeHorario/Details/5
     public IActionResult Details(int? id)
     {
         if (id == null)
@@ -66,22 +67,18 @@ public class DisponibilidadeHorarioController : Controller
         }
     }
 
-
+    // GET: DisponibilidadeHorario/Create
     public IActionResult Create()
     {
         return View();
     }
 
-
+    // POST: DisponibilidadeHorario/Create
     [HttpPost]
 
     public IActionResult Create([Bind("Dia,HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
     {
-        if (!ModelState.IsValid)
-        {
-            return View(disponibilidadeHorarioModel);
-        }
-
+        
         try
         {
             var disponibilidadeHorarioDto = _mapper.Map<DisponibilidadeHorarioDTO>(disponibilidadeHorarioModel);
@@ -102,7 +99,7 @@ public class DisponibilidadeHorarioController : Controller
             return View(disponibilidadeHorarioModel);
         }
     }
-
+    // GET: DisponibilidadeHorario/Edit/5
     public IActionResult Edit(int? id)
     {
         if (id == null)
@@ -129,18 +126,13 @@ public class DisponibilidadeHorarioController : Controller
         }
     }
 
-
+    // POST: DisponibilidadeHorario/Edit/5
     [HttpPost]
     public IActionResult Edit(int id, [Bind("Id,Dia,HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
     {
         if (id != disponibilidadeHorarioModel.Id)
         {
             return NotFound();
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return View(disponibilidadeHorarioModel);
         }
 
         try
@@ -168,7 +160,7 @@ public class DisponibilidadeHorarioController : Controller
             return View(disponibilidadeHorarioModel);
         }
     }
-
+    // GET: DisponibilidadeHorario/Delete/5
     public IActionResult Delete(int? id)
     {
         if (id == null)
@@ -195,6 +187,7 @@ public class DisponibilidadeHorarioController : Controller
         }
     }
 
+    // POST: DisponibilidadeHorario/Delete/5
 
     [HttpPost, ActionName("Delete")]
 

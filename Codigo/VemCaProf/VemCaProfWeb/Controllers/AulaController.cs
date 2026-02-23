@@ -76,7 +76,7 @@ public class AulaController : Controller
     // POST: Aula/Create
     [HttpPost]
 
-    public IActionResult Create([Bind("DataHorarioInicio,DataHorarioFinal,Descricao,Status,Valor,MetodoPagamento,IdDisciplina" +
+    public IActionResult Create([Bind("DataHorarioInicio,DataHorarioFinal,Descricao,Valor,MetodoPagamento,IdDisciplina" +
         ",IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
     {
 
