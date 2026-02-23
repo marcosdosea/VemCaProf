@@ -3,7 +3,7 @@ using Core;
 using Core.DTO;
 using VemCaProfWeb.Models;
 
-namespace Mappers
+namespace VemCaProfWeb.Mappers
 {
     public class PenalidadeProfile : Profile
     {

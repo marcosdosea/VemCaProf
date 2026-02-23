@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core;
 
@@ -19,6 +20,11 @@ public partial class Penalidade
 
     public int IdResponsavel { get; set; }
 
+    [NotMapped]
+    public string NomeProfessor { get; set; } = null!;
+
+    [NotMapped]
+    public string NomeResponsavel { get; set;}  = null!;
     public virtual Pessoa IdProfessorNavigation { get; set; } = null!;
 
     public virtual Pessoa IdResponsavelNavigation { get; set; } = null!;
