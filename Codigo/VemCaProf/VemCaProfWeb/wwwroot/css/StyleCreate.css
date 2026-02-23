@@ -1,0 +1,43 @@
+﻿.penalidade-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.top-bar {
+    margin-bottom: 25px;
+}
+
+.top-bar h4 {
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.btn-voltar {
+    text-decoration: none;
+    font-weight: 500;
+    color: #0d6efd;
+}
+
+.penalidade-form .form-group {
+    margin-bottom: 18px;
+}
+
+.custom-input {
+    border-radius: 12px;
+    padding: 10px 14px;
+    box-shadow: none;
+}
+
+.custom-input:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.15rem rgba(74,108,247,.25);
+}
+
+.btn-salvar {
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 600;
+}
+
+
