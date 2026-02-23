@@ -32,6 +32,14 @@ namespace VemCaProfWeb.Controllers
         {
             var listaPenalidades = _penalidadeService.GetAll();
             var listaPenalidadeModel = _mapper.Map<IEnumerable<PenalidadeModel>>(listaPenalidades);
+            
+            foreach (var penalidade in listaPenalidadeModel)
+            {
+                var professor = _pessoaService.Get(penalidade.IdProfessor);
+                var responsavel = _pessoaService.Get(penalidade.IdResponsavel);
+                penalidade.NomeProfessor = professor?.Nome;
+                penalidade.NomeResponsavel = responsavel?.Nome;
+            }
             return View(listaPenalidadeModel);
 
         }
@@ -46,6 +54,10 @@ namespace VemCaProfWeb.Controllers
                 return NotFound();
             }
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
+            var professor = _pessoaService.Get(penalidadeModel.IdProfessor);
+            var responsavel = _pessoaService.Get(penalidadeModel.IdResponsavel);
+            penalidadeModel.NomeProfessor = professor?.Nome;
+            penalidadeModel.NomeResponsavel = responsavel?.Nome;
             return View(penalidadeModel);
 
         }

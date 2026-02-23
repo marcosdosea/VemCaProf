@@ -29,7 +29,7 @@ namespace Service
             {
                 VerificarPessoaExistente(penalidade);
                 VerificarData(penalidade);
-
+                //TODO: verificar o limite de carecteres da descrição
                 _context.Penalidades.Add(penalidade);
                 _context.SaveChanges();
 

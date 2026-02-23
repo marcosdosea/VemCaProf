@@ -33,8 +33,8 @@ namespace VemCaProfWeb.Models
         [Display(Name = "Código do Responsável")]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int IdResponsavel { get; set; }
-        public string NomeProfessor { get; set; } = null!;
-        public string NomeResponsavel { get; set; } = null!;
+        public string ? NomeProfessor { get; set; }
+        public string ? NomeResponsavel { get; set;}
         public SelectList? ListaProfessores { get; set; }
         public SelectList? ListaResponsaveis { get; set; }
         
