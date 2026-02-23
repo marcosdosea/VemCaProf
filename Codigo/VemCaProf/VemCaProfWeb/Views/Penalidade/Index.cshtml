@@ -10,15 +10,18 @@
 }
 
 <h1>Penalidades</h1>
+<p class="secondary-text"> Histórico de penalidades</p>
 
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Criar Nova Penalidade</a>
 </p>
-<table class="table">
+<div class="penalidades-container">
+
+    <table class="penalidades-table">
     <thead>
         <tr>
-            <th>Código</th>
+            
             <th>Início</th>
             <th>Fim</th>
             <th>Tipo</th>
@@ -32,7 +35,7 @@
     <tbody>
     @foreach (var item in Model) {
         <tr>
-            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+            
             <td>@Html.DisplayFor(modelItem => item.DataHorarioInicio)</td>
             <td>@Html.DisplayFor(modelItem => item.DataHoraFim)</td>
             <td>@Html.DisplayFor(modelItem => item.Tipo)</td>
@@ -48,12 +51,22 @@
             </td>
 
             @* Mostrar nome do professor/responsável quando disponível *@
-            <td>@(item.IdProfessor)</td>
-            <td>@(item.NomeResponsavel)</td>
+            <td>@item.NomeProfessor</td>
+            <td>@item.NomeResponsavel</td>
 
             <td>
-                    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" class="btn btn-primary" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="edit-icon">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.805 2.69463C12.065 2.43466 12.065 2.00139 11.805 1.75476L10.2452 0.194973C9.99861 -0.064991 9.56534 -0.064991 9.30537 0.194973L8.07888 1.4148L10.5785 3.91446M0 9.50035V12H2.49965L9.87196 4.62103L7.37231 2.12137L0 9.50035Z" fill="#22A2F2" />
+                        </svg>
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="details-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.45548 11.1164C3.53103 9.23425 6.5557 5 11.9999 5C17.4442 5 20.4689 9.23425 21.5444 11.1164C21.7651 11.5025 21.8754 11.6956 21.8632 11.9836C21.8511 12.2716 21.7214 12.4598 21.462 12.8362C20.1817 14.6935 16.7061 19 11.9999 19C7.29383 19 3.81814 14.6935 2.53794 12.8362C2.27851 12.4598 2.1488 12.2716 2.13665 11.9836C2.1245 11.6956 2.23483 11.5025 2.45548 11.1164ZM11.9999 15C13.6568 15 14.9999 13.6569 14.9999 12C14.9999 10.3431 13.6568 9 11.9999 9C10.3431 9 8.99994 10.3431 8.99994 12C8.99994 13.6569 10.3431 15 11.9999 15Z" fill="#7E869E" fill-opacity="0.25" />
+                            <path d="M12 5C6.55576 5 3.53109 9.23425 2.45554 11.1164C2.23488 11.5025 2.12456 11.6956 2.1367 11.9836C2.14885 12.2716 2.27857 12.4598 2.53799 12.8362C3.8182 14.6935 7.29389 19 12 19C16.7061 19 20.1818 14.6935 21.462 12.8362C21.7214 12.4598 21.8511 12.2716 21.8633 11.9836C21.8754 11.6956 21.7651 11.5025 21.5445 11.1164C20.4689 9.23425 17.4442 5 12 5Z" stroke="#222222" stroke-width="1.2" />
+                            <circle cx="12" cy="12" r="3" stroke="#222222" stroke-width="1.2" />
+                        </svg>
+                    </a> |
                     <a asp-action="Delete" asp-route-id="@item.Id" class="delete-icon" >
                         <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8.99998 8.99998L5.00001 5.00001M5.00001 5.00001L1 1M5.00001 5.00001L9.00002 1M5.00001 5.00001L1 9.00002" 

@@ -10,8 +10,14 @@ h3,
 h4 {
     color: #033B6A;
     font-weight: 600;
+    margin: 5px 35px
 }
+/* Textos/ paragrafos etc*/
 
+.secondary-text {
+    color: #033B6A;
+    margin: 5px 35px
+}
 /* Cards / áreas */
 .container,
 .row {
@@ -22,14 +28,25 @@ h4 {
 .btn-primary {
     background-color: #4461F2;
     border-color: #033B6A;
+    margin:5px 35px
 }
 
 .btn-primary:hover {
     background-color: #0b5ed7;
     border-color: #0a58ca;
 }
+.details-icon svg {
+    width: 32px;
+    height: 27px;
+
+}
+.edit-icon svg {
+    width: 20px;
+    height: 27px;
+    
+}
 .delete-icon svg {
-    width: 27px;
+    width: 19px;
     height: 27px;
 }
 /* ===== Botão para delete ===== */
@@ -49,27 +66,63 @@ a.btn,
 /* Links */
 a {
     color: #0d6efd;
+    text-decoration: none;
 }
 
 a:hover {
     color: #0a58ca;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /* ===== Tabela do Index ===== */
 table {
-    background-color: #ffffff;
-    border-radius: 8px;
+   
     overflow: hidden;
 }
 
 table thead {
-    background-color: #0d6efd;
+    background-color: #0d6efd; /*Azul*/
     color: #ffffff;
 }
 
-table th,
-table td {
-    vertical-align: middle;
-    text-align:center;
+    table th,
+    table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+.penalidades-container {
+    width: 95%;
+    margin: 40px auto;
+    border: 2px solid #5c8ed6;
+    border-radius: 8px;
+    overflow: hidden;
 }
+
+/* Tabela base */
+.penalidades-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+    /* Cabeçalho */
+    .penalidades-table thead {
+        
+    }
+
+    .penalidades-table th {
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #5c8ed6;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    /* Linhas */
+    .penalidades-table td {
+        padding: 15px;
+        border-bottom: 2px solid #c0d4f5;
+                
+    }
