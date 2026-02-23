@@ -8,7 +8,7 @@ using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers
 {
-   // [Authorize(Roles = "Admin, Professor")]
+    [Authorize(Roles = "Admin, Professor")]
     public class DisciplinaController : Controller
     {
 
@@ -38,7 +38,7 @@ namespace VemCaProfWeb.Controllers
         }
 
         // GET: DisciplinaController/Create
-       // [Authorize]
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -47,7 +47,7 @@ namespace VemCaProfWeb.Controllers
         // POST: DisciplinaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize]
+        [Authorize]
         public ActionResult Create(DisciplinaModel disciplinaModel)
         {
             if (ModelState.IsValid)
