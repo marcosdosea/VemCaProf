@@ -7,55 +7,74 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-secondary text-white">
-            <h4 class="mb-0">Detalhes do Pagamento</h4>
-        </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/cidade.css" />
+    <link rel="stylesheet" href="~/css/pagamento.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+}
 
-        <div class="card-body">
-            <dl class="row">
+<div class="city-page">
+    <div class="city-wrap">
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Id)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(m => m.Id)</dd>
+        <a asp-action="Index" class="city-back">
+            <i class="bi bi-arrow-left"></i>
+            Voltar para Pagamentos
+        </a>
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Descricao)</dt>
-                <dd class="col-sm-8">@Html.DisplayFor(m => m.Descricao)</dd>
+        <div class="city-form-card">
+            <div class="city-form-title">Detalhes do Pagamento</div>
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Valor)</dt>
-                <dd class="col-sm-8">R$ @Html.DisplayFor(m => m.Valor)</dd>
+            <div class="mb-3">
+                <div class="text-muted small">@Html.DisplayNameFor(m => m.Id)</div>
+                <div class="fw-semibold">@Html.DisplayFor(m => m.Id)</div>
+            </div>
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.MetodoPagamento)</dt>
-                <dd class="col-sm-8">
-                    @PagamentoDisplayHelper.MetodoLabel(Model.MetodoPagamento)
-                </dd>
+            <div class="mb-3">
+                <div class="text-muted small">@Html.DisplayNameFor(m => m.Descricao)</div>
+                <div class="fw-semibold">@Html.DisplayFor(m => m.Descricao)</div>
+            </div>
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Status)</dt>
-                <dd class="col-sm-8">
-                    @PagamentoDisplayHelper.StatusLabel(Model.Status)
-                </dd>
+            <div class="mb-3">
+                <div class="text-muted small">@Html.DisplayNameFor(m => m.Valor)</div>
+                <div class="fw-semibold">R$ @Html.DisplayFor(m => m.Valor)</div>
+            </div>
 
-                <dt class="col-sm-4">@Html.DisplayNameFor(m => m.DataHoraPagamento)</dt>
-                <dd class="col-sm-8">
+            <div class="mb-3">
+                <div class="text-muted small">@Html.DisplayNameFor(m => m.MetodoPagamento)</div>
+                <div class="fw-semibold">@PagamentoDisplayHelper.MetodoLabel(Model.MetodoPagamento)</div>
+            </div>
+
+            <div class="mb-3">
+                <div class="text-muted small">@Html.DisplayNameFor(m => m.Status)</div>
+                <div class="fw-semibold">@PagamentoDisplayHelper.StatusLabel(Model.Status)</div>
+            </div>
+
+            <div class="mb-4">
+                <div class="text-muted small">@Html.DisplayNameFor(m => m.DataHoraPagamento)</div>
+                <div>
                     @if (Model.Status == StatusEnum.Paga)
                     {
-                        <span class="badge bg-success">
+                        <span class="pay-badge pay-badge-success">
+                            <i class="bi bi-check-circle"></i>
                             @Model.DataHoraPagamento.ToString("dd/MM/yyyy HH:mm:ss")
                         </span>
                     }
                     else
                     {
-                        <span class="badge bg-warning text-dark">Pendente</span>
+                        <span class="pay-badge pay-badge-warning">
+                            <i class="bi bi-hourglass-split"></i>
+                            Pendente
+                        </span>
                     }
-                </dd>
+                </div>
+            </div>
 
-            </dl>
+            <div class="city-form-actions">
+                <a asp-action="Index" class="btn btn-outline-secondary btn-city-outline">
+                    Voltar para lista
+                </a>
+            </div>
         </div>
 
-        <div class="card-footer text-end">
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                Voltar para lista
-            </a>
-        </div>
     </div>
 </div>

@@ -7,73 +7,108 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white">
-            <h4 class="mb-0">Pagamentos</h4>
+@section Styles {
+    <link rel="stylesheet" href="~/css/cidade.css" />
+    <link rel="stylesheet" href="~/css/pagamento.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+}
+
+<div class="city-page">
+    <div class="city-wrap">
+
+        <a asp-action="Index" class="city-back">
+            <i class="bi bi-arrow-left"></i>
+            Voltar
+        </a>
+
+        <div class="pay-header city-header">
+            <h1>Pagamentos</h1>
+            <p>Visualize pagamentos e realize pagamentos pendentes</p>
         </div>
 
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+        <div class="city-card">
+            <table class="table table-city table-hover align-middle">
+                <thead>
                     <tr>
-                        <th>@Html.DisplayNameFor(m => m.First().Id)</th>
-                        <th>@Html.DisplayNameFor(m => m.First().Descricao)</th>
-                        <th>Data/Hora Pagamento</th>
-                        <th>@Html.DisplayNameFor(m => m.First().Valor)</th>
-                        <th>@Html.DisplayNameFor(m => m.First().Status)</th>
-                        <th class="text-center">Ações</th>
+                        <th style="width:10%;">@Html.DisplayNameFor(m => m.First().Id)</th>
+                        <th style="width:30%;">@Html.DisplayNameFor(m => m.First().Descricao)</th>
+                        <th style="width:20%;">Data/Hora Pagamento</th>
+                        <th style="width:15%;">@Html.DisplayNameFor(m => m.First().Valor)</th>
+                        <th style="width:15%;">@Html.DisplayNameFor(m => m.First().Status)</th>
+                        <th style="width:10%;" class="text-end">Ações</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    @foreach (var item in Model)
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>
+                                    <span class="city-badge">@item.Descricao</span>
+                                </td>
+
+                                <td>
+                                    @if (item.Status == StatusEnum.Paga)
+                                    {
+                                        <span class="pay-badge pay-badge-success">
+                                            <i class="bi bi-check-circle"></i>
+                                            @item.DataHoraPagamento.ToString("dd/MM/yyyy HH:mm")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="pay-badge pay-badge-warning">
+                                            <i class="bi bi-hourglass-split"></i>
+                                            Pendente
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>R$ @item.Valor</td>
+
+                                <td>
+                                    @PagamentoDisplayHelper.StatusLabel(item.Status)
+                                </td>
+
+                                <td class="text-end">
+                                    <div class="pay-actions">
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-outline-secondary pay-btn"
+                                           title="Detalhes">
+                                            <i class="bi bi-eye"></i>
+                                            <span class="d-none d-sm-inline">Detalhes</span>
+                                        </a>
+
+                                        @if (item.Status != StatusEnum.Paga)
+                                        {
+                                            <a asp-action="Create"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-success pay-btn"
+                                               title="Pagar">
+                                                <i class="bi bi-cash-coin"></i>
+                                                <span class="d-none d-sm-inline">Pagar</span>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@item.Id</td>
-                            <td>@item.Descricao</td>
-
-                            <td>
-                                @if (item.Status == StatusEnum.Paga)
-                                {
-                                    <span class="badge bg-success">
-                                        @item.DataHoraPagamento.ToString("dd/MM/yyyy HH:mm")
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-warning text-dark">
-                                        Pendente
-                                    </span>
-                                }
-                            </td>
-
-                            <td>R$ @item.Valor</td>
-
-                            <td>
-                                @PagamentoDisplayHelper.StatusLabel(item.Status)
-                            </td>
-
-                            <td class="text-center">
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-info">
-                                    Detalhes
-                                </a>
-
-                                @if (item.Status != StatusEnum.Paga)
-                                {
-                                    <a asp-action="Create"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-sm btn-success ms-1">
-                                        Pagar
-                                    </a>
-                                }
+                            <td colspan="6" class="city-empty">
+                                Nenhum pagamento encontrado.
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>
