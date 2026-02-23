@@ -31,8 +31,8 @@ namespace VemCaProfAPI
 
             // Configuração do AutoMapper
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            builder.Services.AddAutoMapper(typeof(PenalidadeProfile));
-            builder.Services.AddAutoMapper(typeof(PenalidadeProfile).Assembly);
+            //builder.Services.AddAutoMapper(typeof(PenalidadeProfile));
+            //builder.Services.AddAutoMapper(typeof(PenalidadeProfile).Assembly);
 
             // Banco de Dados
             var connectionString = builder.Configuration.GetConnectionString("VemCaProfConnection");
