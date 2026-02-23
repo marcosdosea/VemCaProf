@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<VemCaProfWeb.Models.CidadeModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cidades";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,38 +9,79 @@
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Index</h1>
+<div class="city-page">
+    <div class="city-wrap">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <a asp-action="Index" class="city-back">
+            <i class="bi bi-arrow-left"></i>
+            Voltar
+        </a>
+
+        <div class="city-header">
+            <h1>Cidades</h1>
+            <p>Cadastre as Cidades*</p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary btn-city-primary mb-4">
+            <i class="bi bi-plus-lg"></i>
+            Nova Cidade
+        </a>
+
+        <div class="city-card">
+            <table class="table table-city table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:40%;">@Html.DisplayNameFor(model => model.Nome)</th>
+                        <th style="width:40%;">@Html.DisplayNameFor(model => model.Estado)</th>
+                        <th style="width:20%;" class="text-end">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="city-badge">@item.Nome</span>
+                                </td>
+                                <td class="text-secondary">@item.Estado</td>
+                                <td class="text-end">
+                                    <div class="city-actions">
+                                        <a asp-action="Delete" asp-route-id="@item.Id"
+                                           class="city-icon-btn city-icon-delete"
+                                           title="Remover">
+                                            <i class="bi bi-x-lg"></i>
+                                        </a>
+
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                           class="city-icon-btn city-icon-edit"
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a asp-action="Details" asp-route-id="@item.Id"
+                                           class="city-icon-btn city-icon-details"
+                                           title="Detalhes">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="city-empty">
+                                Nenhuma cidade cadastrada.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

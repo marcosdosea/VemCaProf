@@ -1,8 +1,7 @@
 ﻿@model VemCaProfWeb.Models.CidadeModel
 
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Nova Cidade";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,35 +9,51 @@
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Create</h1>
+<div class="city-page">
+    <div class="city-wrap">
 
-<h4>Cidade</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        <a asp-action="Index" class="city-back">
+            <i class="bi bi-arrow-left"></i>
+            Voltar para Lista
+        </a>
+
+        <div class="city-form-card">
+            <div class="city-form-title">Nova Cidade</div>
+
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Nome" class="form-label"></label>
+                    <input asp-for="Nome" class="form-control" placeholder="Nome da cidade" />
+                    <span asp-validation-for="Nome" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Estado" class="form-label"></label>
+                    <input asp-for="Estado" class="form-control" placeholder="Estado" />
+                    <span asp-validation-for="Estado" class="text-danger small"></span>
+                </div>
+
+                <div class="city-form-actions">
+                    <button type="submit" class="btn btn-primary btn-city-primary">
+                        <i class="bi bi-check-lg"></i>
+                        Salvar
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-city-outline">
+                        <i class="bi bi-x-lg me-1"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,38 +1,46 @@
 ﻿@model VemCaProfWeb.Models.CidadeModel
 
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 
 @section Styles {
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
+<div class="city-page">
+    <div class="city-wrap">
 
-<h1>Details</h1>
+        <a asp-action="Index" class="city-back">
+            <i class="bi bi-arrow-left"></i>
+            Voltar para Lista
+        </a>
 
-<div>
-    <h4>Cidade</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <div class="city-form-card">
+            <div class="city-form-title">Detalhes da Cidade</div>
+
+            <div class="mb-3">
+                <div class="text-muted small">@Html.DisplayNameFor(model => model.Nome)</div>
+                <div class="fw-semibold">@Html.DisplayFor(model => model.Nome)</div>
+            </div>
+
+            <div class="mb-3">
+                <div class="text-muted small">@Html.DisplayNameFor(model => model.Estado)</div>
+                <div class="fw-semibold">@Html.DisplayFor(model => model.Estado)</div>
+            </div>
+
+            <div class="city-form-actions">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-city-primary">
+                    <i class="bi bi-pencil"></i>
+                    Editar
+                </a>
+
+                <a asp-action="Index" class="btn btn-outline-secondary btn-city-outline">
+                    Voltar
+                </a>
+            </div>
+        </div>
+
+    </div>
 </div>
