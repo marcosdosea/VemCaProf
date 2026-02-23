@@ -11,32 +11,36 @@ namespace Service;
 public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
 {
     private readonly VemCaProfContext _context;
-    private readonly IMapper _mapper;
-    private readonly ILogger<DisponibilidadeHorarioService> _logger;
+   
 
     public DisponibilidadeHorarioService(
-        VemCaProfContext context,
-        IMapper mapper,
-        ILogger<DisponibilidadeHorarioService> logger)
+        VemCaProfContext context)
     {
         _context = context;
-        _mapper = mapper;
-        _logger = logger;
+        
     }
 
     public IEnumerable<DisponibilidadeHorarioDTO> GetAll()
     {
         try
         {
-            var disponibilidadeHorario = _context.DisponibilidadeHorarios
+            return _context.DisponibilidadeHorarios
                 .AsNoTracking()
+                .Select(c => new DisponibilidadeHorarioDTO
+                {
+                    Id = c.Id,
+                    Dia = c.Dia,
+                    HorarioInicio = c.HorarioInicio,
+                    HorarioFim = c.HorarioFim,
+                    IdProfessor = c.IdProfessor
+                })
                 .ToList();
 
-            return _mapper.Map<IEnumerable<DisponibilidadeHorarioDTO>>(disponibilidadeHorario);
+            
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar ");
+           
             throw new ServiceException("Erro ao buscar ", ex);
         }
     }
@@ -51,12 +55,20 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
 
             if (disponibilidadeHorario == null)
                 return null;
+            return new DisponibilidadeHorarioDTO
+            {
+                Id = disponibilidadeHorario.Id,
+                Dia = disponibilidadeHorario.Dia,
+                HorarioInicio = disponibilidadeHorario.HorarioInicio,
+                HorarioFim = disponibilidadeHorario.HorarioFim,
+                IdProfessor = disponibilidadeHorario.IdProfessor
+            };
 
-            return _mapper.Map<DisponibilidadeHorarioDTO>(disponibilidadeHorario);
+
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao buscar  ID {Id}", id);
+            
             throw new ServiceException($"Erro ao buscar ID {id}", ex);
         }
     }
@@ -84,9 +96,15 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
 
 
 
-            var disponibilidadeHorario = _mapper.Map<DisponibilidadeHorario>(disponibilidadeHorarioDto);
+            var disponibilidadeHorario = new DisponibilidadeHorario
+            {
+                Dia = disponibilidadeHorarioDto.Dia,
+                HorarioInicio = disponibilidadeHorarioDto.HorarioInicio,
+                HorarioFim = disponibilidadeHorarioDto.HorarioFim,
+                IdProfessor = disponibilidadeHorarioDto.IdProfessor
+            };
 
-
+            
             _context.DisponibilidadeHorarios.Add(disponibilidadeHorario);
             _context.SaveChanges();
 
@@ -98,7 +116,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao criar horário");
+            
             throw new ServiceException("Erro ao criar horário", ex);
         }
     }
@@ -141,7 +159,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao atualizar  ID {Id}", disponibilidadeHorarioDto.Id);
+            
             throw new ServiceException($"Erro ao atualizar  ID {disponibilidadeHorarioDto.Id}", ex);
         }
     }
@@ -162,7 +180,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao excluir  ID {Id}", id);
+           
             throw new ServiceException($"Erro ao excluir ID {id}", ex);
         }
     }
