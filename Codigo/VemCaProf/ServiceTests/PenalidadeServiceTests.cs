@@ -1,4 +1,5 @@
 ﻿using Core;
+using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Service;
@@ -140,7 +141,7 @@ namespace ServiceTests
         [TestMethod]
         public void CreatePenalidade_Success()
         {
-            var nova = new Penalidade
+            var nova = new PenalidadeDTO
             {
                 DataHorarioInicio = new DateTime(2025, 3, 3, 10, 0, 0),
                 DataHoraFim = new DateTime(2025, 3, 3, 11, 0, 0),
@@ -153,6 +154,7 @@ namespace ServiceTests
             var id = penalidadeService.Create(nova);
 
             var criado = context.Penalidades.Find(id);
+
             Assert.IsNotNull(criado);
             Assert.AreEqual("Teste create", criado.Descricao);
             Assert.AreEqual(1, criado.IdProfessor);
@@ -162,7 +164,7 @@ namespace ServiceTests
         [TestMethod]
         public void CreatePenalidade_InvalidProfessor()
         {
-            var nova = new Penalidade
+            var nova = new PenalidadeDTO
             {
                 DataHorarioInicio = new DateTime(2025, 4, 1, 9, 0, 0),
                 DataHoraFim = new DateTime(2025, 4, 1, 10, 0, 0),
@@ -178,7 +180,7 @@ namespace ServiceTests
         [TestMethod]
         public void CreatePenalidade_InvalidResponsible()
         {
-            var nova = new Penalidade
+            var nova = new PenalidadeDTO
             {
                 DataHorarioInicio = new DateTime(2025, 4, 1, 9, 0, 0),
                 DataHoraFim = new DateTime(2025, 4, 1, 10, 0, 0),
@@ -194,7 +196,7 @@ namespace ServiceTests
         [TestMethod]
         public void CreatePenalidade_InvalidDates()
         {
-            var nova = new Penalidade
+            var nova = new PenalidadeDTO
             {
                 DataHorarioInicio = new DateTime(2025, 5, 1, 11, 0, 0),
                 DataHoraFim = new DateTime(2025, 5, 1, 10, 0, 0), // fim antes do início
@@ -211,25 +213,40 @@ namespace ServiceTests
         public void EditPenalidade_Success()
         {
             var existente = context.Penalidades.Find(1)!;
-            existente.Descricao = "Alterada";
-            existente.DataHorarioInicio = existente.DataHorarioInicio.AddHours(1);
-            existente.DataHoraFim = existente.DataHoraFim?.AddHours(1);
+            var dto = new PenalidadeDTO
+            {
+                Id = existente.Id,
+                DataHorarioInicio = existente.DataHorarioInicio.AddHours(1),
+                DataHoraFim = existente.DataHoraFim?.AddHours(1),
+                Tipo = existente.Tipo,
+                Descricao = "Alterada",
+                IdProfessor = existente.IdProfessor,
+                IdResponsavel = existente.IdResponsavel
+            };
 
-            penalidadeService.Edit(existente);
+            penalidadeService.Edit(dto);
 
             var editado = penalidadeService.Get(1);
             Assert.AreEqual("Alterada", editado.Descricao);
-            Assert.AreEqual(existente.DataHorarioInicio, editado.DataHorarioInicio);
+            Assert.AreEqual(dto.DataHorarioInicio, editado.DataHorarioInicio);
         }
 
         [TestMethod]
         public void EditPenalidade_InvalidDates()
         {
             var existente = context.Penalidades.Find(2)!;
-            existente.DataHorarioInicio = new DateTime(2025, 2, 2, 16, 0, 0);
-            existente.DataHoraFim = new DateTime(2025, 2, 2, 15, 0, 0);
+            var dto = new PenalidadeDTO
+            {
+                Id = existente.Id,
+                DataHorarioInicio = new DateTime(2025, 2, 2, 16, 0, 0),
+                DataHoraFim = new DateTime(2025, 2, 2, 15, 0, 0),
+                Tipo = existente.Tipo,
+                Descricao = existente.Descricao,
+                IdProfessor = existente.IdProfessor,
+                IdResponsavel = existente.IdResponsavel
+            };
 
-            Assert.ThrowsException<ServiceException>(() => penalidadeService.Edit(existente));
+            Assert.ThrowsException<ServiceException>(() => penalidadeService.Edit(dto));
         }
 
         // -- Delete tests --

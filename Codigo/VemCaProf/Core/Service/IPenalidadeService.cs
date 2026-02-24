@@ -6,12 +6,14 @@ namespace Core.Service
 {
     public interface IPenalidadeService
     {
-        int Create(Penalidade penalidade);
+        int Create(PenalidadeDTO penalidade);
         void Delete(int id);
-        void Edit(Penalidade penalidade);
+        void Edit(PenalidadeDTO penalidade);
 
-        IEnumerable<Penalidade> GetAll();
-        Penalidade Get(int id);
-        IEnumerable<Penalidade> GetByPessoaId(int pessoaId);
+        IEnumerable<PenalidadeDTO> GetAll();
+        PenalidadeDTO? Get(int id);
+        IEnumerable<PenalidadeDTO> GetByPessoaId(int pessoaId);
+
+        public PenalidadeDTO returnPenalidadeDTO(Penalidade penalidade);
     }
 }
