@@ -4,55 +4,62 @@
     ViewData["Title"] = "Editar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Styles {
+    <link rel="stylesheet" href="~/css/StyleCreate.css" />
+}
 
-<h1>Editar</h1>
-<h4>Penalidade: @Model.Tipo</h4>
+<div class="penalidade-container">
 
-<h4>Penalidade</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="top-bar">
+        <a asp-action="Index" class="btn-voltar">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+        <h4>Editar Penalidade</h4>
+    </div>
+        <form asp-action="Edit" class="penalidade-form">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
             <div class="form-group">
-                <label asp-for="DataHorarioInicio" class="control-label"></label>
-                <input asp-for="DataHorarioInicio" class="form-control" type="datetime-local"
+                <label asp-for="DataHorarioInicio"></label>
+                <input asp-for="DataHorarioInicio" class="form-control custom-input" type="datetime-local"
                  value="@(Model.DataHorarioInicio == default(System.DateTime) ? string.Empty : Model.DataHorarioInicio.ToString("yyyy-MM-ddTHH:mm"))" />
                 <span asp-validation-for="DataHorarioInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataHoraFim" class="control-label"></label>
-                <input asp-for="DataHoraFim" class="form-control" type="datetime-local"
+                <label asp-for="DataHoraFim"></label>
+                <input asp-for="DataHoraFim" class="form-control custom-input" type="datetime-local"
                        value="@(Model.DataHoraFim.HasValue ? Model.DataHoraFim.Value.ToString("yyyy-MM-ddTHH:mm") : string.Empty)" />
                 <span asp-validation-for="DataHoraFim" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Tipo" class="control-label"></label>
-                <input asp-for="Tipo" class="form-control" />
+                <label asp-for="Tipo"></label>
+                <input asp-for="Tipo" class="form-control custom-input" />
                 <span asp-validation-for="Tipo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
+                <label asp-for="Descricao"></label>
+                <input asp-for="Descricao" class="form-control custom-input" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdProfessor" class="control-label"></label>
-                <select asp-for="IdProfessor" asp-items="@ViewBag.Professores" class="form-control"></select>
+                <label asp-for="IdProfessor"></label>
+                <select asp-for="IdProfessor" asp-items="@ViewBag.Professores" class="form-control custom-input"></select>
                 <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdResponsavel" class="control-label"></label>
-                <select asp-for="IdResponsavel" asp-items="@ViewBag.Responsaveis" class="form-control"></select>
+                <label asp-for="IdResponsavel"></label>
+                <select asp-for="IdResponsavel" asp-items="@ViewBag.Responsaveis" class="form-control custom-input"></select>
                 <span asp-validation-for="IdResponsavel" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <input type="submit" value="Salvar Alterações" class="btn btn-warning btn-lg" />
-                <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a>
+            <button type="submit" value="Salvar Alterações" class="btn btn-primary btn-lg w-100 mt-4 btn-salvar">
+                Editar
+            </button>
             </div>
         </form>
     </div>
-</div>
 <div>
 </div>
 
