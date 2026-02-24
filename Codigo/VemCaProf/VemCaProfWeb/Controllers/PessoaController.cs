@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using VemCaProfWeb.Models;
+using Util;
 
 namespace VemCaProfWeb.Controllers
 {
-    [Authorize] 
+    [Authorize]
     public class PessoaController : Controller
     {
         private readonly IPessoaService _pessoaService;
@@ -29,235 +30,235 @@ namespace VemCaProfWeb.Controllers
             _mapper = mapper;
         }
 
-        // GET: PessoaController
-        public ActionResult Index(string? tipo)
+        // GET: Pessoa
+        //[Authorize(Roles = "Admin")]
+        public IActionResult Index(string? tipo)
         {
-            var listaPessoas = _pessoaService.GetAll();
-            IEnumerable<Pessoa> listaEntities;
-
-            if (!string.IsNullOrEmpty(tipo))
-            {
-                listaEntities = listaPessoas.Where(p => p.TipoPessoa == tipo).ToList();
-            }
-            else
-            {
-                if (User.IsInRole("Admin"))
-                {
-                    // Admin vê professores por padrão
-                    listaEntities = listaPessoas.Where(p => p.TipoPessoa == "P").ToList();
-                }
-                else
-                {
-                    var cpfLogado = User.Identity?.Name;
-                    
-                    if (string.IsNullOrEmpty(cpfLogado))
-                         return RedirectToAction("Index", "Home");// No futuro aqui vai ser o dashboard
-
-                    var pessoa = _pessoaService.GetByCpf(cpfLogado);
-                    
-                    if (pessoa != null)
-                        return RedirectToAction(nameof(Details), new { id = pessoa.Id });
-                    
-                    return RedirectToAction("Index", "Home");
-                }
-            }
-
-            var listaModels = _mapper.Map<List<PessoaModel>>(listaEntities);
-            ViewBag.TipoAtual = tipo; 
-            return View(listaModels);
+            var cpfLogado = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+            var pessoas = _pessoaService.GetListaParaIndex(tipo, cpfLogado, isAdmin);
+            var viewModel = _mapper.Map<List<PessoaModel>>(pessoas);
+            ViewBag.TipoAtual = tipo;
+            return View(viewModel);
         }
-        
-        // GET: PessoaController/Details/5
-        public ActionResult Details(int id)
-        {
- 
-                var entity = _pessoaService.Get(id);
-                var model = _mapper.Map<PessoaModel>(entity);
-                return View(model);
-        }
-        
-        // GET: PessoaController/Create
-        public ActionResult Create(string tipo)
-        {
-            if (User.Identity == null || !User.Identity.IsAuthenticated)
-            {
-                return RedirectToPage("/Account/Login", new { area = "Identity" });
-            }
 
-            if (string.IsNullOrEmpty(tipo) || (tipo != "P" && tipo != "A" && tipo != "R"))
-            {
-                return RedirectToAction("Index", "Home"); 
-            }
-            
-            // Só Admin ou Responsavel podem criar Aluno
-            if (tipo == "A" && !User.IsInRole("Admin") && !User.IsInRole("Responsavel"))
-            {
+        // GET: Pessoa/Details/5
+        public IActionResult Details(int id)
+        {
+            var cpfLogado = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+            var pessoa = _pessoaService.GetParaDetails(id, cpfLogado, isAdmin);
+            if (pessoa == null)
                 return RedirectToAction("Index", "Home");
-            }
 
-            var cpfLogado = User.Identity.Name ?? string.Empty;
-            var model = new PessoaModel
-            {
-                TipoPessoa = tipo
-            };
+            var viewModel = _mapper.Map<PessoaModel>(pessoa);
 
-            if (tipo == "A")
+            if (pessoa.TipoPessoa == "A" && pessoa.ResponsavelId != null)
             {
-                // Se for aluno, o responsavel ira cadastrar
-                var pai = _pessoaService.GetByCpf(cpfLogado);
-                if (pai != null)
+                var responsavel = _pessoaService.Get(pessoa.ResponsavelId.Value);
+                if (responsavel != null)
                 {
-                    model.ResponsavelId = pai.Id;
+                    viewModel.NomeResponsavel = $"{responsavel.Nome} {responsavel.Sobrenome}";
                 }
-            }
-            else
-            {
-                var pessoaExistente = _pessoaService.GetByCpf(cpfLogado);
-                if (pessoaExistente != null)
-                {
-                    return RedirectToAction(nameof(Edit), new { id = pessoaExistente.Id });
-                }
-                // Preenche CPF e Email automaticamente da autenticação
-                model.Cpf = cpfLogado;
-                model.Email = User.FindFirstValue(ClaimTypes.Email) ?? "";
             }
             
-            CarregarViewBags(tipo);
-            return View(model);
-        }
-
-        // POST: PessoaController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(PessoaModel model, IFormFile? arquivoDiploma, IFormFile? arquivoFoto, IFormFile? arquivoDocumento)
-        {
-            ValidarTamanhoArquivo(arquivoDiploma, "arquivoDiploma");
-            ValidarTamanhoArquivo(arquivoFoto, "arquivoFoto");
-
-            if (ModelState.IsValid)
+            // Preencher listas auxiliares para exibição
+            if (pessoa.InverseResponsavel != null)
             {
-                    var pessoaEntity = _mapper.Map<Pessoa>(model);
+                viewModel.NomesDependentes = pessoa.InverseResponsavel
+                    .Select(d => $"{d.Nome} {d.Sobrenome}")
+                    .ToList();
 
-                    pessoaEntity.Diploma = ConvertToBytes(arquivoDiploma);
-                    pessoaEntity.FotoPerfil = ConvertToBytes(arquivoFoto);
-                    pessoaEntity.FotoDocumento = ConvertToBytes(arquivoDocumento);
-                    
-                    _pessoaService.Create(pessoaEntity);
-
-                    return RedirectToAction("Index", "Home");
-
+                viewModel.Dependentes = _mapper.Map<List<PessoaModel>>(pessoa.InverseResponsavel);
             }
 
-            CarregarViewBags(model.TipoPessoa);
-            return View(model);
-        }
-
-        // GET: ProfessorController/Edit/5
-        public ActionResult Edit(int id)
-        {
-
-                var entity = _pessoaService.Get(id);
-
-                if (!User.IsInRole("Admin") && entity.Cpf != User.Identity?.Name)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-
-                var model = _mapper.Map<PessoaModel>(entity);
-                CarregarViewBags(entity.TipoPessoa);
-                return View(model);
-        }
-
-        // POST: PessoaController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, PessoaModel model, IFormFile? arquivoDiploma, IFormFile? arquivoFoto, IFormFile? arquivoDocumento)
-        {
-            if (ModelState.IsValid)
+            if (pessoa.TipoPessoa == "P" && pessoa.IdDisciplinas != null)
             {
-                var pessoaEntity = _mapper.Map<Pessoa>(model);
-
-                if (arquivoDiploma != null) pessoaEntity.Diploma = ConvertToBytes(arquivoDiploma);
-                if (arquivoFoto != null) pessoaEntity.FotoPerfil = ConvertToBytes(arquivoFoto);
-                if (arquivoDocumento != null) pessoaEntity.FotoDocumento = ConvertToBytes(arquivoDocumento);
-
-                _pessoaService.Edit(pessoaEntity);
-
-                return RedirectToAction(nameof(Details), new { id = model.Id });
+                viewModel.NomesDisciplinas = pessoa.IdDisciplinas.Select(d => d.Nome).ToList();
             }
 
-            CarregarViewBags(model.TipoPessoa);
-            return View(model);
+            return View(viewModel);
         }
 
-        // GET: PessoaController/Delete/5
-        public ActionResult Delete(int id)
+        // GET: Pessoa/Create
+        public IActionResult Create(string tipo)
         {
-
-                var entity = _pessoaService.Get(id);
-                
-                if (!User.IsInRole("Admin") && entity.Cpf != User.Identity?.Name)
-                {
-                    // Redireciona silenciosamente se não for o dono
-                    return RedirectToAction("Index", "Home");
-                }
-                
-                var model = _mapper.Map<PessoaModel>(entity);
-                return View(model);
-        }
-        
-        // POST: DisciplinaController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            var entity = _pessoaService.Get(id);
+            var cpfLogado = User.Identity?.Name ?? string.Empty;
+            var emailLogado = User.FindFirstValue(ClaimTypes.Email) ?? "";
+            var isAdmin = User.IsInRole("Admin");
+            var isProfessor = User.IsInRole("Professor");
+            var isResponsavel = User.IsInRole("Responsavel");
             
-            if (!User.IsInRole("Admin") && entity.Cpf != User.Identity?.Name)
+
+            var entity = _pessoaService.GetModelParaCreate(tipo, cpfLogado, emailLogado, isAdmin, isProfessor, isResponsavel);
+
+            if (entity?.Id > 0)
+                return RedirectToAction(nameof(Edit), new { id = entity.Id });
+
+            var viewModel = _mapper.Map<PessoaModel>(entity) ?? new PessoaModel { TipoPessoa = tipo };
+            CarregarDadosParaViewModel(viewModel, tipo);
+            return View(viewModel);
+        }
+
+        // POST: Pessoa/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(PessoaModel viewModel)
+        {
+            if (!ModelState.IsValid)
             {
+                CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+                return View(viewModel);
+            }
+
+            viewModel.Cpf = Methods.RemoveNaoNumericos(viewModel.Cpf);
+            
+            var cpfLogado = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+            var isProfessor = User.IsInRole("Professor");
+            var isResponsavel = User.IsInRole("Responsavel");
+
+            var pessoa = _mapper.Map<Pessoa>(viewModel);
+            pessoa.Diploma = ConvertToBytes(viewModel.ArquivoDiploma);
+            pessoa.FotoPerfil = ConvertToBytes(viewModel.ArquivoFotoPerfil);
+            pessoa.FotoDocumento = ConvertToBytes(viewModel.ArquivoFotoDocumento);
+
+            _pessoaService.CreateSeguro(pessoa, cpfLogado, isAdmin, isProfessor, isResponsavel);
+
+            TempData["Success"] = "Pessoa cadastrada com sucesso!";
+            return RedirectToAction(nameof(Details), new { id = pessoa.Id });
+        }
+
+        // GET: Pessoa/Edit/5
+        public IActionResult Edit(int id)
+        {
+            var cpfLogado = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+            var pessoa = _pessoaService.GetParaEdit(id, cpfLogado, isAdmin);
+            if (pessoa == null)
                 return RedirectToAction("Index", "Home");
+
+            var viewModel = _mapper.Map<PessoaModel>(pessoa);
+            CarregarDadosParaViewModel(viewModel, pessoa.TipoPessoa);
+            return View(viewModel);
+        }
+
+        // POST: Pessoa/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, PessoaModel viewModel)
+        {
+            if (id != viewModel.Id)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+                return View(viewModel);
             }
-            _pessoaService.Delete(id);
+
+            viewModel.Cpf = Methods.RemoveNaoNumericos(viewModel.Cpf);
             
+            var cpfLogado = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+
+            var pessoa = _mapper.Map<Pessoa>(viewModel);
+
+            if (viewModel.ArquivoDiploma != null)
+                pessoa.Diploma = ConvertToBytes(viewModel.ArquivoDiploma);
+            if (viewModel.ArquivoFotoPerfil != null)
+                pessoa.FotoPerfil = ConvertToBytes(viewModel.ArquivoFotoPerfil);
+            if (viewModel.ArquivoFotoDocumento != null)
+                pessoa.FotoDocumento = ConvertToBytes(viewModel.ArquivoFotoDocumento);
+
+            bool sucesso = _pessoaService.EditSeguro(pessoa, cpfLogado, isAdmin);
+            if (!sucesso)
+            {
+                ModelState.AddModelError("", "Não foi possível editar. Verifique as permissões.");
+                CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+                return View(viewModel);
+            }
+
+            TempData["Success"] = "Dados atualizados com sucesso!";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        // GET: Pessoa/Delete/5
+        public IActionResult Delete(int id)
+        {
+            var cpfLogado = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+            var pessoa = _pessoaService.GetParaDelete(id, cpfLogado, isAdmin);
+            if (pessoa == null)
+                return RedirectToAction("Index", "Home");
+
+            var viewModel = _mapper.Map<PessoaModel>(pessoa);
+            return View(viewModel);
+        }
+
+        // POST: Pessoa/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var cpfLogado = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+            bool sucesso = _pessoaService.DeleteSeguro(id, cpfLogado, isAdmin);
+            if (!sucesso)
+            {
+                TempData["Error"] = "Não foi possível excluir.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["Success"] = "Pessoa excluída com sucesso.";
             return RedirectToAction(nameof(Index));
         }
-
-
-        // MÉTODOS AUXILIARES
-        private void CarregarViewBags(string? tipo)
-        //Filtra as listas de cidades, disciplinas e responsáveis conforme o tipo de pessoa
+        public IActionResult MeuPerfil()
         {
-            if (tipo == "P") // Professor
+            var cpfLogado = User.Identity?.Name;
+            var pessoa = _pessoaService.GetByCpf(cpfLogado);
+            if (pessoa == null)
             {
-                ViewBag.ListaDeCidades = new SelectList(_cidadeService.GetAll(), "Id", "Nome");
-                ViewBag.ListaDeDisciplinas = new SelectList(_disciplinaService.GetAll(), "Id", "Nome");
+                // Se não tiver perfil, redireciona para criar baseado na role
+                string tipo = User.IsInRole("Professor") ? "P" :
+                    User.IsInRole("Aluno") ? "A" :
+                    User.IsInRole("Responsavel") ? "R" : "";
+                return RedirectToAction("Create", new { tipo });
             }
+            return RedirectToAction("Details", new { id = pessoa.Id });
+        }
+        
+        /// <summary>
+        /// Metodos Auxiliares para carregar dados de dropdowns e converter arquivos para bytes
+        /// </summary>
+
+        private void CarregarDadosParaViewModel(PessoaModel viewModel, string? tipo)
+        {
+            if (tipo == null) return;
             
-            else if (tipo == "R") // Responsável
+            if (tipo == "P" || tipo == "R")
             {
-                ViewBag.ListaDeCidades = new SelectList(_cidadeService.GetAll(), "Id", "Nome");
+                viewModel.Cidades = new SelectList(_cidadeService.GetAll(), "Id", "Nome", viewModel.IdCidade);
+            }
+
+            if (tipo == "P")
+            {
+                viewModel.Disciplinas = new SelectList(_disciplinaService.GetAll(), "Id", "Nome", viewModel.IdDisciplinas);
+            }
+
+            if (tipo == "A" && User.IsInRole("Admin"))
+            {
+                var responsaveis = _pessoaService.GetAllResponsaveis();
+                viewModel.Responsaveis = new SelectList(responsaveis, "Id", "Nome", viewModel.ResponsavelId);
             }
         }
 
-        private void ValidarTamanhoArquivo(IFormFile? file, string fieldName)
-        {
-            const long maxSizeBytes = 64 * 1024; // ~64KB algo perto disso, é isso que o tipo BLOB aceita!
-            if (file != null && file.Length > maxSizeBytes)
-            {
-                ModelState.AddModelError(fieldName, $"O arquivo excede o limite de 64KB.");
-            }
-        }
-
-        //Faz a conversão do arquivo enviado para um array de bytes, já que a view não aceita byte[]!
         private byte[]? ConvertToBytes(IFormFile? file)
         {
             if (file == null) return null;
-            
-            using (var ms = new MemoryStream())
-            {
-                file.CopyTo(ms);
-                return ms.ToArray();
-            }
+            using var ms = new MemoryStream();
+            file.CopyTo(ms);
+            return ms.ToArray();
         }
     }
 }
