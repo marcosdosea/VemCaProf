@@ -78,7 +78,6 @@ public class Program
 
         app.UseRouting();
         
-        // Ordem correta dos Middlewares
         app.UseAuthentication(); 
         app.UseAuthorization();
 
