@@ -58,12 +58,11 @@ namespace VemCaProfAPI.Controllers
 
         // PUT api/<AulaController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] string value)
+        public ActionResult Put(int id, [FromBody] AulaDTO aulaDTO)
         {
-            if (ModelState.IsValid)
-                return BadRequest("Dados inválidos");
 
-            var aula = _mapper.Map<AulaDTO>(value);
+            aulaDTO.Id = id;
+            var aula = _mapper.Map<AulaDTO>(aulaDTO);
             if (aula == null)
                 return NotFound();
 

@@ -23,13 +23,25 @@ namespace Service
         ///</summary>
         ///<param name="penalidade"></param>
         ///<returns> id do autor </returns>
-        public int Create(Penalidade penalidade)
+        public int Create(PenalidadeDTO penalidadeDTO)
         {
             try
             {
-                VerificarPessoaExistente(penalidade);
-                VerificarData(penalidade);
+                VerificarPessoaExistente(penalidadeDTO);
+                VerificarData(penalidadeDTO);
                 //TODO: verificar o limite de carecteres da descrição
+
+                
+                var penalidade = new Penalidade
+                {
+                    DataHorarioInicio = penalidadeDTO.DataHorarioInicio,
+                    DataHoraFim = penalidadeDTO.DataHoraFim,
+                    Tipo = penalidadeDTO.Tipo,
+                    Descricao = penalidadeDTO.Descricao,
+                    IdProfessor = penalidadeDTO.IdProfessor,
+                    IdResponsavel = penalidadeDTO.IdResponsavel
+                };
+
                 _context.Penalidades.Add(penalidade);
                 _context.SaveChanges();
 
@@ -68,24 +80,30 @@ namespace Service
         /// <summary>
         /// Editar penalidade existente
         /// </summary>
-        /// <param name="penalidadeNova"></param>
-        public void Edit(Penalidade penalidadeNova)
+        /// <param name="penalidadeNovaDTO"></param>
+        public void Edit(PenalidadeDTO penalidadeNovaDTO)
         {
          try{
-                VerificarPessoaExistente(penalidadeNova);
-                var penalidadeExistente = Get(penalidadeNova.Id);
+                VerificarPessoaExistente(penalidadeNovaDTO);
+
+                var penalidadeExistente = _context.Penalidades.Find(penalidadeNovaDTO.Id);
                  if (penalidadeExistente == null)
                 throw new ServiceException("Penalidade não encontrada.");
-                VerificarData(penalidadeNova);
 
-                penalidadeExistente.DataHorarioInicio = penalidadeNova.DataHorarioInicio;
-                penalidadeExistente.DataHoraFim = penalidadeNova.DataHoraFim;
-                penalidadeExistente.Tipo = penalidadeNova.Tipo;
-                penalidadeExistente.Descricao = penalidadeNova.Descricao;
-                penalidadeExistente.IdProfessor = penalidadeNova.IdProfessor;
-                penalidadeExistente.IdResponsavel = penalidadeNova.IdResponsavel;
-           
+                VerificarData(penalidadeNovaDTO);
+
+                penalidadeExistente.DataHorarioInicio = penalidadeNovaDTO.DataHorarioInicio;
+                penalidadeExistente.DataHoraFim = penalidadeNovaDTO.DataHoraFim;
+                penalidadeExistente.Tipo = penalidadeNovaDTO.Tipo;
+                penalidadeExistente.Descricao = penalidadeNovaDTO.Descricao;
+                penalidadeExistente.IdProfessor = penalidadeNovaDTO.IdProfessor;
+                penalidadeExistente.IdResponsavel = penalidadeNovaDTO.IdResponsavel;
+                penalidadeExistente.NomeProfessor = penalidadeNovaDTO.NomeProfessor;
+                penalidadeExistente.NomeResponsavel = penalidadeNovaDTO.NomeResponsavel;
+
+                _context.Penalidades.Update(penalidadeExistente);
                 _context.SaveChanges();
+
           }
           catch (ServiceException)
           {
@@ -99,12 +117,25 @@ namespace Service
         ///   Buscar todas as penalidades
         /// </summary>
         /// <returns>Lista de penalidades</returns>
-        public IEnumerable<Penalidade> GetAll()
+        public IEnumerable<PenalidadeDTO> GetAll()
         {
-            return _context.Penalidades
+            var penalidades = _context.Penalidades
                 .Include(p => p.IdProfessorNavigation)
                 .Include(p => p.IdResponsavelNavigation)
                 .ToList();
+
+            return penalidades.Select(p => new PenalidadeDTO
+            {
+                Id = p.Id,
+                DataHorarioInicio = p.DataHorarioInicio,
+                DataHoraFim = p.DataHoraFim ?? DateTime.MinValue,
+                Tipo = p.Tipo,
+                Descricao = p.Descricao,
+                IdProfessor = p.IdProfessor,
+                IdResponsavel = p.IdResponsavel,
+                NomeProfessor = p.IdProfessorNavigation?.Nome ?? string.Empty,
+                NomeResponsavel = p.IdResponsavelNavigation?.Nome ?? string.Empty
+            }).ToList();
 
         }
 
@@ -114,10 +145,13 @@ namespace Service
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Penalidade Get(int id)
+        public PenalidadeDTO? Get(int id)
         {
-            return _context.Penalidades.Find(id);
+            var penalidade = _context.Penalidades.Find(id);
+            if (penalidade == null)
+                return null;
 
+            return returnPenalidadeDTO(penalidade);
         }
 
         // <summary>
@@ -126,7 +160,7 @@ namespace Service
         /// <param name="penalidade"></param>
         /// <returns></returns>
         /// <exception cref="ServiceException"></exception>"
-        public void VerificarPessoaExistente(Penalidade penalidade)
+        public void VerificarPessoaExistente(PenalidadeDTO penalidade)
         {
             if (penalidade == null)
                 throw new ServiceException("Os dados não podem ser nulos");
@@ -146,7 +180,7 @@ namespace Service
         ///<param name="penalidade"></param>
         ///<returns></returns>
         ///<exception cref="ServiceException"></exception>
-        public void VerificarData(Penalidade penalidade)
+        public void VerificarData(PenalidadeDTO penalidade)
         {
             if (penalidade.DataHorarioInicio >= penalidade.DataHoraFim)
                 throw new ServiceException("Data de início deve ser anterior à data de fim.");
@@ -157,19 +191,46 @@ namespace Service
         /// </summary>
         /// <param name="pessoaId"></param>
         /// <returns></returns>
-        public IEnumerable<Penalidade> GetByPessoaId(int pessoaId)
+        public IEnumerable<PenalidadeDTO> GetByPessoaId(int pessoaId)
         {
-            var penalidades = _context.Penalidades
+            var penalidade = _context.Penalidades
                 .AsNoTracking()
                 .Where(p => p.IdProfessor == pessoaId || p.IdResponsavel == pessoaId);
-            if(!penalidades.Any())
+            if(!penalidade.Any())
                 throw new ServiceException("Nenhuma penalidade encontrada para essa pessoa.");
 
-
-            return penalidades;
+            return penalidade.Select(p => new PenalidadeDTO
+            {
+                Id = p.Id,
+                DataHorarioInicio = p.DataHorarioInicio,
+                DataHoraFim = p.DataHoraFim ?? DateTime.MinValue,
+                Tipo = p.Tipo,
+                Descricao = p.Descricao,
+                IdProfessor = p.IdProfessor,
+                IdResponsavel = p.IdResponsavel,
+                NomeProfessor = p.NomeProfessor,
+                NomeResponsavel = p.NomeResponsavel
+            }).ToList();
 
         }
 
+        public PenalidadeDTO  returnPenalidadeDTO(Penalidade penalidade)
+        {
 
-    }
+            return new PenalidadeDTO
+            {
+                Id = penalidade.Id,
+                DataHorarioInicio = penalidade.DataHorarioInicio,
+                DataHoraFim = penalidade.DataHoraFim ?? DateTime.MinValue,
+                Tipo = penalidade.Tipo,
+                Descricao = penalidade.Descricao,
+                IdProfessor = penalidade.IdProfessor,
+                IdResponsavel = penalidade.IdResponsavel,
+                NomeProfessor = penalidade.NomeProfessor,
+                NomeResponsavel = penalidade.NomeResponsavel
+            };
+        }
+
+
+     }
 }

@@ -47,7 +47,7 @@ namespace VemCaProfWeb.Controllers
         //GET: PenalidadeController/Details/5
         public ActionResult Details(int id)
         {
-            Penalidade penalidade = _penalidadeService.Get(id);
+            PenalidadeDTO penalidade = _penalidadeService.Get(id);
 
             if (penalidade == null)
             {
@@ -83,7 +83,7 @@ namespace VemCaProfWeb.Controllers
             }
             try
             {
-                var penalidade = _mapper.Map<Penalidade>(penalidadeM);
+                var penalidade = _mapper.Map<PenalidadeDTO>(penalidadeM);
                 _penalidadeService.Create(penalidade);
 
                 TempData["SuccessMessage"] = "Penalidade cadastrada com sucesso!";
@@ -109,9 +109,9 @@ namespace VemCaProfWeb.Controllers
         public IActionResult Edit(int id)
         {
             RecarregarViewBags();
-            Penalidade penalidade = _penalidadeService.Get(id);
-            if (penalidade == null) return NotFound();
-            PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);                                 
+            PenalidadeDTO penalidadeDTO = _penalidadeService.Get(id);
+            if (penalidadeDTO == null) return NotFound();
+            PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidadeDTO);                                 
             return View(penalidadeModel);
         }
 
@@ -129,8 +129,8 @@ namespace VemCaProfWeb.Controllers
             }
             try
             {
-                var penalidade = _mapper.Map<Penalidade>(penalidadeModel);
-                _penalidadeService.Edit(penalidade);
+                var penalidadeDTO = _mapper.Map<PenalidadeDTO>(penalidadeModel);
+                _penalidadeService.Edit(penalidadeDTO);
 
                 TempData["SuccessMessage"] = "Penalidade atualizada com sucesso!";
                 return RedirectToAction(nameof(Index));
@@ -148,8 +148,8 @@ namespace VemCaProfWeb.Controllers
         // GET: PenalidadeController/Delete/5
         public ActionResult Delete(int id)
         {
-            
-            Penalidade penalidade = _penalidadeService.Get(id);
+
+            PenalidadeDTO penalidade = _penalidadeService.Get(id);
             if (penalidade == null) return NotFound();
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
             return View(penalidadeModel);
