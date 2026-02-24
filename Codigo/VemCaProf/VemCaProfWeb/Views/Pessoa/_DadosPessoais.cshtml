@@ -43,7 +43,7 @@
 <div class="row">
     <div class="col-md-4 mb-3">
         <label asp-for="Telefone" class="form-label fw-bold"></label>
-        <input asp-for="Telefone" class="form-control" placeholder="(00) 00000-0000" id="telefone" />
+        <input asp-for="Telefone" class="form-control" placeholder="(00) 00000-0000"/>
         <span asp-validation-for="Telefone" class="text-danger"></span>
     </div>
     <div class="col-md-4 mb-3">
@@ -68,7 +68,7 @@
 <div class="row">
     <div class="col-md-3 mb-3">
         <label asp-for="Cep" class="form-label fw-bold">CEP</label>
-        <input asp-for="Cep" class="form-control" placeholder="00000-000" id="cep" />
+        <input asp-for="Cep" class="form-control" placeholder="00000-000"/>
         <span asp-validation-for="Cep" class="text-danger"></span>
     </div>
     <div class="col-md-7 mb-3">
@@ -91,12 +91,12 @@
     </div>
     <div class="col-md-3 mb-3">
         <label asp-for="Cidade" class="form-label fw-bold"></label>
-        <input asp-for="Cidade" class="form-control" />
+        <input asp-for="Cidade" class="form-control" readonly />
         <span asp-validation-for="Cidade" class="text-danger"></span>
     </div>
     <div class="col-md-2 mb-3">
         <label asp-for="Estado" class="form-label fw-bold">UF</label>
-        <input asp-for="Estado" class="form-control" maxlength="2" placeholder="EX: SE" />
+        <input asp-for="Estado" class="form-control" maxlength="2" placeholder="EX: SE", readonly />
         <span asp-validation-for="Estado" class="text-danger"></span>
     </div>
     <div class="col-md-4 mb-3">

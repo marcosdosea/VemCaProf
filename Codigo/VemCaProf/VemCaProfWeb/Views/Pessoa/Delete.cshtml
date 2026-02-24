@@ -4,6 +4,9 @@
     ViewData["Title"] = "Excluir Conta";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Styles {
+    <link rel="stylesheet" href="~/css/pessoa.css" asp-append-version="true" />
+}
 
 <h1>Excluir Conta</h1>
 
@@ -19,23 +22,39 @@
     <dl class="row">
         <dt class="col-sm-2">Nome</dt>
         <dd class="col-sm-10">@Model.Nome @Model.Sobrenome</dd>
-
         <dt class="col-sm-2">CPF</dt>
         <dd class="col-sm-10">@Model.Cpf</dd>
-
         <dt class="col-sm-2">Email</dt>
         <dd class="col-sm-10">@Model.Email</dd>
-
         <dt class="col-sm-2">Tipo</dt>
         <dd class="col-sm-10">
             @(Model.TipoPessoa == "P" ? "Professor" : (Model.TipoPessoa == "A" ? "Aluno" : "Responsável"))
         </dd>
     </dl>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        
-        <input type="submit" value="Confirmar Exclusão" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </form>
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@Model.Id">
+        Excluir
+    </button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja excluir este item? Esta ação não pode ser desfeita.
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" id="deleteId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
