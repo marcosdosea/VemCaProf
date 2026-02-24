@@ -13,11 +13,15 @@ namespace Core.Service
 
         void Delete(int id);
 
-        // --- MÉTODOS DE BUSCA ---
-
+        /// <summary>
+        /// Metodos de Busca
+        /// </summary>
+        
         Pessoa Get(int id);
         
-        Pessoa GetByCpf(string cpf);
+        Pessoa? GetByCpf(string? cpf);
+        
+        Pessoa? GetByEmail(string email);
         
         IEnumerable<Pessoa> GetAll();
         
@@ -26,5 +30,26 @@ namespace Core.Service
         IEnumerable<Pessoa> GetAllProfessores();
 
         IEnumerable<Pessoa> GetAllResponsaveis();
+        
+        IEnumerable<Pessoa> GetListaParaIndex(string? tipo, string? cpfLogado, bool isAdmin);
+        
+        Pessoa? GetModelParaCreate(string tipo, string cpfLogado, string emailLogado, bool isAdmin, bool isProfessor, bool isResponsavel);
+        
+        void CreateSeguro(Pessoa pessoa, string? cpfLogado, bool isAdmin, bool isProfessor, bool isResponsavel);
+        
+        Pessoa? GetParaDetails(int id, string? cpfLogado, bool isAdmin);
+        
+        Pessoa? GetParaEdit(int id, string? cpfLogado, bool isAdmin);
+        
+        bool EditSeguro(Pessoa pessoa, string? cpfLogado, bool isAdmin);
+        
+        Pessoa? GetParaDelete(int id, string? cpfLogado, bool isAdmin);
+        
+        bool DeleteSeguro(int id, string? cpfLogado, bool isAdmin);
+        
+        bool ResponsavelPrecisaCadastrarAlunos(string? cpfLogado);
+        
+        public void AtualizarEmailPessoa(int pessoaId, string novoEmail);
     }
+    
 }

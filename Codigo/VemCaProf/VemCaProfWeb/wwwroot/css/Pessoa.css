@@ -1,0 +1,367 @@
+/* ===== VARIÁVEIS DO DESIGN SYSTEM (copiadas do seu :root) ===== */
+:root {
+    --background: 210 20% 98%;
+    --foreground: 215 25% 15%;
+    --primary: 213 70% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 30% 95%;
+    --secondary-foreground: 215 25% 15%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 15% 50%;
+    --destructive: 0 72% 55%;
+    --error-bg: 0 72% 97%;
+    --border: 214 25% 88%;
+    --ring: 213 70% 45%;
+    --radius: 0.5rem;
+    --label: 213 70% 45%;
+    --section-title: 215 25% 15%;
+    --success: 142 60% 40%;
+    --warning: 45 100% 50%; /* adicionado para completar */
+}
+
+/* ===== ESTILOS DOS FORMULÁRIOS ===== */
+
+/* Labels */
+.form-label {
+    font-weight: 600;
+    color: hsl(var(--label));
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+/* Adiciona asterisco para campos obrigatórios (exceto campos opcionais) */
+.form-label[for*="Nome"]::after,
+.form-label[for*="Sobrenome"]::after,
+.form-label[for*="Cpf"]::after,
+.form-label[for*="Email"]::after,
+.form-label[for*="Telefone"]::after,
+.form-label[for*="DataNascimento"]::after,
+.form-label[for*="Genero"]::after,
+.form-label[for*="Cep"]::after,
+.form-label[for*="Rua"]::after,
+.form-label[for*="Numero"]::after,
+.form-label[for*="Bairro"]::after,
+.form-label[for*="Cidade"]::after,
+.form-label[for*="Estado"]::after,
+.form-label[for*="QuantidadeDeDependentes"]::after,
+.form-label[for*="DescricaoProfessor"]::after {
+    content: " *";
+    color: hsl(var(--destructive));
+    display: inline;
+}
+
+/* Remove asterisco de campos não obrigatórios */
+.form-label[for*="Complemento"]::after,
+.form-label[for*="Arquivo"]::after,
+.form-label[for*="Libras"]::after,
+.form-label[for*="AlunoDeMenor"]::after,
+.form-label[for*="Atipico"]::after {
+    content: "";
+}
+
+/* Inputs, selects e textareas */
+.form-control, .form-select {
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    padding: 0.6rem 0.75rem;
+    background-color: hsl(var(--background));
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: hsl(var(--ring));
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem hsla(var(--ring), 0.25);
+}
+
+/* Campos readonly */
+.form-control[readonly] {
+    background-color: hsl(var(--muted));
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+/* Mensagens de erro */
+.text-danger, .field-validation-error {
+    color: hsl(var(--destructive)) !important;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Alertas de erro no summary */
+.alert-danger {
+    background-color: hsl(var(--error-bg));
+    border-color: hsl(var(--destructive));
+    color: hsl(var(--destructive));
+    border-radius: var(--radius);
+}
+
+/* Títulos das seções */
+h4.text-secondary, h4.text-primary, h4.text-success, h4.text-dark {
+    color: hsl(var(--section-title)) !important;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid hsl(var(--border));
+}
+
+h4:first-of-type {
+    margin-top: 0;
+}
+
+/* Botões */
+.btn-primary {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-radius: var(--radius);
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+
+.btn-primary:hover {
+    background-color: hsl(var(--primary) / 0.9);
+    border-color: hsl(var(--primary) / 0.9);
+}
+
+.btn-secondary {
+    background-color: hsl(var(--secondary));
+    border-color: hsl(var(--border));
+    color: hsl(var(--secondary-foreground));
+    border-radius: var(--radius);
+    padding: 0.6rem 1.5rem;
+}
+
+/* Checkbox e switch */
+.form-check-input:checked {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+}
+
+.form-switch .form-check-input:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/* Card dos campos específicos (Aluno, Professor, Responsável) */
+.p-3.bg-light.border.rounded {
+    background-color: hsl(var(--muted)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: var(--radius) !important;
+    padding: 1.5rem !important;
+    margin-top: 1.5rem;
+}
+
+/* Ajuste da borda colorida conforme o tipo (usando !important para sobrescrever o style inline) */
+.p-3.bg-light.border.rounded[style*="border-left: 5px solid #198754"] {
+    border-left-color: hsl(var(--success)) !important;
+}
+
+.p-3.bg-light.border.rounded[style*="border-left: 5px solid #ffc107"] {
+    border-left-color: hsl(var(--warning)) !important;
+}
+
+/* Tabelas (para listagem de dependentes) */
+.table {
+    background-color: hsl(var(--background));
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: hsl(var(--muted) / 0.3);
+}
+
+/* Badges */
+.badge.bg-info {
+    background-color: hsl(var(--primary) / 0.2) !important;
+    color: hsl(var(--primary)) !important;
+    border: 1px solid hsl(var(--primary) / 0.3);
+}
+
+/* Toasts (se for usar) */
+.toast {
+    background-color: hsl(var(--background));
+    border-left: 4px solid;
+}
+
+.toast.bg-success {
+    border-left-color: hsl(var(--success));
+}
+
+.toast.bg-danger {
+    border-left-color: hsl(var(--destructive));
+}
+
+/* Modal de exclusão */
+.modal-content {
+    border-radius: var(--radius);
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid hsl(var(--border));
+    background-color: hsl(var(--muted));
+}
+
+.modal-footer {
+    border-top: 1px solid hsl(var(--border));
+}
+
+/* ===== ESTILOS PARA A VIEW DETAILS ===== */
+
+/* Cartão principal */
+.card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Títulos das seções */
+.card-body .border-bottom {
+    border-bottom: 2px solid hsl(var(--border)) !important;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    font-weight: 600;
+    color: hsl(var(--section-title));
+}
+
+/* Linhas de definição */
+.row dt {
+    font-weight: 600;
+    color: hsl(var(--label));
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.row dd {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Badges de dependentes */
+.badge.bg-info {
+    background-color: hsl(var(--primary) / 0.1) !important;
+    color: hsl(var(--primary)) !important;
+    border: 1px solid hsl(var(--primary) / 0.2);
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 2rem;
+}
+
+/* Tabela de gerenciamento de acessos */
+.table-responsive {
+    background-color: hsl(var(--background));
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-bottom: none;
+    padding: 0.75rem;
+}
+
+.table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Botão "Ativar Acesso" */
+.btn-primary.btn-sm {
+    background-color: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    color: white;
+    border-radius: 2rem;
+    padding: 0.25rem 1rem;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-primary.btn-sm:hover {
+    background-color: hsl(var(--primary) / 0.9);
+    border-color: hsl(var(--primary) / 0.9);
+}
+
+/* Card de ativação de acesso (para aluno) */
+.card.border-primary {
+    border: 1px solid hsl(var(--primary) / 0.3) !important;
+    background-color: hsl(var(--primary) / 0.02);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.card.border-primary .card-title {
+    color: hsl(var(--primary));
+}
+
+/* Botões de ação (Editar, Voltar, Excluir) */
+.mt-3 .btn {
+    border-radius: 2rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-warning {
+    background-color: #fbbf24;
+    border-color: #fbbf24;
+    color: #1e293b;
+}
+
+.btn-warning:hover {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
+    color: #fff;
+}
+
+.btn-danger {
+    background-color: hsl(var(--destructive));
+    border-color: hsl(var(--destructive));
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: hsl(var(--destructive) / 0.9);
+    border-color: hsl(var(--destructive) / 0.9);
+}
+
+/* Alerta de informação */
+.alert-info {
+    background-color: hsl(var(--primary) / 0.05);
+    border-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary));
+    border-radius: 0.5rem;
+}
+
+.alert-info a {
+    color: hsl(var(--primary));
+    font-weight: 600;
+    text-decoration: underline;
+}

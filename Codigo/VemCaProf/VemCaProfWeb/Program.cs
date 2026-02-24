@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using VemCaProfWeb.Areas.Identity.Data;
+using VemCaProfWeb.Filter;
 using VemCaProfWeb.Mappers;
 
 namespace VemCaProfWeb;
@@ -15,7 +16,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // 1. SERVIÇOS
-        builder.Services.AddControllersWithViews();
+        builder.Services.AddControllersWithViews(options =>
+        {
+            options.Filters.Add<VerificaPerfilFilter>();
+        });
         
         
         // Injeções de Dependência
