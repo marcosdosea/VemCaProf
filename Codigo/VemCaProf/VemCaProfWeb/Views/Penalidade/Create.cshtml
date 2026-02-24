@@ -6,58 +6,59 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/penalidade.css" />
+    <link rel="stylesheet" href="~/css/StyleCreate.css" />
 }
 
-<h1>Criar</h1>
+<div class="penalidade-container">
 
-<h4>Penalidade</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="top-bar">
+        <a asp-action="Index" class="btn-voltar">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+        <h4>Nova Penalidade</h4>
+    </div>
+
+ <form asp-action="Create" class="penalidade-form">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="form-group">
+            <label asp-for="DataHorarioInicio"></label>
+            <input asp-for="DataHorarioInicio" type="datetime-local" class="form-control custom-input" />
+            <span asp-validation-for="DataHorarioInicio" class="text-danger"></span>
+        </div>
             <div class="form-group">
-                <label asp-for="DataHorarioInicio" class="control-label"></label>
-                <input asp-for="DataHorarioInicio" type="datetime-local" class="form-control" />
-                <span asp-validation-for="DataHorarioInicio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DataHoraFim" class="control-label"></label>
-                <input asp-for="DataHoraFim" type="datetime-local" class="form-control" />
+                <label asp-for="DataHoraFim"></label>
+                <input asp-for="DataHoraFim" type="datetime-local" class="form-control custom-input" />
                 <span asp-validation-for="DataHoraFim" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Tipo" class="control-label"></label>
-                <input asp-for="Tipo" class="form-control" />
+            <label asp-for="Tipo"></label>
+            <input asp-for="Tipo" class="form-control custom-input" />
                 <span asp-validation-for="Tipo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
+                <label asp-for="Descricao"></label>
+            <input asp-for="Descricao" class="form-control custom-input" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdProfessor" class="control-label"></label>
-                <select asp-for="IdProfessor" asp-items="@ViewBag.Professores" class="form-control"></select>
+            <label asp-for="IdProfessor"></label>
+                <select asp-for="IdProfessor" asp-items="@ViewBag.Professores" class="form-control custom-input"></select>
                 <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdResponsavel" class="control-label"></label>
-                <select asp-for="IdResponsavel" asp-items="@ViewBag.Responsaveis" class="form-control"></select>
+            <label asp-for="IdResponsavel"></label>
+            <select asp-for="IdResponsavel" asp-items="@ViewBag.Responsaveis" class="form-control custom-input"></select>
                 <span asp-validation-for="IdResponsavel" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Salvar Alterações" class="btn btn-warning btn-lg" />
-                <a asp-action="Index" class="btn btn-secondary btn-lg">Voltar para Lista</a>
-            </div>
+           <small class="text-muted">*Campos obrigatórios</small>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 btn-salvar">
+            Salvar
+        </button>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Voltar para a lista</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

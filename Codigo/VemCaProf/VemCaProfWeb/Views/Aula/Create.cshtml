@@ -1,7 +1,7 @@
 ﻿@model VemCaProfWeb.Models.AulaModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,15 +10,15 @@
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Edit</h1>
+<h1>Create</h1>
 
 <h4>Aula</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+           
             <div class="form-group">
                 <label asp-for="DataHorarioInicio" class="control-label"></label>
                 <input asp-for="DataHorarioInicio" class="form-control" />
@@ -44,11 +44,6 @@
                 <label asp-for="MetodoPagamento" class="control-label"></label>
                 <input asp-for="MetodoPagamento" class="form-control" />
                 <span asp-validation-for="MetodoPagamento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" readonly />
-                <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdDisciplina" class="control-label"></label>

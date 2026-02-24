@@ -219,4 +219,39 @@ public class CidadeService : ICidadeService
             throw new ServiceException($"Erro ao excluir cidade ID {id}", ex);
         }
     }
+    /// <summary>
+    /// Busca uma lista de cidades cujo nome começa com o termo fornecido, limitado a um número máximo de resultados    
+    /// </summary>
+    /// <param name="termo">termo de busca para o nome da cidade</param>"
+    /// <returns>lista de cidades sugeridas</returns>
+    public IEnumerable<CidadeDTO> AutocompleteByNome(string termo, int limite = 10)
+    {
+        try
+        {
+            termo = (termo ?? "").Trim();
+
+            if (termo.Length < 2)
+                return new List<CidadeDTO>();
+
+            if (limite <= 0) limite = 10;
+            if (limite > 50) limite = 50;
+
+            return _context.Cidades
+                .AsNoTracking()
+                .Where(c => EF.Functions.Like(c.Nome, termo + "%"))
+                .OrderBy(c => c.Nome)
+                .Take(limite)
+                .Select(c => new CidadeDTO
+                {
+                    Id = c.Id,
+                    Nome = c.Nome,
+                    Estado = c.Estado
+                })
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            throw new ServiceException("Erro ao buscar sugestões de cidades", ex);
+        }
+    }
 }

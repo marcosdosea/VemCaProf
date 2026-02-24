@@ -1,0 +1,128 @@
+﻿/* ===== Layout geral ===== */
+body {
+    background-color: #f4f8fc;
+}
+
+/* Títulos */
+h1,
+h2,
+h3,
+h4 {
+    color: #033B6A;
+    font-weight: 600;
+    margin: 5px 35px
+}
+/* Textos/ paragrafos etc*/
+
+.secondary-text {
+    color: #033B6A;
+    margin: 5px 35px
+}
+/* Cards / áreas */
+.container,
+.row {
+    margin-top: 20px;
+}
+
+/* ===== Botões ===== */
+.btn-primary {
+    background-color: #4461F2;
+    border-color: #033B6A;
+    margin:5px 35px
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+.details-icon svg {
+    width: 32px;
+    height: 27px;
+
+}
+.edit-icon svg {
+    width: 20px;
+    height: 27px;
+    
+}
+.delete-icon svg {
+    width: 19px;
+    height: 27px;
+}
+/* ===== Botão para delete ===== */
+
+.delete-icon:hover {
+    color: darkred;
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+/* Botões do Index (Edit / Details / Delete) */
+a.btn,
+.btn {
+    border-radius: 10px;
+}
+
+/* Links */
+a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0a58ca;
+    text-decoration: none;
+}
+
+/* ===== Tabela do Index ===== */
+table {
+   
+    overflow: hidden;
+}
+
+table thead {
+    background-color: #0d6efd; /*Azul*/
+    color: #ffffff;
+}
+
+    table th,
+    table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+.penalidades-container {
+    width: 95%;
+    margin: 40px auto;
+    border: 2px solid #5c8ed6;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Tabela base */
+.penalidades-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+    /* Cabeçalho */
+    .penalidades-table thead {
+        
+    }
+
+    .penalidades-table th {
+        padding: 15px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #5c8ed6;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    /* Linhas */
+    .penalidades-table td {
+        padding: 15px;
+        border-bottom: 2px solid #c0d4f5;
+                
+    }

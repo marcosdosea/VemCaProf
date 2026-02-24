@@ -32,6 +32,14 @@ namespace VemCaProfWeb.Controllers
         {
             var listaPenalidades = _penalidadeService.GetAll();
             var listaPenalidadeModel = _mapper.Map<IEnumerable<PenalidadeModel>>(listaPenalidades);
+            
+            foreach (var penalidade in listaPenalidadeModel)
+            {
+                var professor = _pessoaService.Get(penalidade.IdProfessor);
+                var responsavel = _pessoaService.Get(penalidade.IdResponsavel);
+                penalidade.NomeProfessor = professor?.Nome;
+                penalidade.NomeResponsavel = responsavel?.Nome;
+            }
             return View(listaPenalidadeModel);
 
         }
@@ -39,13 +47,17 @@ namespace VemCaProfWeb.Controllers
         //GET: PenalidadeController/Details/5
         public ActionResult Details(int id)
         {
-            Penalidade penalidade = _penalidadeService.Get(id);
+            PenalidadeDTO penalidade = _penalidadeService.Get(id);
 
             if (penalidade == null)
             {
                 return NotFound();
             }
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
+            var professor = _pessoaService.Get(penalidadeModel.IdProfessor);
+            var responsavel = _pessoaService.Get(penalidadeModel.IdResponsavel);
+            penalidadeModel.NomeProfessor = professor?.Nome;
+            penalidadeModel.NomeResponsavel = responsavel?.Nome;
             return View(penalidadeModel);
 
         }
@@ -53,10 +65,7 @@ namespace VemCaProfWeb.Controllers
         // GET: Penalidade/Create
         public IActionResult Create()
         {
-            var todasPessoas = _pessoaService.GetAll();
-
-            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
-            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
+            RecarregarViewBags();
             return View();
         }
 
@@ -68,14 +77,13 @@ namespace VemCaProfWeb.Controllers
             if (!ModelState.IsValid)
             {
                 // Filtra a lista geral para pegar apenas Professores (P) e Responsáveis (R)
-                
-        
-                
+                RecarregarViewBags();
                 return View(penalidadeM);
+                             
             }
             try
             {
-                var penalidade = _mapper.Map<Penalidade>(penalidadeM);
+                var penalidade = _mapper.Map<PenalidadeDTO>(penalidadeM);
                 _penalidadeService.Create(penalidade);
 
                 TempData["SuccessMessage"] = "Penalidade cadastrada com sucesso!";
@@ -85,16 +93,14 @@ namespace VemCaProfWeb.Controllers
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
                 // Filtra a lista geral para pegar apenas Professores (P) e Responsáveis (R)
-                var todasPessoas = _pessoaService.GetAll();
-        
-                ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
-                ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
+                RecarregarViewBags();
                 return View(penalidadeM);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao criar penalidade");
                 TempData["ErrorMessage"] = "Erro ao criar penalidade";
+                RecarregarViewBags();
                 return View(penalidadeM);
             }
         }
@@ -102,16 +108,10 @@ namespace VemCaProfWeb.Controllers
         // GET: PenalidadeController/Edit/5
         public IActionResult Edit(int id)
         {
-            if (id == null) return NotFound();
-
-            var todasPessoas = _pessoaService.GetAll();
-
-            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
-            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
-
-            Penalidade penalidade = _penalidadeService.Get(id);
-            PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
-                                   
+            RecarregarViewBags();
+            PenalidadeDTO penalidadeDTO = _penalidadeService.Get(id);
+            if (penalidadeDTO == null) return NotFound();
+            PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidadeDTO);                                 
             return View(penalidadeModel);
         }
 
@@ -119,29 +119,38 @@ namespace VemCaProfWeb.Controllers
         // POST: PenalidadeController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id,PenalidadeModel penalidadeModel)
+        public ActionResult Edit(PenalidadeModel penalidadeModel)
         {
-            if (ModelState.IsValid)
-            {
-                var penalidade = _mapper.Map<Penalidade>(penalidadeModel);
-                _penalidadeService.Edit(penalidade);
-
-            }
-
-            var todasPessoas = _pessoaService.GetAll();
-
-            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
-            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
-            return View(penalidadeModel);
             
+            if (!ModelState.IsValid)
+            {
+                RecarregarViewBags();
+                return View(penalidadeModel);
+            }
+            try
+            {
+                var penalidadeDTO = _mapper.Map<PenalidadeDTO>(penalidadeModel);
+                _penalidadeService.Edit(penalidadeDTO);
 
-        }
+                TempData["SuccessMessage"] = "Penalidade atualizada com sucesso!";
+                return RedirectToAction(nameof(Index));
+                
+            }
+             
+            catch (ServiceException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                RecarregarViewBags();
+                return View(penalidadeModel);
+            }
+          }
 
         // GET: PenalidadeController/Delete/5
         public ActionResult Delete(int id)
         {
-            if (id == null) return NotFound();
-            Penalidade penalidade = _penalidadeService.Get(id);
+
+            PenalidadeDTO penalidade = _penalidadeService.Get(id);
+            if (penalidade == null) return NotFound();
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
             return View(penalidadeModel);
         }
@@ -151,8 +160,24 @@ namespace VemCaProfWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, PenalidadeModel penalidadeModel)
         {
-            _penalidadeService.Delete(id);
+            try
+            {
+                _penalidadeService.Delete(id);
+                TempData["SuccessMessage"] = "Penalidade removida com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao excluir penalidade");
+                TempData["ErrorMessage"] = "Erro ao excluir penalidade";
+            }
             return RedirectToAction(nameof(Index));
+        }
+
+        private void RecarregarViewBags()
+        {
+            var todasPessoas = _pessoaService.GetAll();
+            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
+            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
         }
 
     }

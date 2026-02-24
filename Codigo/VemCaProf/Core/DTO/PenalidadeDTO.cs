@@ -10,13 +10,16 @@ namespace Core.DTO
     {
         public int Id { get; set; }
         public DateTime DataHorarioInicio { get; set; }
-        public DateTime DataHoraFim { get; set; }
-        public string Tipo { get; set; } = null!;
+        public DateTime ? DataHoraFim { get; set; }
+        public string ? Tipo { get; set; } = null!;
         public string Descricao { get; set; } = null!;
 
         public int IdProfessor { get; set; }
 
         public int IdResponsavel { get; set; }
+
+        public string ? NomeProfessor { get; set; } = null!;
+        public string ? NomeResponsavel { get; set; } = null!;
 
     }
 }

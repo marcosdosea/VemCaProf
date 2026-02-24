@@ -8,6 +8,7 @@ namespace Core.Service
         IEnumerable<CidadeDTO> GetAll();
         CidadeDTO? Get(int id);
         CidadeDTO? GetByNomeEstado(string nome, string estado);
+        IEnumerable<CidadeDTO> AutocompleteByNome(string termo, int limite = 10);
         int Create(CidadeDTO cidade);
         bool Update(CidadeDTO cidade);
         bool Delete(int id);
