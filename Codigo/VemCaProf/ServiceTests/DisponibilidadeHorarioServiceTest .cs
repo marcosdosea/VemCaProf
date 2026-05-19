@@ -67,6 +67,7 @@ namespace Service.Tests
             Assert.AreEqual( 1, disponibilidadeHorario.IdProfessor);
         }
 
+
         [TestMethod()]
         [ExpectedException(typeof(ServiceException))]
         public void CreateTest_DiaVazio_DeveLancarExcecao()
