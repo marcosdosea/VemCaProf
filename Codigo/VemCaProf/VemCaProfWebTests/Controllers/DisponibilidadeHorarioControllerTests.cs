@@ -108,6 +108,7 @@ namespace VemCaProfWeb.Tests.Controllers
             var result = controller.Create(disponibilidadeHorarioModel);
 
             // Assert
+
             disponibilidadeHorarioServiceMock.Verify(s => s.Create(It.Is<DisponibilidadeHorarioDTO>(d => d.Id == 1 && d.Dia == dia)), Times.Once);
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
             var redirect = (RedirectToActionResult)result;
