@@ -301,6 +301,53 @@ namespace ServiceTests
 
 
         }
+        [TestMethod]
+        public void EditPenalidade_NotFound()
+        {
+            var dto = new PenalidadeDTO
+            {
+                Id = 999,
+                DataHorarioInicio = DateTime.Now,
+                DataHoraFim = DateTime.Now.AddHours(1),
+                Tipo = "A",
+                Descricao = "Teste",
+                IdProfessor = 1,
+                IdResponsavel = 3
+            };
 
+            Assert.ThrowsException<ServiceException>(() =>
+                penalidadeService.Edit(dto));
+        }
+        [TestMethod]
+        public void GetAll_ReturnsAll()
+        {
+            var lista = penalidadeService.GetAll().ToList();
+
+            Assert.IsNotNull(lista);
+            Assert.AreEqual(2, lista.Count);
+        }
+        [TestMethod]
+        public void CreatePenalidade_NullDTO()
+        {
+            Assert.ThrowsException<ServiceException>(() =>
+                penalidadeService.Create(null!));
+        }
+        [TestMethod]
+        public void EditPenalidade_InvalidProfessor()
+        {
+            var dto = new PenalidadeDTO
+            {
+                Id = 1,
+                DataHorarioInicio = DateTime.Now,
+                DataHoraFim = DateTime.Now.AddHours(1),
+                Tipo = "A",
+                Descricao = "Teste",
+                IdProfessor = 999,
+                IdResponsavel = 3
+            };
+
+            Assert.ThrowsException<ServiceException>(() =>
+                penalidadeService.Edit(dto));
+        }
     }
 }
