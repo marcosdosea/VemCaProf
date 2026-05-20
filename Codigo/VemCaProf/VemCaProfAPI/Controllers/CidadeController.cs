@@ -78,7 +78,7 @@ namespace VemCaProfAPI.Controllers
             {
                 var ok = _cidadeService.Update(dto);
                 if (!ok) return NotFound();
-                return NoContent();
+                return Ok("Cidade Atualizada com Sucesso");
             }
             catch (ServiceException ex)
             {
@@ -94,7 +94,7 @@ namespace VemCaProfAPI.Controllers
             {
                 var ok = _cidadeService.Delete(id);
                 if (!ok) return NotFound();
-                return NoContent();
+                return Ok("Cidade deletada com Sucesso");
             }
             catch (ServiceException ex)
             {
