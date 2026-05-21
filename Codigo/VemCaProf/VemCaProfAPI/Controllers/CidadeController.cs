@@ -76,9 +76,36 @@ namespace VemCaProfAPI.Controllers
 
             try
             {
+                // Busca cidade antes da atualização
+                var cidadeAntes = _cidadeService.Get(id);
+
+                if (cidadeAntes == null)
+                    return NotFound();
+
                 var ok = _cidadeService.Update(dto);
-                if (!ok) return NotFound();
-                return Ok("Cidade Atualizada com Sucesso");
+
+                if (!ok)
+                    return NotFound();
+
+                // Busca cidade depois da atualização
+                var cidadeDepois = _cidadeService.Get(id);
+
+                return Ok(new
+                {
+                    mensagem = "Cidade atualizada com sucesso",
+                    antes = new
+                    {
+                        id = cidadeAntes.Id,
+                        nome = cidadeAntes.Nome,
+                        estado = cidadeAntes.Estado
+                    },
+                    depois = new
+                    {
+                        id = cidadeDepois.Id,
+                        nome = cidadeDepois.Nome,
+                        estado = cidadeDepois.Estado
+                    }
+                });
             }
             catch (ServiceException ex)
             {
@@ -92,9 +119,27 @@ namespace VemCaProfAPI.Controllers
         {
             try
             {
+                // Busca cidade antes de deletar
+                var cidade = _cidadeService.Get(id);
+
+                if (cidade == null)
+                    return NotFound();
+
                 var ok = _cidadeService.Delete(id);
-                if (!ok) return NotFound();
-                return Ok("Cidade deletada com Sucesso");
+
+                if (!ok)
+                    return NotFound();
+
+                return Ok(new
+                {
+                    mensagem = "Cidade deletada com sucesso",
+                    cidadeDeletada = new
+                    {
+                        id = cidade.Id,
+                        nome = cidade.Nome,
+                        estado = cidade.Estado
+                    }
+                });
             }
             catch (ServiceException ex)
             {
