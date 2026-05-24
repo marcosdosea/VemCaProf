@@ -65,9 +65,11 @@ namespace AutoTest
             
             Thread.Sleep(3000);
 
-            
-            driver.FindElement(By.CssSelector(".pb-3")).Click();
-            driver.FindElement(By.CssSelector(".btn")).Click();
+
+            var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(5));
+
+            // Espera até que pelo menos a tabela ou uma linha de dados exista na tela
+            wait.Until(d => d.FindElement(By.CssSelector("table")));
             driver.FindElement(By.CssSelector("tr:nth-child(4) > td:nth-child(1)")).Click();
             Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(4) > td:nth-child(1)")).Text, Is.EqualTo("20/10/2027 11:50"));
             driver.FindElement(By.CssSelector("tr:nth-child(4) > td:nth-child(2)")).Click();
