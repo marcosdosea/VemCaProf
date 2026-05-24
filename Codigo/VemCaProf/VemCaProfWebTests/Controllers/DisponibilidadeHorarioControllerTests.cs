@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Core;
 using Core.DTO;
 using Core.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Service;
 using System;
 using System.Collections.Generic;
 using VemCaProfWeb.Controllers;
@@ -79,16 +82,39 @@ namespace VemCaProfWeb.Tests.Controllers
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             Assert.AreSame(model, ((ViewResult)result).Model);
         }
-
         [TestMethod]
-        public void Create_Post_ModelInvalido_RetornaView()
+        public void Create_Post_ModelValido_CriaERedireciona()
         {
-            var controller = CreateController();
-            controller.ModelState.AddModelError("Dia", "Obrigatório");
 
-            var result = controller.Create(new DisponibilidadeHorarioModel());
+            // Arrange
+            var dia = DateTime.Today;
+            var disponibilidadeHorarioModel = new DisponibilidadeHorarioModel { Id = 1, Dia = dia };
+            var disponibilidadeHorarioDto = new DisponibilidadeHorarioDTO { Id = 1, Dia = dia };
 
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var disponibilidadeHorarioServiceMock = new Mock<IDisponibilidadeHorarioService>();
+            disponibilidadeHorarioServiceMock.Setup(s => s.Create(It.IsAny<DisponibilidadeHorarioDTO>())).Returns(1);
+
+            var mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(m => m.Map<DisponibilidadeHorarioDTO>(disponibilidadeHorarioModel)).Returns(disponibilidadeHorarioDto);
+
+            var controller = CreateController(disponibilidadeHorarioServiceMock, mapperMock);
+
+            // Configurar TempData
+            controller.TempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(
+                new DefaultHttpContext(),
+                Mock.Of<Microsoft.AspNetCore.Mvc.ViewFeatures.ITempDataProvider>());
+
+            // Act
+            var result = controller.Create(disponibilidadeHorarioModel);
+
+            // Assert
+
+            disponibilidadeHorarioServiceMock.Verify(s => s.Create(It.Is<DisponibilidadeHorarioDTO>(d => d.Id == 1 && d.Dia == dia)), Times.Once);
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            var redirect = (RedirectToActionResult)result;
+            Assert.AreEqual(nameof(controller.Index), redirect.ActionName);
+            Assert.IsTrue(controller.TempData.ContainsKey("SuccessMessage"));
         }
+
     }
 }
