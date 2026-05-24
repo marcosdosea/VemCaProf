@@ -171,5 +171,76 @@ namespace AutoTest
             driver.FindElement(By.CssSelector("tr:nth-child(1) > td:nth-child(6)")).Click();
             Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(1) > td:nth-child(6)")).Text, Is.EqualTo("Fernanda"));
         }
+
+        [Test]
+        public void ExcluirComSucesso()
+        {
+            driver.Navigate().GoToUrl("https://localhost:7266/");
+            driver.Manage().Window.Size = new System.Drawing.Size(1552, 832);
+            driver.FindElement(By.CssSelector(".nav-item:nth-child(6) span")).Click();
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(1)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(1)")).Text, Is.EqualTo("21/05/2026 10:30"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(2)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(2)")).Text, Is.EqualTo("21/05/2026 11:00"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(3)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(3)")).Text, Is.EqualTo("Suspensão curta"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(4)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(4)")).Text, Is.EqualTo("Uso de celular em sala de aula"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(5)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(5)")).Text, Is.EqualTo("João"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(6)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(6)")).Text, Is.EqualTo("Roberto"));
+            
+            driver.FindElement(By.CssSelector("tr:nth-child(2) .delete-icon path")).Click();          
+            Assert.That(driver.FindElement(By.CssSelector("h1")).Text, Is.EqualTo("Excluir"));
+            driver.FindElement(By.CssSelector(".container:nth-child(2)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("h3")).Text, Is.EqualTo("Tem certeza que deseja excluir?"));
+            driver.FindElement(By.CssSelector(".row")).Click();
+            driver.FindElement(By.CssSelector(".col-sm-10:nth-child(4)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector(".col-sm-10:nth-child(4)")).Text, Is.EqualTo("21/05/2026 10:30"));
+            driver.FindElement(By.CssSelector(".col-sm-10:nth-child(6)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector(".col-sm-10:nth-child(6)")).Text, Is.EqualTo("21/05/2026 11:00"));
+            driver.FindElement(By.CssSelector(".col-sm-10:nth-child(8)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector(".col-sm-10:nth-child(8)")).Text, Is.EqualTo("Suspensão curta"));
+            driver.FindElement(By.CssSelector(".col-sm-10:nth-child(10)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector(".col-sm-10:nth-child(10)")).Text, Is.EqualTo("Uso de celular em sala de aula"));
+            driver.FindElement(By.CssSelector(".col-sm-10:nth-child(12)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector(".col-sm-10:nth-child(12)")).Text, Is.EqualTo("2"));
+            driver.FindElement(By.CssSelector(".col-sm-10:nth-child(14)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector(".col-sm-10:nth-child(14)")).Text, Is.EqualTo("6"));
+            {
+                var element = driver.FindElement(By.CssSelector(".btn-danger"));
+                Actions builder = new Actions(driver);
+                builder.MoveToElement(element).ClickAndHold().Perform();
+            }
+            {
+                var element = driver.FindElement(By.CssSelector(".btn-danger"));
+                Actions builder = new Actions(driver);
+                builder.MoveToElement(element).Perform();
+            }
+            {
+                var element = driver.FindElement(By.CssSelector(".btn-danger"));
+                Actions builder = new Actions(driver);
+                builder.MoveToElement(element).Release().Perform();
+            }
+
+            
+
+            var wait = new OpenQA.Selenium.Support.UI.WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            wait.Until(d => d.FindElement(By.CssSelector("table")));
+
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(1)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(1)")).Text, Is.EqualTo("22/05/2026 14:00"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(2)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(2)")).Text, Is.EqualTo("22/05/2026 15:00"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(3)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(3)")).Text, Is.EqualTo("Advertência"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(4)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(4)")).Text, Is.EqualTo("Falta não justificada"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(5)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(5)")).Text, Is.EqualTo("Ana"));
+            driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(6)")).Click();
+            Assert.That(driver.FindElement(By.CssSelector("tr:nth-child(2) > td:nth-child(6)")).Text, Is.EqualTo("Roberto"));
+        }
     }
 }
