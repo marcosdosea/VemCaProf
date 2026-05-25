@@ -1,0 +1,304 @@
+{
+  "id": "fdda8e93-fa58-4756-944e-ef10163872a6",
+  "version": "2.0",
+  "name": "VemCaProfTests",
+  "url": "http://localhost:5277",
+  "tests": [{
+    "id": "aa1fb38b-eff3-49d5-9d0c-2a977304e9f2",
+    "name": "Editar Cidade",
+    "commands": [{
+      "id": "feab3849-012d-4c8d-b449-dbd90c26a3fa",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b0c1771b-ebb0-4728-a6e3-613e7666c9c6",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1494x891",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "f2580693-7415-4037-9745-e8ca9aa101dd",
+      "comment": "",
+      "command": "click",
+      "target": "css=.nav-item:nth-child(5) span",
+      "targets": [
+        ["css=.nav-item:nth-child(5) span", "css:finder"],
+        ["xpath=//li[5]/a/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Cidade')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ac909654-dc49-4b44-bce3-8eab4c7d03c2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.bi-pencil",
+      "targets": [
+        ["css=.bi-pencil", "css:finder"],
+        ["xpath=//td[3]/div/a[2]/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "51f12fa8-bd73-4ec7-9e6b-a8a5ea8a6216",
+      "comment": "",
+      "command": "click",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "59c78def-89f9-4ead-855a-22b1abf6141d",
+      "comment": "",
+      "command": "type",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "Sergipe"
+    }, {
+      "id": "b8df8e1e-7206-4e66-9f38-b97472596aaa",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-primary",
+      "targets": [
+        ["css=.btn-primary", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Salvar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "7aef2815-ec80-4700-b471-a35705693bcc",
+    "name": "Cadastrar Cidade",
+    "commands": [{
+      "id": "ecd5ccb8-d7bd-42ba-8726-f821ec9bb3e9",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "1096469a-96bb-4284-8ad0-cacb2af541b6",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1494x891",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "611edb66-2b2b-4b2d-81e6-cdfb47ae0cfa",
+      "comment": "",
+      "command": "click",
+      "target": "css=.nav-item:nth-child(5) span",
+      "targets": [
+        ["css=.nav-item:nth-child(5) span", "css:finder"],
+        ["xpath=//li[5]/a/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Cidade')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ec61b6a5-a37b-460e-a987-02dcc008481b",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Nova Cidade",
+      "targets": [
+        ["linkText=Nova Cidade", "linkText"],
+        ["css=.btn-primary", "css:finder"],
+        ["xpath=//a[contains(@href, '/Cidade/Create')]", "xpath:href"],
+        ["xpath=//a[2]", "xpath:position"],
+        ["xpath=//a[contains(.,'Nova Cidade')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cc63b279-44b0-462d-9498-11b61b917964",
+      "comment": "",
+      "command": "click",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "438a9c43-a909-4c14-ab88-bc018767ed78",
+      "comment": "",
+      "command": "type",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "test"
+    }, {
+      "id": "3aad9921-47ab-42d3-a0e5-583c9704baaf",
+      "comment": "",
+      "command": "click",
+      "target": "id=Estado",
+      "targets": [
+        ["id=Estado", "id"],
+        ["name=Estado", "name"],
+        ["css=#Estado", "css:finder"],
+        ["xpath=//input[@id='Estado']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1bec8527-6b09-451b-a392-9229609b79f0",
+      "comment": "",
+      "command": "type",
+      "target": "id=Estado",
+      "targets": [
+        ["id=Estado", "id"],
+        ["name=Estado", "name"],
+        ["css=#Estado", "css:finder"],
+        ["xpath=//input[@id='Estado']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "SE"
+    }, {
+      "id": "f62ba634-1713-4bc1-b2df-7f98857a87ef",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-primary",
+      "targets": [
+        ["css=.btn-primary", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[3]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Salvar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "26f19cd8-e8c6-4b68-b41b-d64d363d4ff3",
+    "name": "Remover Cidade",
+    "commands": [{
+      "id": "733792f9-63cd-4616-9493-08f09d45b677",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2492f10f-3144-49b6-a609-a306f43868e0",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1494x891",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "65f95e9b-6d58-44bb-a5e0-3917d3d77864",
+      "comment": "",
+      "command": "click",
+      "target": "css=.nav-item:nth-child(5) span",
+      "targets": [
+        ["css=.nav-item:nth-child(5) span", "css:finder"],
+        ["xpath=//li[5]/a/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Cidade')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "24565547-d932-4a94-b2e6-8c0c944d1709",
+      "comment": "",
+      "command": "click",
+      "target": "css=.bi-x-lg",
+      "targets": [
+        ["css=.bi-x-lg", "css:finder"],
+        ["xpath=//td[3]/div/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fec45b12-da9f-4e73-9de6-8c781cf0ca9e",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-danger",
+      "targets": [
+        ["css=.btn-danger", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div/form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Remover')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "643fa68b-79d6-4411-b468-896be57aa689",
+    "name": "Detalhes Cidade",
+    "commands": [{
+      "id": "47903f7f-f85d-4760-a2b7-7a6d1f520ad2",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6bf7b68a-8731-4cbd-88c0-5056729d948a",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1494x891",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b548e1bc-cd6c-4173-aeca-e3819553875a",
+      "comment": "",
+      "command": "click",
+      "target": "css=.nav-item:nth-child(5) span",
+      "targets": [
+        ["css=.nav-item:nth-child(5) span", "css:finder"],
+        ["xpath=//li[5]/a/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Cidade')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d74a654a-b32f-482f-9ca9-cde4660b4216",
+      "comment": "",
+      "command": "click",
+      "target": "css=.city-icon-details",
+      "targets": [
+        ["css=.city-icon-details", "css:finder"],
+        ["xpath=//a[contains(@href, '/Cidade/Details/32')]", "xpath:href"],
+        ["xpath=//a[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cc4c3890-9f4b-4566-a76d-445482830d58",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Voltar",
+      "targets": [
+        ["linkText=Voltar", "linkText"],
+        ["css=.btn-outline-secondary", "css:finder"],
+        ["xpath=//a[contains(text(),'Voltar')]", "xpath:link"],
+        ["xpath=(//a[contains(@href, '/Cidade')])[4]", "xpath:href"],
+        ["xpath=//a[2]", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "8ca9b377-bf79-449b-8cdd-41afc586113f",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["aa1fb38b-eff3-49d5-9d0c-2a977304e9f2"]
+  }],
+  "urls": ["http://localhost:5277/"],
+  "plugins": []
+}
