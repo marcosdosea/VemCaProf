@@ -97,7 +97,7 @@ namespace VemCaProfWeb.Controllers.Tests
 
             // Validações
             Assert.AreEqual("Aula de Matemática Básica", model.Descricao);
-            Assert.AreEqual(50.0m, model.Valor);
+            Assert.AreEqual(50.0, model.Valor);
             Assert.AreEqual(1, model.Id);
         }
 
@@ -219,7 +219,7 @@ namespace VemCaProfWeb.Controllers.Tests
             {
                 Id = 4,
                 Descricao = "Aula de Física Moderna",
-                Valor = 80.0m,
+                Valor = 80.0,
                 DataHorarioInicio = DateTime.Now.AddDays(1),
                 DataHorarioFinal = DateTime.Now.AddDays(1).AddHours(1)
             };
@@ -231,7 +231,7 @@ namespace VemCaProfWeb.Controllers.Tests
             {
                 Id = 1,
                 Descricao = "Aula de Matemática Básica",
-                Valor = 50.0m,
+                Valor = 50.0,
                 DataHorarioInicio = DateTime.Now,
                 DataHorarioFinal = DateTime.Now.AddHours(1)
             };
@@ -243,4 +243,41 @@ namespace VemCaProfWeb.Controllers.Tests
             {
                 Id = 1,
                 Descricao = "Aula de Matemática Básica",
-                Valor = 50.0
+                Valor = 50.0,
+                DataHorarioInicio = DateTime.Now,
+                DataHorarioFinal = DateTime.Now.AddHours(1)
+            };
+        }
+
+        private List<AulaDTO> GetTestAulasDTO()
+        {
+            return new List<AulaDTO>
+            {
+                new AulaDTO
+                {
+                    Id = 1,
+                    Descricao = "Aula de Matemática Básica",
+                    Valor = 50.0,
+                    DataHorarioInicio = DateTime.Now,
+                    DataHorarioFinal = DateTime.Now.AddHours(1)
+                },
+                new AulaDTO
+                {
+                    Id = 2,
+                    Descricao = "Aula de Química Orgânica",
+                    Valor = 70.0,
+                    DataHorarioInicio = DateTime.Now.AddDays(1),
+                    DataHorarioFinal = DateTime.Now.AddDays(1).AddHours(1)
+                },
+                new AulaDTO
+                {
+                    Id = 3,
+                    Descricao = "Aula de Biologia Celular",
+                    Valor = 60.0,
+                    DataHorarioInicio = DateTime.Now.AddDays(2),
+                    DataHorarioFinal = DateTime.Now.AddDays(2).AddHours(1)
+                }
+            };
+        }
+    }
+}

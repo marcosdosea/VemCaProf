@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core;
+using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,7 +33,7 @@ namespace VemCaProfWebTests.Controllers
             _pessoaService = new Mock<IPessoaService>();
             _mapper = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Penalidade, PenalidadeModel>().ReverseMap();
+                cfg.CreateMap<PenalidadeDTO, PenalidadeModel>().ReverseMap();
             }).CreateMapper();
 
             mockService.Setup(Service => Service.GetAll()).Returns(GetAll());
@@ -87,11 +88,11 @@ namespace VemCaProfWebTests.Controllers
         }
 
         [TestMethod()]
-        private IEnumerable<Penalidade> GetAll()
+        private IEnumerable<PenalidadeDTO> GetAll()
         {
-            return new List<Penalidade>
+            return new List<PenalidadeDTO>
             {
-                new Penalidade
+                new PenalidadeDTO
                 {
                     Id = 1,
                     Tipo = "Atraso",
@@ -100,7 +101,7 @@ namespace VemCaProfWebTests.Controllers
                     IdProfessor = 1,
                     IdResponsavel = 2
                 },
-                new Penalidade
+                new PenalidadeDTO
                 {
                     Id = 2,
                     Tipo = "Falta",
@@ -109,7 +110,7 @@ namespace VemCaProfWebTests.Controllers
                     IdProfessor = 1,
                     IdResponsavel = 2
                 },
-                new Penalidade
+                new PenalidadeDTO
                 {
                     Id = 3,
                     Tipo = "Conduta indevida",
@@ -122,9 +123,9 @@ namespace VemCaProfWebTests.Controllers
 
         }
 
-        private Penalidade GetPenalidade()
+        private PenalidadeDTO GetPenalidade()
         {
-            return new Penalidade
+            return new PenalidadeDTO
             {
                 Id = 1,
                 Tipo = "Atraso",
