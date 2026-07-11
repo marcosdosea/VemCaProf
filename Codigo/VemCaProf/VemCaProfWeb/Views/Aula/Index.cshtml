@@ -2,17 +2,17 @@
 @using Core.Enums
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Aulas";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Index</h1>
+<h1>Aulas</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Nova aula</a>
 </p>
 
 @if (TempData["SuccessMessage"] != null)
@@ -62,9 +62,9 @@
                 <td>@Html.DisplayFor(modelItem => item.NomeProfessor)</td>
 
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
 
                     @if (item.Status != StatusEnum.Realizada && item.Status != StatusEnum.Cancelada && item.Status != StatusEnum.Confirmada)
                     {
