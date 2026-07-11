@@ -37,8 +37,8 @@ namespace VemCaProfWeb.Controllers
             {
                 var professor = _pessoaService.Get(penalidade.IdProfessor);
                 var responsavel = _pessoaService.Get(penalidade.IdResponsavel);
-                penalidade.NomeProfessor = professor?.Nome;
-                penalidade.NomeResponsavel = responsavel?.Nome;
+                penalidade.NomeProfessor = professor == null ? null : $"{professor.Nome} {professor.Sobrenome}";
+                penalidade.NomeResponsavel = responsavel == null ? null : $"{responsavel.Nome} {responsavel.Sobrenome}";
             }
             return View(listaPenalidadeModel);
 
@@ -56,8 +56,8 @@ namespace VemCaProfWeb.Controllers
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
             var professor = _pessoaService.Get(penalidadeModel.IdProfessor);
             var responsavel = _pessoaService.Get(penalidadeModel.IdResponsavel);
-            penalidadeModel.NomeProfessor = professor?.Nome;
-            penalidadeModel.NomeResponsavel = responsavel?.Nome;
+            penalidadeModel.NomeProfessor = professor == null ? null : $"{professor.Nome} {professor.Sobrenome}";
+            penalidadeModel.NomeResponsavel = responsavel == null ? null : $"{responsavel.Nome} {responsavel.Sobrenome}";
             return View(penalidadeModel);
 
         }
@@ -152,6 +152,10 @@ namespace VemCaProfWeb.Controllers
             PenalidadeDTO penalidade = _penalidadeService.Get(id);
             if (penalidade == null) return NotFound();
             PenalidadeModel penalidadeModel = _mapper.Map<PenalidadeModel>(penalidade);
+            var professor = _pessoaService.Get(penalidadeModel.IdProfessor);
+            var responsavel = _pessoaService.Get(penalidadeModel.IdResponsavel);
+            penalidadeModel.NomeProfessor = professor == null ? null : $"{professor.Nome} {professor.Sobrenome}";
+            penalidadeModel.NomeResponsavel = responsavel == null ? null : $"{responsavel.Nome} {responsavel.Sobrenome}";
             return View(penalidadeModel);
         }
 
@@ -176,8 +180,15 @@ namespace VemCaProfWeb.Controllers
         private void RecarregarViewBags()
         {
             var todasPessoas = _pessoaService.GetAll();
-            ViewBag.Professores = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "P"), "Id", "Nome");
-            ViewBag.Responsaveis = new SelectList(todasPessoas.Where(p => p.TipoPessoa == "R"), "Id", "Nome");
+            var professores = todasPessoas
+                .Where(p => p.TipoPessoa == "P")
+                .Select(p => new { p.Id, Texto = $"{p.Nome} {p.Sobrenome} - {p.Email}" });
+            var responsaveis = todasPessoas
+                .Where(p => p.TipoPessoa == "R")
+                .Select(p => new { p.Id, Texto = $"{p.Nome} {p.Sobrenome} - {p.Email}" });
+
+            ViewBag.Professores = new SelectList(professores, "Id", "Texto");
+            ViewBag.Responsaveis = new SelectList(responsaveis, "Id", "Texto");
         }
 
     }

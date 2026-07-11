@@ -81,15 +81,14 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         try
         {
 
-            if (disponibilidadeHorarioDto.Dia == DateTime.MinValue)
-                throw new ServiceException("campo obrigatório");
-
-
             if (disponibilidadeHorarioDto.HorarioInicio == TimeSpan.MinValue)
                 throw new ServiceException("campo obrigatório");
 
             if (disponibilidadeHorarioDto.HorarioFim == TimeSpan.MinValue)
                 throw new ServiceException("campo obrigatório");
+
+            if (disponibilidadeHorarioDto.HorarioFim <= disponibilidadeHorarioDto.HorarioInicio)
+                throw new ServiceException("O horário final deve ser posterior ao horário inicial");
 
             if (disponibilidadeHorarioDto.IdProfessor <= 0)
                 throw new ServiceException("campo obrigatório");
@@ -98,7 +97,7 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
 
             var disponibilidadeHorario = new DisponibilidadeHorario
             {
-                Dia = disponibilidadeHorarioDto.Dia,
+                Dia = DateTime.Today,
                 HorarioInicio = disponibilidadeHorarioDto.HorarioInicio,
                 HorarioFim = disponibilidadeHorarioDto.HorarioFim,
                 IdProfessor = disponibilidadeHorarioDto.IdProfessor
@@ -127,15 +126,14 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
         try
         {
 
-            if (disponibilidadeHorarioDto.Dia == DateTime.MinValue)
-                throw new ServiceException("campo obrigatório");
-
-
             if (disponibilidadeHorarioDto.HorarioInicio == TimeSpan.MinValue)
                 throw new ServiceException("campo obrigatório");
 
             if (disponibilidadeHorarioDto.HorarioFim == TimeSpan.MinValue)
                 throw new ServiceException("campo obrigatório");
+
+            if (disponibilidadeHorarioDto.HorarioFim <= disponibilidadeHorarioDto.HorarioInicio)
+                throw new ServiceException("O horário final deve ser posterior ao horário inicial");
 
             if (disponibilidadeHorarioDto.IdProfessor <= 0)
                 throw new ServiceException("campo obrigatório");
@@ -144,7 +142,6 @@ public class DisponibilidadeHorarioService : IDisponibilidadeHorarioService
             if (disponibilidadeHorario == null)
                 return false;
             disponibilidadeHorario.HorarioInicio = disponibilidadeHorarioDto.HorarioInicio;
-            disponibilidadeHorario.Dia = disponibilidadeHorarioDto.Dia;
             disponibilidadeHorario.HorarioFim = disponibilidadeHorarioDto.HorarioFim;
             disponibilidadeHorario.IdProfessor = disponibilidadeHorarioDto.IdProfessor;
 

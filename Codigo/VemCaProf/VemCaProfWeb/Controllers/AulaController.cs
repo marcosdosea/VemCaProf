@@ -2,6 +2,7 @@
 using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Service;
 using VemCaProfWeb.Models;
 
@@ -10,15 +11,21 @@ namespace VemCaProfWeb.Controllers;
 public class AulaController : Controller
 {
     private readonly IAulaService _aulaService;
+    private readonly IDisciplinaService _disciplinaService;
+    private readonly IPessoaService _pessoaService;
     private readonly IMapper _mapper;
     private readonly ILogger<AulaController> _logger;
 
     public AulaController(
         IAulaService aulaService,
+        IDisciplinaService disciplinaService,
+        IPessoaService pessoaService,
         IMapper mapper,
         ILogger<AulaController> logger)
     {
         _aulaService = aulaService;
+        _disciplinaService = disciplinaService;
+        _pessoaService = pessoaService;
         _mapper = mapper;
         _logger = logger;
     }
@@ -29,7 +36,8 @@ public class AulaController : Controller
         try
         {
             var aulaDto = _aulaService.GetAll();
-            var aulaModel = _mapper.Map<IEnumerable<AulaModel>>(aulaDto);
+            var aulaModel = _mapper.Map<IEnumerable<AulaModel>>(aulaDto).ToList();
+            PreencherNomesRelacionados(aulaModel);
             return View(aulaModel);
         }
         catch (Exception ex)
@@ -57,6 +65,7 @@ public class AulaController : Controller
             }
 
             var aulaModel = _mapper.Map<AulaModel>(aulaDto);
+            PreencherNomesRelacionados(new[] { aulaModel });
             return View(aulaModel);
         }
         catch (Exception ex)
@@ -70,16 +79,25 @@ public class AulaController : Controller
     // GET: Aula/Create
     public IActionResult Create()
     {
-        return View();
+        CarregarOpcoes();
+        return View(new AulaModel { DataAula = DateTime.Today });
     }
 
     // POST: Aula/Create
     [HttpPost]
-
-    public IActionResult Create([Bind("DataHorarioInicio,DataHorarioFinal,Descricao,Valor,MetodoPagamento,IdDisciplina" +
-        ",IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
+    [ValidateAntiForgeryToken]
+    public IActionResult Create([Bind("DataAula,Descricao,Valor,IdDisciplina,IdResponsavel,IdAluno,IdProfessor," +
+        "IdDisponibilidadeHorario")] AulaModel aulaModel)
     {
-
+        if (!ModelState.IsValid)
+        {
+            var erros = ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage);
+            _logger.LogWarning("ModelState inválido ao criar aula: {Erros}", string.Join(" | ", erros));
+            CarregarOpcoes(aulaModel);
+            return View(aulaModel);
+        }
 
         try
         {
@@ -92,12 +110,14 @@ public class AulaController : Controller
         catch (ServiceException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+            CarregarOpcoes(aulaModel);
             return View(aulaModel);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao criar aula");
             TempData["ErrorMessage"] = "Erro ao criar aula";
+            CarregarOpcoes(aulaModel);
             return View(aulaModel);
         }
     }
@@ -119,6 +139,8 @@ public class AulaController : Controller
             }
 
             var aulaModel = _mapper.Map<AulaModel>(aulaDto);
+            aulaModel.IdDisponibilidadeHorario = EncontrarHorarioAtual(aulaModel);
+            CarregarOpcoes(aulaModel);
             return View(aulaModel);
         }
         catch (Exception ex)
@@ -131,15 +153,20 @@ public class AulaController : Controller
 
     // POST: Aula/Edit/5
     [HttpPost]
-
-    public IActionResult Edit(int id, [Bind("Id,DataHorarioInicio,DataHorarioFinal,Descricao,Status,Valor," +
-        "MetodoPagamento,IdDisciplina,IdResponsavel,IdAluno,IdProfessor")] AulaModel aulaModel)
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id, [Bind("Id,DataAula,Descricao,Valor,IdDisciplina,IdResponsavel,IdAluno,IdProfessor," +
+        "IdDisponibilidadeHorario")] AulaModel aulaModel)
     {
         if (id != aulaModel.Id)
         {
             return NotFound();
         }
 
+        if (!ModelState.IsValid)
+        {
+            CarregarOpcoes(aulaModel);
+            return View(aulaModel);
+        }
 
         try
         {
@@ -157,12 +184,14 @@ public class AulaController : Controller
         catch (ServiceException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+            CarregarOpcoes(aulaModel);
             return View(aulaModel);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao atualizar aula ID {Id}", id);
             TempData["ErrorMessage"] = "Erro ao atualizar aula";
+            CarregarOpcoes(aulaModel);
             return View(aulaModel);
         }
     }
@@ -184,6 +213,7 @@ public class AulaController : Controller
             }
 
             var aulaModel = _mapper.Map<AulaModel>(aulaDto);
+            PreencherNomesRelacionados(new[] { aulaModel });
             return View(aulaModel);
         }
         catch (Exception ex)
@@ -196,7 +226,7 @@ public class AulaController : Controller
 
     // POST: Aula/Delete/5
     [HttpPost, ActionName("Delete")]
-
+    [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int id)
     {
         try
@@ -256,5 +286,85 @@ public class AulaController : Controller
         }
         
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult HorariosDisponiveis(int professorId, DateTime dataAula, int? aulaId = null)
+    {
+        var horarios = _aulaService.GetHorariosDisponiveis(professorId, dataAula, aulaId)
+            .Select(h => new
+            {
+                id = h.Id,
+                texto = $"{h.HorarioInicio:hh\\:mm} às {h.HorarioFim:hh\\:mm}"
+            });
+
+        return Json(horarios);
+    }
+
+    private void CarregarOpcoes(AulaModel? aula = null)
+    {
+        var disciplinas = _disciplinaService.GetAll()
+            .Select(d => new
+            {
+                d.Id,
+                Texto = string.IsNullOrWhiteSpace(d.Nivel) ? d.Nome : $"{d.Nome} - {d.Nivel}"
+            });
+
+        var pessoas = _pessoaService.GetAll().ToList();
+        var professores = pessoas
+            .Where(p => p.TipoPessoa == "P")
+            .Select(p => new { p.Id, Texto = FormatarPessoa(p.Nome, p.Sobrenome, p.Email) });
+        var responsaveis = pessoas
+            .Where(p => p.TipoPessoa == "R")
+            .Select(p => new { p.Id, Texto = FormatarPessoa(p.Nome, p.Sobrenome, p.Email) });
+        var alunos = pessoas
+            .Where(p => p.TipoPessoa == "A")
+            .Select(p => new { p.Id, Texto = FormatarPessoa(p.Nome, p.Sobrenome, p.Email) });
+
+        ViewBag.Disciplinas = new SelectList(disciplinas, "Id", "Texto", aula?.IdDisciplina);
+        ViewBag.Professores = new SelectList(professores, "Id", "Texto", aula?.IdProfessor);
+        ViewBag.Responsaveis = new SelectList(responsaveis, "Id", "Texto", aula?.IdResponsavel);
+        ViewBag.Alunos = new SelectList(alunos, "Id", "Texto", aula?.IdAluno);
+    }
+
+    private static string FormatarPessoa(string nome, string sobrenome, string email)
+    {
+        return $"{nome} {sobrenome} - {email}";
+    }
+
+    private int EncontrarHorarioAtual(AulaModel aula)
+    {
+        if (aula.IdDisponibilidadeHorario > 0)
+            return aula.IdDisponibilidadeHorario;
+
+        if (aula.DataAula == null)
+            return 0;
+
+        return _aulaService.GetHorariosDisponiveis(aula.IdProfessor, aula.DataAula.Value, aula.Id)
+            .FirstOrDefault(h =>
+                h.Dia.Date.Add(h.HorarioInicio) == aula.DataHorarioInicio &&
+                h.Dia.Date.Add(h.HorarioFim) == aula.DataHorarioFinal)
+            ?.Id ?? 0;
+    }
+
+    private void PreencherNomesRelacionados(IEnumerable<AulaModel> aulas)
+    {
+        var disciplinas = _disciplinaService.GetAll()
+            .ToDictionary(d => (int)d.Id, d => d.Nome);
+        var pessoas = _pessoaService.GetAll()
+            .ToDictionary(p => p.Id, p => $"{p.Nome} {p.Sobrenome}");
+
+        foreach (var aula in aulas)
+        {
+            disciplinas.TryGetValue(aula.IdDisciplina, out var disciplina);
+            pessoas.TryGetValue(aula.IdResponsavel, out var responsavel);
+            pessoas.TryGetValue(aula.IdAluno, out var aluno);
+            pessoas.TryGetValue(aula.IdProfessor, out var professor);
+
+            aula.NomeDisciplina = disciplina;
+            aula.NomeResponsavel = responsavel;
+            aula.NomeAluno = aluno;
+            aula.NomeProfessor = professor;
+        }
     }
 }

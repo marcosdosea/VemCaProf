@@ -14,7 +14,7 @@ public partial class Aula
     public string Descricao { get; set; } = null!;
 
 
-    public DateTime DataHoraPagamento { get; set; }
+    public DateTime? DataHoraPagamento { get; set; }
 
     public double Valor { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Aula
     /// C = Credito
     /// D = Debito
     /// </summary>
-    public string MetodoPagamento { get; set; } = null!;
+    public string? MetodoPagamento { get; set; }
 
     /// <summary>
     /// AG = Agendada
@@ -44,8 +44,11 @@ public partial class Aula
 
     public int IdProfessor { get; set; }
 
+    public int? IdDisponibilidadeHorario { get; set; }
 
     public virtual Pessoa IdAlunoNavigation { get; set; } = null!;
+
+    public virtual DisponibilidadeHorario? IdDisponibilidadeHorarioNavigation { get; set; }
 
     public virtual Disciplina IdDisciplinaNavigation { get; set; } = null!;
 

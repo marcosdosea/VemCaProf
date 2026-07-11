@@ -1,7 +1,9 @@
+using System.Globalization;
 using Core;
 using Core.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using VemCaProfWeb.Areas.Identity.Data;
@@ -90,6 +92,14 @@ public class Program
         app.UseAuthorization();
 
         app.MapRazorPages();
+
+        var supportedCultures = new[] { new CultureInfo("pt-BR") };
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = new RequestCulture("pt-BR"),
+            SupportedCultures = supportedCultures,
+            SupportedUICultures = supportedCultures
+        });
 
         app.MapControllerRoute(
             name: "default",

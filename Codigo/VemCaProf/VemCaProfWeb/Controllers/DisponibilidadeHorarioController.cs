@@ -2,6 +2,7 @@
 using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Service;
 using VemCaProfWeb.Models;
 
@@ -10,15 +11,18 @@ namespace VemCaProfWeb.Controllers;
 public class DisponibilidadeHorarioController : Controller
 {
     private readonly IDisponibilidadeHorarioService _disponibilidadeHorarioService;
+    private readonly IPessoaService _pessoaService;
     private readonly IMapper _mapper;
     private readonly ILogger<DisponibilidadeHorarioController> _logger;
 
     public DisponibilidadeHorarioController(
         IDisponibilidadeHorarioService disponibilidadeHorarioService,
+        IPessoaService pessoaService,
         IMapper mapper,
         ILogger<DisponibilidadeHorarioController> logger)
     {
         _disponibilidadeHorarioService = disponibilidadeHorarioService;
+        _pessoaService = pessoaService;
         _mapper = mapper;
         _logger = logger;
     }
@@ -29,7 +33,8 @@ public class DisponibilidadeHorarioController : Controller
         try
         {
             var disponibilidadeHorarioDto = _disponibilidadeHorarioService.GetAll();
-            var disponibilidadeHorarioModel = _mapper.Map<IEnumerable<DisponibilidadeHorarioModel>>(disponibilidadeHorarioDto);
+            var disponibilidadeHorarioModel = _mapper.Map<IEnumerable<DisponibilidadeHorarioModel>>(disponibilidadeHorarioDto).ToList();
+            PreencherNomesProfessores(disponibilidadeHorarioModel);
             return View(disponibilidadeHorarioModel);
         }
         catch (Exception ex)
@@ -57,6 +62,7 @@ public class DisponibilidadeHorarioController : Controller
             }
 
             var disponibilidadeHorarioModel = _mapper.Map<DisponibilidadeHorarioModel>(disponibilidadeHorarioDto);
+            PreencherNomesProfessores(new[] { disponibilidadeHorarioModel });
             return View(disponibilidadeHorarioModel);
         }
         catch (Exception ex)
@@ -70,15 +76,21 @@ public class DisponibilidadeHorarioController : Controller
     // GET: DisponibilidadeHorario/Create
     public IActionResult Create()
     {
+        CarregarProfessores();
         return View();
     }
 
     // POST: DisponibilidadeHorario/Create
     [HttpPost]
-
-    public IActionResult Create([Bind("Dia,HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
+    [ValidateAntiForgeryToken]
+    public IActionResult Create([Bind("HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
     {
-        
+        if (!ModelState.IsValid)
+        {
+            CarregarProfessores(disponibilidadeHorarioModel.IdProfessor);
+            return View(disponibilidadeHorarioModel);
+        }
+
         try
         {
             var disponibilidadeHorarioDto = _mapper.Map<DisponibilidadeHorarioDTO>(disponibilidadeHorarioModel);
@@ -90,12 +102,14 @@ public class DisponibilidadeHorarioController : Controller
         catch (ServiceException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+            CarregarProfessores(disponibilidadeHorarioModel.IdProfessor);
             return View(disponibilidadeHorarioModel);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao criar ");
             TempData["ErrorMessage"] = "Erro ao criar ";
+            CarregarProfessores(disponibilidadeHorarioModel.IdProfessor);
             return View(disponibilidadeHorarioModel);
         }
     }
@@ -116,6 +130,7 @@ public class DisponibilidadeHorarioController : Controller
             }
 
             var disponibilidadeHorarioModel = _mapper.Map<DisponibilidadeHorarioModel>(disponibilidadeHorarioDto);
+            CarregarProfessores(disponibilidadeHorarioModel.IdProfessor);
             return View(disponibilidadeHorarioModel);
         }
         catch (Exception ex)
@@ -128,11 +143,18 @@ public class DisponibilidadeHorarioController : Controller
 
     // POST: DisponibilidadeHorario/Edit/5
     [HttpPost]
-    public IActionResult Edit(int id, [Bind("Id,Dia,HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id, [Bind("Id,HorarioInicio,HorarioFim,IdProfessor")] DisponibilidadeHorarioModel disponibilidadeHorarioModel)
     {
         if (id != disponibilidadeHorarioModel.Id)
         {
             return NotFound();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            CarregarProfessores(disponibilidadeHorarioModel.IdProfessor);
+            return View(disponibilidadeHorarioModel);
         }
 
         try
@@ -151,12 +173,14 @@ public class DisponibilidadeHorarioController : Controller
         catch (ServiceException ex)
         {
             ModelState.AddModelError(string.Empty, ex.Message);
+            CarregarProfessores(disponibilidadeHorarioModel.IdProfessor);
             return View(disponibilidadeHorarioModel);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro ao atualizar ID {Id}", id);
             TempData["ErrorMessage"] = "Erro ao atualizar ";
+            CarregarProfessores(disponibilidadeHorarioModel.IdProfessor);
             return View(disponibilidadeHorarioModel);
         }
     }
@@ -177,6 +201,7 @@ public class DisponibilidadeHorarioController : Controller
             }
 
             var disponibilidadeHorarioModel = _mapper.Map<DisponibilidadeHorarioModel>(disponibilidadeHorarioDto);
+            PreencherNomesProfessores(new[] { disponibilidadeHorarioModel });
             return View(disponibilidadeHorarioModel);
         }
         catch (Exception ex)
@@ -190,7 +215,7 @@ public class DisponibilidadeHorarioController : Controller
     // POST: DisponibilidadeHorario/Delete/5
 
     [HttpPost, ActionName("Delete")]
-
+    [ValidateAntiForgeryToken]
     public IActionResult DeleteConfirmed(int id)
     {
         try
@@ -215,6 +240,30 @@ public class DisponibilidadeHorarioController : Controller
             _logger.LogError(ex, "Erro ao excluir Horario ID {Id}", id);
             TempData["ErrorMessage"] = "Erro ao excluir Horario";
             return RedirectToAction(nameof(Index));
+        }
+    }
+
+    private void CarregarProfessores(int? professorSelecionado = null)
+    {
+        var professores = _pessoaService.GetAllProfessores()
+            .Select(p => new
+            {
+                p.Id,
+                Texto = $"{p.Nome} {p.Sobrenome} - {p.Email}"
+            });
+
+        ViewBag.Professores = new SelectList(professores, "Id", "Texto", professorSelecionado);
+    }
+
+    private void PreencherNomesProfessores(IEnumerable<DisponibilidadeHorarioModel> disponibilidades)
+    {
+        var professores = _pessoaService.GetAllProfessores()
+            .ToDictionary(p => p.Id, p => $"{p.Nome} {p.Sobrenome}");
+
+        foreach (var disponibilidade in disponibilidades)
+        {
+            professores.TryGetValue(disponibilidade.IdProfessor, out var professor);
+            disponibilidade.NomeProfessor = professor;
         }
     }
 }

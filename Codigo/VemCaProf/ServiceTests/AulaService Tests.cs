@@ -167,9 +167,9 @@ public class AulaServiceTests
         Assert.AreEqual(dto.DataHorarioInicio, aula.DataHorarioInicio);
         Assert.AreEqual(dto.DataHorarioFinal, aula.DataHorarioFinal);
         Assert.AreEqual("new desc", aula.Descricao);
-        Assert.AreEqual(dto.Status, aula.Status);
+        Assert.AreEqual(Core.Enums.StatusEnum.Agendada, aula.Status);
         Assert.AreEqual(dto.Valor, aula.Valor);
-        Assert.AreEqual(dto.MetodoPagamento, aula.MetodoPagamento);
+        Assert.IsNull(aula.MetodoPagamento);
         Assert.AreEqual(dto.IdDisciplina, aula.IdDisciplina);
         Assert.AreEqual(dto.IdResponsavel, aula.IdResponsavel);
         Assert.AreEqual(dto.IdAluno, aula.IdAluno);
@@ -211,6 +211,110 @@ public class AulaServiceTests
         Assert.IsTrue(ex.Message.Contains("Erro ao atualizar aula ID 99"));
         Assert.IsNotNull(ex.InnerException);
         Assert.AreEqual("db fail", ex.InnerException!.Message);
+    }
+
+    [TestMethod]
+    public void GetHorariosDisponiveis_FiltraProfessorPassadoEOcupado()
+    {
+        using var context = CriarContexto();
+        var dia = DateTime.Today.AddDays(1);
+        context.DisponibilidadeHorarios.AddRange(
+            new DisponibilidadeHorario { Id = 1, IdProfessor = 1, Dia = dia, HorarioInicio = TimeSpan.FromHours(9), HorarioFim = TimeSpan.FromHours(10) },
+            new DisponibilidadeHorario { Id = 2, IdProfessor = 1, Dia = dia, HorarioInicio = TimeSpan.FromHours(10), HorarioFim = TimeSpan.FromHours(11) },
+            new DisponibilidadeHorario { Id = 3, IdProfessor = 2, Dia = dia, HorarioInicio = TimeSpan.FromHours(9), HorarioFim = TimeSpan.FromHours(10) },
+            new DisponibilidadeHorario { Id = 4, IdProfessor = 1, Dia = DateTime.Today.AddDays(-1), HorarioInicio = TimeSpan.FromHours(9), HorarioFim = TimeSpan.FromHours(10) });
+        context.Aulas.Add(new Aula
+        {
+            Id = 1,
+            IdProfessor = 1,
+            IdDisciplina = 1,
+            IdResponsavel = 1,
+            IdAluno = 1,
+            DataHorarioInicio = dia.AddHours(10),
+            DataHorarioFinal = dia.AddHours(11),
+            Descricao = "Ocupada",
+            Status = Core.Enums.StatusEnum.Agendada,
+            Valor = 10
+        });
+        context.SaveChanges();
+
+        var horarios = new AulaService(context).GetHorariosDisponiveis(1).ToList();
+
+        Assert.AreEqual(1, horarios.Count);
+        Assert.AreEqual(1, horarios[0].Id);
+    }
+
+    [TestMethod]
+    public void Create_ComDisponibilidade_DerivaInicioEFim()
+    {
+        using var context = CriarContexto();
+        var dia = DateTime.Today.AddDays(1);
+        context.DisponibilidadeHorarios.Add(new DisponibilidadeHorario
+        {
+            Id = 7,
+            IdProfessor = 2,
+            Dia = dia,
+            HorarioInicio = TimeSpan.FromHours(14),
+            HorarioFim = TimeSpan.FromHours(15)
+        });
+        context.SaveChanges();
+        var dto = new AulaDTO
+        {
+            IdDisponibilidadeHorario = 7,
+            IdProfessor = 2,
+            IdDisciplina = 1,
+            IdResponsavel = 3,
+            IdAluno = 4,
+            Descricao = "Reforço",
+            Valor = 50
+        };
+
+        var id = new AulaService(context).Create(dto);
+        var aula = context.Aulas.Find(id)!;
+
+        Assert.AreEqual(dia.AddHours(14), aula.DataHorarioInicio);
+        Assert.AreEqual(dia.AddHours(15), aula.DataHorarioFinal);
+        Assert.AreEqual(Core.Enums.StatusEnum.AguardandoPagamento, aula.Status);
+        Assert.AreEqual(7, aula.IdDisponibilidadeHorario);
+        Assert.IsNull(aula.MetodoPagamento);
+        Assert.IsNull(aula.DataHoraPagamento);
+    }
+
+    [TestMethod]
+    public void Create_ComHorarioDeOutroProfessor_Rejeita()
+    {
+        using var context = CriarContexto();
+        context.DisponibilidadeHorarios.Add(new DisponibilidadeHorario
+        {
+            Id = 7,
+            IdProfessor = 2,
+            Dia = DateTime.Today.AddDays(1),
+            HorarioInicio = TimeSpan.FromHours(14),
+            HorarioFim = TimeSpan.FromHours(15)
+        });
+        context.SaveChanges();
+        var dto = new AulaDTO
+        {
+            IdDisponibilidadeHorario = 7,
+            IdProfessor = 3,
+            IdDisciplina = 1,
+            IdResponsavel = 3,
+            IdAluno = 4,
+            Descricao = "Reforço",
+            Valor = 50
+        };
+
+        var ex = Assert.ThrowsException<ServiceException>(() => new AulaService(context).Create(dto));
+
+        Assert.AreEqual("O horário selecionado não pertence ao professor informado.", ex.Message);
+    }
+
+    private static VemCaProfContext CriarContexto()
+    {
+        var options = new DbContextOptionsBuilder<VemCaProfContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        return new VemCaProfContext(options);
     }
 
     // Helpers are allowed as inner classes only

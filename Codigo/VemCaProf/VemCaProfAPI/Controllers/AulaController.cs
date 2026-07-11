@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Core.Service;
-using VemCaProfWeb.Models;
 using Core;
 using Core.DTO;
+using VemCaProfAPI.Models;
+using Service;
 
 
 
@@ -43,32 +44,55 @@ namespace VemCaProfAPI.Controllers
             return Ok(aula);
         }
 
+        [HttpGet("horarios-disponiveis")]
+        public ActionResult HorariosDisponiveis([FromQuery] int professorId, [FromQuery] DateTime dataAula, [FromQuery] int? aulaId = null)
+        {
+            var horarios = _aulaService.GetHorariosDisponiveis(professorId, dataAula, aulaId)
+                .Select(h => new
+                {
+                    id = h.Id,
+                    texto = $"{h.HorarioInicio:hh\\:mm} às {h.HorarioFim:hh\\:mm}"
+                });
+
+            return Ok(horarios);
+        }
+
         // POST api/<AulaController>
         [HttpPost]
         public ActionResult Post([FromBody] AulaModel aulaModel)
         {
-            if (ModelState.IsValid)
-                return BadRequest("Dados inválidos");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var aula = _mapper.Map<AulaDTO>(aulaModel);
-            _aulaService.Create(aula);
-
-            return Ok();
+            try
+            {
+                var aula = _mapper.Map<AulaDTO>(aulaModel);
+                var id = _aulaService.Create(aula);
+                return CreatedAtAction(nameof(Get), new { id }, null);
+            }
+            catch (ServiceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<AulaController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, [FromBody] AulaDTO aulaDTO)
+        public ActionResult Put(int id, [FromBody] AulaModel aulaModel)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            aulaDTO.Id = id;
-            var aula = _mapper.Map<AulaDTO>(aulaDTO);
-            if (aula == null)
-                return NotFound();
-
-            _aulaService.Update(aula);
-
-            return Ok();
+            try
+            {
+                var aula = _mapper.Map<AulaDTO>(aulaModel);
+                aula.Id = id;
+                return _aulaService.Update(aula) ? Ok() : NotFound();
+            }
+            catch (ServiceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<AulaController>/5

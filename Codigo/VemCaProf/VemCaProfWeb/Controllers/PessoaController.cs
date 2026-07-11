@@ -100,24 +100,33 @@ namespace VemCaProfWeb.Controllers
             return View(viewModel);
         }
 
-        // POST: Pessoa/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(PessoaModel viewModel)
+    // POST: Pessoa/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(PessoaModel viewModel)
+    {
+        if (!ModelState.IsValid)
         {
-            if (!ModelState.IsValid)
-            {
-                CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
-                return View(viewModel);
-            }
+            CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+            return View(viewModel);
+        }
 
-            viewModel.Cpf = Methods.RemoveNaoNumericos(viewModel.Cpf);
-            
-            var cpfLogado = User.Identity?.Name;
-            var isAdmin = User.IsInRole("Admin");
-            var isProfessor = User.IsInRole("Professor");
-            var isResponsavel = User.IsInRole("Responsavel");
+        viewModel.Cpf = Methods.RemoveNaoNumericos(viewModel.Cpf);
 
+        if (string.IsNullOrEmpty(viewModel.TipoPessoa))
+        {
+            ModelState.AddModelError("", "Tipo de pessoa inválido. Recarregue a página e tente novamente.");
+            CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+            return View(viewModel);
+        }
+
+        var cpfLogado = User.Identity?.Name;
+        var isAdmin = User.IsInRole("Admin");
+        var isProfessor = User.IsInRole("Professor");
+        var isResponsavel = User.IsInRole("Responsavel");
+
+        try
+        {
             var pessoa = _mapper.Map<Pessoa>(viewModel);
             pessoa.Diploma = ConvertToBytes(viewModel.ArquivoDiploma);
             pessoa.FotoPerfil = ConvertToBytes(viewModel.ArquivoFotoPerfil);
@@ -128,6 +137,13 @@ namespace VemCaProfWeb.Controllers
             TempData["Success"] = "Pessoa cadastrada com sucesso!";
             return RedirectToAction(nameof(Details), new { id = pessoa.Id });
         }
+        catch (ServiceException ex)
+        {
+            ModelState.AddModelError("", ex.Message);
+            CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+            return View(viewModel);
+        }
+    }
 
         // GET: Pessoa/Edit/5
         public IActionResult Edit(int id)
@@ -143,25 +159,27 @@ namespace VemCaProfWeb.Controllers
             return View(viewModel);
         }
 
-        // POST: Pessoa/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, PessoaModel viewModel)
+    // POST: Pessoa/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(int id, PessoaModel viewModel)
+    {
+        if (id != viewModel.Id)
+            return NotFound();
+
+        if (!ModelState.IsValid)
         {
-            if (id != viewModel.Id)
-                return NotFound();
+            CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+            return View(viewModel);
+        }
 
-            if (!ModelState.IsValid)
-            {
-                CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
-                return View(viewModel);
-            }
+        viewModel.Cpf = Methods.RemoveNaoNumericos(viewModel.Cpf);
+        
+        var cpfLogado = User.Identity?.Name;
+        var isAdmin = User.IsInRole("Admin");
 
-            viewModel.Cpf = Methods.RemoveNaoNumericos(viewModel.Cpf);
-            
-            var cpfLogado = User.Identity?.Name;
-            var isAdmin = User.IsInRole("Admin");
-
+        try
+        {
             var pessoa = _mapper.Map<Pessoa>(viewModel);
 
             if (viewModel.ArquivoDiploma != null)
@@ -182,6 +200,13 @@ namespace VemCaProfWeb.Controllers
             TempData["Success"] = "Dados atualizados com sucesso!";
             return RedirectToAction(nameof(Details), new { id });
         }
+        catch (ServiceException ex)
+        {
+            ModelState.AddModelError("", ex.Message);
+            CarregarDadosParaViewModel(viewModel, viewModel.TipoPessoa);
+            return View(viewModel);
+        }
+    }
 
         // GET: Pessoa/Delete/5
         public IActionResult Delete(int id)
@@ -238,7 +263,9 @@ namespace VemCaProfWeb.Controllers
             
             if (tipo == "P" || tipo == "R")
             {
-                viewModel.Cidades = new SelectList(_cidadeService.GetAll(), "Id", "Nome", viewModel.IdCidade);
+                var cidades = _cidadeService.GetAll()
+                    .Select(c => new { c.Id, Texto = $"{c.Nome}/{c.Estado}" });
+                viewModel.Cidades = new SelectList(cidades, "Id", "Texto", viewModel.IdCidade);
             }
 
             if (tipo == "P")
@@ -249,7 +276,12 @@ namespace VemCaProfWeb.Controllers
             if (tipo == "A" && User.IsInRole("Admin"))
             {
                 var responsaveis = _pessoaService.GetAllResponsaveis();
-                viewModel.Responsaveis = new SelectList(responsaveis, "Id", "Nome", viewModel.ResponsavelId);
+                var opcoes = responsaveis.Select(p => new
+                {
+                    p.Id,
+                    Texto = $"{p.Nome} {p.Sobrenome} - {p.Email}"
+                });
+                viewModel.Responsaveis = new SelectList(opcoes, "Id", "Texto", viewModel.ResponsavelId);
             }
         }
 
