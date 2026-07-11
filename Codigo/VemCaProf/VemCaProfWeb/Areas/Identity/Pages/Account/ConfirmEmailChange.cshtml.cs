@@ -14,6 +14,7 @@ using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWeb.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ConfirmEmailChangeModel : PageModel
     {
         private readonly UserManager<Usuario> _userManager;

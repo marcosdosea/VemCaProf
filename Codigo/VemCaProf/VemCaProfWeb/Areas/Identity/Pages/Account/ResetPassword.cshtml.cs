@@ -15,6 +15,7 @@ using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWeb.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<Usuario> _userManager;

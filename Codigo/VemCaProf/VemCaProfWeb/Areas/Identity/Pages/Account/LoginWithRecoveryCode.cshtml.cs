@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using VemCaProfWeb.Areas.Identity.Data;
 namespace VemCaProfWeb.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class LoginWithRecoveryCodeModel : PageModel
     {
         private readonly SignInManager<Usuario> _signInManager;

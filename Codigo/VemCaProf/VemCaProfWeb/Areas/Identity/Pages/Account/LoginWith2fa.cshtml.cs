@@ -15,6 +15,7 @@ using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWeb.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class LoginWith2faModel : PageModel
     {
         private readonly SignInManager<Usuario> _signInManager;

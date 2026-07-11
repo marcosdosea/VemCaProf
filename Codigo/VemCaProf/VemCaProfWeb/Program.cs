@@ -1,5 +1,6 @@
 using Core;
 using Core.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Service;
@@ -19,6 +20,13 @@ public class Program
         builder.Services.AddControllersWithViews(options =>
         {
             options.Filters.Add<VerificaPerfilFilter>();
+        });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
         });
         
         
