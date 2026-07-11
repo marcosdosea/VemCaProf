@@ -31,9 +31,9 @@ INSERT INTO `identityusers`.`aspnetusers`
  `LockoutEnd`,`LockoutEnabled`,`AccessFailedCount`)
 VALUES
 (UUID(),'admin1','ADMIN1','admin1@email.com','ADMIN1@EMAIL.COM',
- 1,'hash','secstamp','concstamp','999999999',1,0,NULL,1,0),
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','999999999',1,0,NULL,1,0),
 (UUID(),'admin2','ADMIN2','admin2@email.com','ADMIN2@EMAIL.COM',
- 1,'hash','secstamp','concstamp','888888888',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','888888888',1,0,NULL,1,0);
 
 
 -- RESPONSÁVEL
@@ -46,7 +46,7 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'responsavel1','RESPONSAVEL1','resp@email.com','RESP@EMAIL.COM',
- 1,'hash','secstamp','concstamp','777777777',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','777777777',1,0,NULL,1,0);
 
 
 
@@ -64,9 +64,9 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'aluno1','ALUNO1','aluno1@email.com','ALUNO1@EMAIL.COM',
- 1,'hash','secstamp','concstamp','666666666',1,0,NULL,1,0),
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','666666666',1,0,NULL,1,0),
 (UUID(),'aluno2','ALUNO2','aluno2@email.com','ALUNO2@EMAIL.COM',
- 1,'hash','secstamp','concstamp','555555555',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','555555555',1,0,NULL,1,0);
 
 
 
@@ -80,7 +80,7 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'aluno3','ALUNO3','aluno3@email.com','ALUNO3@EMAIL.COM',
- 1,'hash','secstamp','concstamp','444444444',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','444444444',1,0,NULL,1,0);
 
 
 
@@ -97,9 +97,9 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'prof1','PROF1','prof1@email.com','PROF1@EMAIL.COM',
- 1,'hash','secstamp','concstamp','333333333',1,0,NULL,1,0),
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','333333333',1,0,NULL,1,0),
 (UUID(),'prof2','PROF2','prof2@email.com','PROF2@EMAIL.COM',
- 1,'hash','secstamp','concstamp','222222222',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','222222222',1,0,NULL,1,0);
 
 -- Cidades
 INSERT INTO `vcp`.`cidade`
