@@ -23,6 +23,7 @@
 
     namespace VemCaProfWeb.Areas.Identity.Pages.Account
     {
+        [AllowAnonymous]
         public class RegisterModel : PageModel
         {
             private readonly SignInManager<Usuario> _signInManager;

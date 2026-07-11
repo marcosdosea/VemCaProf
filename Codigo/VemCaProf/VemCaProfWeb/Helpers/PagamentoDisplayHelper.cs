@@ -13,12 +13,12 @@ namespace VemCaProfWeb.Helpers
             _ => status
         };
 
-        public static string MetodoLabel(string metodo) => metodo switch
+        public static string MetodoLabel(string? metodo) => metodo switch
         {
             MetodoPagamentoEnum.Pix => "Pix",
             MetodoPagamentoEnum.Credito => "Crédito",
             MetodoPagamentoEnum.Debito => "Débito",
-            _ => metodo
+            _ => metodo ?? "Não informado"
         };  
     }
 }

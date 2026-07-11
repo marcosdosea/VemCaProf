@@ -1,6 +1,9 @@
+using System.Globalization;
 using Core;
 using Core.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Service;
 using VemCaProfWeb.Areas.Identity.Data;
@@ -19,6 +22,13 @@ public class Program
         builder.Services.AddControllersWithViews(options =>
         {
             options.Filters.Add<VerificaPerfilFilter>();
+        });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
         });
         
         
@@ -45,7 +55,7 @@ public class Program
 
         // Configuração dos Bancos
         builder.Services.AddDbContext<VemCaProfContext>(options =>
-            options.UseMySQL(connectionString));
+            options.UseMySQL(connectionString, b => b.MigrationsAssembly("VemCaProfWeb")));
 
         builder.Services.AddDbContext<IdentityContext>(options =>
             options.UseMySQL(connectionStringIdentity));
@@ -82,6 +92,14 @@ public class Program
         app.UseAuthorization();
 
         app.MapRazorPages();
+
+        var supportedCultures = new[] { new CultureInfo("pt-BR") };
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = new RequestCulture("pt-BR"),
+            SupportedCultures = supportedCultures,
+            SupportedUICultures = supportedCultures
+        });
 
         app.MapControllerRoute(
             name: "default",

@@ -7,12 +7,14 @@ namespace Core.DTO
         public int Id { get; set; }
         public DateTime DataHorarioInicio { get; set; }
         public DateTime DataHorarioFinal { get; set; }
+        public DateTime DataAula { get; set; }
         public string Descricao { get; set; } = null!;
         
         public string Status { get; set; } = null!;
         public Double Valor { get; set; }
-        public DateTime DataHoraPagamento { get; set; }
-        public string MetodoPagamento { get; set; } = null!; 
+        public DateTime? DataHoraPagamento { get; set; }
+        public string? MetodoPagamento { get; set; }
+        public int IdDisponibilidadeHorario { get; set; }
         public uint IdDisciplina { get; set; }
         public int IdResponsavel { get; set; }
         public int IdAluno { get; set; }

@@ -27,7 +27,7 @@ public partial class Pessoa
 
     public string Numero { get; set; } = null!;
 
-    public string Complemento { get; set; } = null!;
+    public string? Complemento { get; set; }
 
     public string Bairro { get; set; } = null!;
 

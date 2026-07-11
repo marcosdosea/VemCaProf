@@ -53,6 +53,7 @@ namespace VemCaProfWeb.Models
         [Required(ErrorMessage = "O estado é obrigatório")]
         public string? Estado { get; set; }
 
+        [Required(ErrorMessage = "Tipo de pessoa é obrigatório")]
         public string? TipoPessoa { get; set; }
 
         // Arquivos (byte[] para exibição)

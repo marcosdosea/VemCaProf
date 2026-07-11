@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Horário";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Horário</h1>
@@ -14,16 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Dia)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.HorarioInicio)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.HorarioFim)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdProfessor)
+                @Html.DisplayNameFor(model => model.NomeProfessor)
             </th>
             <th></th>
         </tr>
@@ -31,9 +27,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dia)
-            </td>
              <td>
                     @Html.DisplayFor(modelItem => item.HorarioInicio)
                 </td>
@@ -41,7 +34,7 @@
                     @Html.DisplayFor(modelItem => item.HorarioFim)
                 </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdProfessor)
+                @Html.DisplayFor(modelItem => item.NomeProfessor)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |

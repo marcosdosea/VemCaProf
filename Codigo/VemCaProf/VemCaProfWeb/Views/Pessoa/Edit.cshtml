@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Editar Perfil";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/pessoa.css" asp-append-version="true" />
@@ -20,7 +19,6 @@
 
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="TipoPessoa" />
-            <input type="hidden" asp-for="Cpf" /> 
 
             <partial name="_DadosPessoais" model="Model" />
 

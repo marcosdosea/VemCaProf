@@ -16,4 +16,6 @@ public partial class DisponibilidadeHorario
     public int IdProfessor { get; set; }
 
     public virtual Pessoa IdProfessorNavigation { get; set; } = null!;
+
+    public virtual ICollection<Aula> Aulas { get; set; } = new List<Aula>();
 }

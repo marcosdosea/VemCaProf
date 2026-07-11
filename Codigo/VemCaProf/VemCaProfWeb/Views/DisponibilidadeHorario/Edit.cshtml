@@ -1,8 +1,7 @@
 ﻿@model VemCaProfWeb.Models.DisponibilidadeHorarioModel
 
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Editar";
 }
 
 
@@ -10,7 +9,7 @@
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 
 <h4>Horário</h4>
 <hr />
@@ -21,34 +20,31 @@
             <input type="hidden" asp-for="Id" />
             
             <div class="form-group">
-                <label asp-for="Dia" class="control-label"></label>
-                <input asp-for="Dia" class="form-control" />
-                <span asp-validation-for="Dia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="HorarioInicio" class="control-label"></label>
-                <input asp-for="HorarioInicio" class="form-control" />
+                <input asp-for="HorarioInicio" type="time" class="form-control" />
                 <span asp-validation-for="HorarioInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="HorarioFim" class="control-label"></label>
-                <input asp-for="HorarioFim" class="form-control" />
+                <input asp-for="HorarioFim" type="time" class="form-control" value="@Model.HorarioFim.ToString(@"hh\:mm")" />
                 <span asp-validation-for="HorarioFim" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IdProfessor" class="control-label"></label>
-                <input asp-for="IdProfessor" class="form-control" />
+                <select asp-for="IdProfessor" asp-items="ViewBag.Professores" class="form-select">
+                    <option value="">Selecione um professor</option>
+                </select>
                 <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar para lista</a>
 </div>
 
 @section Scripts {

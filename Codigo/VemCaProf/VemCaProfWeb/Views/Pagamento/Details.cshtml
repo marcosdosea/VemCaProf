@@ -4,7 +4,6 @@
 
 @{
     ViewData["Title"] = "Detalhes do Pagamento";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Styles {
@@ -56,7 +55,7 @@
                     {
                         <span class="pay-badge pay-badge-success">
                             <i class="bi bi-check-circle"></i>
-                            @Model.DataHoraPagamento.ToString("dd/MM/yyyy HH:mm:ss")
+                            @(Model.DataHoraPagamento?.ToString("dd/MM/yyyy HH:mm:ss") ?? "-")
                         </span>
                     }
                     else

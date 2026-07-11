@@ -44,8 +44,12 @@ public partial class VemCaProfContext : DbContext
 
             entity.HasIndex(e => e.IdAluno, "fk_Aula_Pessoa3_idx");
 
+            entity.HasIndex(e => new { e.IdDisponibilidadeHorario, e.DataHorarioInicio }, "uq_Aula_DisponibilidadeHorario_Data")
+                .IsUnique();
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.DataHoraPagamento)
+                .IsRequired(false)
                 .HasColumnType("datetime")
                 .HasColumnName("dataHoraPagamento");
             entity.Property(e => e.DataHorarioFinal)
@@ -59,9 +63,11 @@ public partial class VemCaProfContext : DbContext
                 .HasColumnName("descricao");
             entity.Property(e => e.IdAluno).HasColumnName("idAluno");
             entity.Property(e => e.IdDisciplina).HasColumnName("idDisciplina");
+            entity.Property(e => e.IdDisponibilidadeHorario).HasColumnName("idDisponibilidadeHorario");
             entity.Property(e => e.IdProfessor).HasColumnName("idProfessor");
             entity.Property(e => e.IdResponsavel).HasColumnName("idResponsavel");
             entity.Property(e => e.MetodoPagamento)
+                .IsRequired(false)
                 .HasComment("P = Pix\nC = Credito\nD = Debito")
                 .HasColumnType("enum('P','C','D')")
                 .HasColumnName("metodoPagamento");
@@ -80,6 +86,11 @@ public partial class VemCaProfContext : DbContext
                 .HasForeignKey(d => d.IdDisciplina)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Aula_Disciplina1");
+
+            entity.HasOne(d => d.IdDisponibilidadeHorarioNavigation).WithMany(p => p.Aulas)
+                .HasForeignKey(d => d.IdDisponibilidadeHorario)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_Aula_DisponibilidadeHorario");
 
             entity.HasOne(d => d.IdProfessorNavigation).WithMany(p => p.AulaIdProfessorNavigations)
                 .HasForeignKey(d => d.IdProfessor)
