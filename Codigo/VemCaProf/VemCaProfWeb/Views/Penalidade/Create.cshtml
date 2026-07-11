@@ -43,12 +43,16 @@
             </div>
             <div class="form-group">
             <label asp-for="IdProfessor"></label>
-                <select asp-for="IdProfessor" asp-items="@ViewBag.Professores" class="form-control custom-input"></select>
+                <select asp-for="IdProfessor" asp-items="@ViewBag.Professores" class="form-select custom-input">
+                    <option value="">Selecione um professor</option>
+                </select>
                 <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
             <div class="form-group">
             <label asp-for="IdResponsavel"></label>
-            <select asp-for="IdResponsavel" asp-items="@ViewBag.Responsaveis" class="form-control custom-input"></select>
+            <select asp-for="IdResponsavel" asp-items="@ViewBag.Responsaveis" class="form-select custom-input">
+                <option value="">Selecione um responsável</option>
+            </select>
                 <span asp-validation-for="IdResponsavel" class="text-danger"></span>
             </div>
            <small class="text-muted">*Campos obrigatórios</small>

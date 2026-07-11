@@ -34,10 +34,10 @@
             <th>@Html.DisplayNameFor(model => model.Valor)</th>
             <th>@Html.DisplayNameFor(model => model.DataHoraPagamento)</th>
             <th>@Html.DisplayNameFor(model => model.MetodoPagamento)</th>
-            <th>@Html.DisplayNameFor(model => model.IdDisciplina)</th>
-            <th>@Html.DisplayNameFor(model => model.IdResponsavel)</th>
-            <th>@Html.DisplayNameFor(model => model.IdAluno)</th>
-            <th>@Html.DisplayNameFor(model => model.IdProfessor)</th>
+            <th>@Html.DisplayNameFor(model => model.NomeDisciplina)</th>
+            <th>@Html.DisplayNameFor(model => model.NomeResponsavel)</th>
+            <th>@Html.DisplayNameFor(model => model.NomeAluno)</th>
+            <th>@Html.DisplayNameFor(model => model.NomeProfessor)</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -56,10 +56,10 @@
                 <td>@Html.DisplayFor(modelItem => item.Valor)</td>
                 <td>@Html.DisplayFor(modelItem => item.DataHoraPagamento)</td>
                 <td>@Html.DisplayFor(modelItem => item.MetodoPagamento)</td>
-                <td>@Html.DisplayFor(modelItem => item.IdDisciplina)</td>
-                <td>@Html.DisplayFor(modelItem => item.IdResponsavel)</td>
-                <td>@Html.DisplayFor(modelItem => item.IdAluno)</td>
-                <td>@Html.DisplayFor(modelItem => item.IdProfessor)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomeDisciplina)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomeResponsavel)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomeAluno)</td>
+                <td>@Html.DisplayFor(modelItem => item.NomeProfessor)</td>
 
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

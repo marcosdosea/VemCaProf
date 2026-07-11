@@ -55,7 +55,7 @@ public class Program
 
         // Configuração dos Bancos
         builder.Services.AddDbContext<VemCaProfContext>(options =>
-            options.UseMySQL(connectionString));
+            options.UseMySQL(connectionString, b => b.MigrationsAssembly("VemCaProfWeb")));
 
         builder.Services.AddDbContext<IdentityContext>(options =>
             options.UseMySQL(connectionStringIdentity));

@@ -15,6 +15,11 @@ public class AulaModel
     [Display(Name = "HorarioFinal")]
     public DateTime DataHorarioFinal { get; set; }
 
+    [Required(ErrorMessage = "A data da aula é obrigatória")]
+    [DataType(DataType.Date)]
+    [Display(Name = "Data da aula")]
+    public DateTime? DataAula { get; set; }
+
     [Required(ErrorMessage = "Descrição é obrigatório")]
     [Display(Name = "Descrição")]
     public string Descricao { get; set; } = null!;
@@ -24,33 +29,51 @@ public class AulaModel
 
 
     [Display(Name = "Status")]
-    public string Status { get; set; } = null!;
+    public string? Status { get; set; }
 
     [Required(ErrorMessage = "Valor é obrigatório")]
     [Display(Name = "Valor")]
-    public double Valor { get; set; }
+    [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Valor deve ser maior que zero")]
+    public double? Valor { get; set; }
 
 
     [Display(Name = "DataHoraPagamento")]
-    public DateTime DataHoraPagamento { get; set; }
+    public DateTime? DataHoraPagamento { get; set; }
 
     [Display(Name = "MetodoPagamento")]
-    public string MetodoPagamento { get; set; } = null!;
+    public string? MetodoPagamento { get; set; }
 
-    [Required(ErrorMessage = "IdDisciplina é obrigatório")]
-    [Display(Name = "IdDisciplina")]
+    [Range(1, int.MaxValue, ErrorMessage = "Selecione um horário")]
+    [Display(Name = "Horário")]
+    public int IdDisponibilidadeHorario { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "Selecione uma disciplina")]
+    [Display(Name = "Disciplina")]
     public int IdDisciplina { get; set; }
 
-    [Required(ErrorMessage = "IdResponsavel é obrigatório")]
-    [Display(Name = "IdResponsavel")]
+    [Range(1, int.MaxValue, ErrorMessage = "Selecione um responsável")]
+    [Display(Name = "Responsável")]
     public int IdResponsavel { get; set; }
 
-    [Required(ErrorMessage = "IdAluno é obrigatório")]
-    [Display(Name = "IdAluno")]
+    [Range(1, int.MaxValue, ErrorMessage = "Selecione um aluno")]
+    [Display(Name = "Aluno")]
     public int IdAluno { get; set; }
 
-    [Required(ErrorMessage = "IdProfessor é obrigatório")]
-    [Display(Name = "IdProfessor")]
+    [Range(1, int.MaxValue, ErrorMessage = "Selecione um professor")]
+    [Display(Name = "Professor")]
     public int IdProfessor { get; set; }
+
+    [Display(Name = "Disciplina")]
+    public string? NomeDisciplina { get; set; }
+
+    [Display(Name = "Responsável")]
+    public string? NomeResponsavel { get; set; }
+
+    [Display(Name = "Aluno")]
+    public string? NomeAluno { get; set; }
+
+    [Display(Name = "Professor")]
+    public string? NomeProfessor { get; set; }
 
 }

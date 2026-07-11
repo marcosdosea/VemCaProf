@@ -4,6 +4,7 @@ using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -20,15 +21,18 @@ namespace VemCaProfWeb.Tests.Controllers
     {
         private DisponibilidadeHorarioController CreateController(
             Mock<IDisponibilidadeHorarioService>? serviceMock = null,
+            Mock<IPessoaService>? pessoaServiceMock = null,
             Mock<IMapper>? mapperMock = null,
             Mock<ILogger<DisponibilidadeHorarioController>>? loggerMock = null)
         {
             serviceMock ??= new Mock<IDisponibilidadeHorarioService>();
+            pessoaServiceMock ??= new Mock<IPessoaService>();
             mapperMock ??= new Mock<IMapper>();
             loggerMock ??= new Mock<ILogger<DisponibilidadeHorarioController>>();
 
             return new DisponibilidadeHorarioController(
                 serviceMock.Object,
+                pessoaServiceMock.Object,
                 mapperMock.Object,
                 loggerMock.Object
             );
@@ -52,12 +56,12 @@ namespace VemCaProfWeb.Tests.Controllers
             mapperMock.Setup(m => m.Map<IEnumerable<DisponibilidadeHorarioModel>>(dtos))
                       .Returns(models);
 
-            var controller = CreateController(serviceMock, mapperMock);
+            var controller = CreateController(serviceMock, mapperMock: mapperMock);
 
             var result = controller.Index();
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            Assert.AreSame(models, ((ViewResult)result).Model);
+            CollectionAssert.AreEqual(models, ((IEnumerable<DisponibilidadeHorarioModel>)((ViewResult)result).Model!).ToList());
         }
 
         [TestMethod]
@@ -75,7 +79,7 @@ namespace VemCaProfWeb.Tests.Controllers
             mapperMock.Setup(m => m.Map<DisponibilidadeHorarioModel>(dto))
                       .Returns(model);
 
-            var controller = CreateController(serviceMock, mapperMock);
+            var controller = CreateController(serviceMock, mapperMock: mapperMock);
 
             var result = controller.Details(2);
 
@@ -97,7 +101,7 @@ namespace VemCaProfWeb.Tests.Controllers
             var mapperMock = new Mock<IMapper>();
             mapperMock.Setup(m => m.Map<DisponibilidadeHorarioDTO>(disponibilidadeHorarioModel)).Returns(disponibilidadeHorarioDto);
 
-            var controller = CreateController(disponibilidadeHorarioServiceMock, mapperMock);
+            var controller = CreateController(disponibilidadeHorarioServiceMock, mapperMock: mapperMock);
 
             // Configurar TempData
             controller.TempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(
@@ -114,6 +118,48 @@ namespace VemCaProfWeb.Tests.Controllers
             var redirect = (RedirectToActionResult)result;
             Assert.AreEqual(nameof(controller.Index), redirect.ActionName);
             Assert.IsTrue(controller.TempData.ContainsKey("SuccessMessage"));
+        }
+
+        [TestMethod]
+        public void Create_Get_CarregaProfessoresSemExibirId()
+        {
+            var pessoaServiceMock = new Mock<IPessoaService>();
+            pessoaServiceMock.Setup(s => s.GetAllProfessores()).Returns(new[]
+            {
+                new Pessoa
+                {
+                    Id = 10,
+                    Nome = "Paulo",
+                    Sobrenome = "Professor",
+                    Email = "paulo@teste.com",
+                    TipoPessoa = "P"
+                }
+            });
+            var controller = CreateController(pessoaServiceMock: pessoaServiceMock);
+
+            var result = controller.Create();
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            var opcao = ((SelectList)controller.ViewBag.Professores).Single();
+            Assert.AreEqual("Paulo Professor - paulo@teste.com", opcao.Text);
+            Assert.AreEqual("10", opcao.Value);
+        }
+
+        [TestMethod]
+        public void Create_PostInvalido_RecarregaProfessores()
+        {
+            var pessoaServiceMock = new Mock<IPessoaService>();
+            pessoaServiceMock.Setup(s => s.GetAllProfessores()).Returns(new[]
+            {
+                new Pessoa { Id = 10, Nome = "Paulo", Sobrenome = "Professor", Email = "paulo@teste.com" }
+            });
+            var controller = CreateController(pessoaServiceMock: pessoaServiceMock);
+            controller.ModelState.AddModelError("Dia", "Dia inválido");
+
+            var result = controller.Create(new DisponibilidadeHorarioModel { IdProfessor = 10 });
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.AreEqual("Paulo Professor - paulo@teste.com", ((SelectList)controller.ViewBag.Professores).Single().Text);
         }
 
     }

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Core;
 using Core.DTO;
 using Core.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +12,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using VemCaProfWeb.Controllers;
 using VemCaProfWeb.Models;
 
@@ -20,6 +23,8 @@ namespace VemCaProfWeb.Controllers.Tests
     {
         private AulaController controller;
         private Mock<IAulaService> mockService;
+        private Mock<IDisciplinaService> mockDisciplinaService;
+        private Mock<IPessoaService> mockPessoaService;
         private Mock<ILogger<AulaController>> mockLogger;
 
         [TestInitialize]
@@ -27,6 +32,8 @@ namespace VemCaProfWeb.Controllers.Tests
         {
             // Arrange
             mockService = new Mock<IAulaService>();
+            mockDisciplinaService = new Mock<IDisciplinaService>();
+            mockPessoaService = new Mock<IPessoaService>();
             mockLogger = new Mock<ILogger<AulaController>>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
@@ -57,8 +64,25 @@ namespace VemCaProfWeb.Controllers.Tests
 
             mockService.Setup(service => service.ConfirmarAula(It.IsAny<int>()))
                 .Verifiable();
+            mockService.Setup(service => service.GetHorariosDisponiveis(It.IsAny<int>(), It.IsAny<int?>()))
+                .Returns(Array.Empty<DisponibilidadeHorarioDTO>());
 
-            controller = new AulaController(mockService.Object, mapper, mockLogger.Object);
+            mockDisciplinaService.Setup(service => service.GetAll())
+                .Returns(new[] { new Disciplina { Id = 1, Nome = "Matemática", Nivel = "F2" } });
+            mockPessoaService.Setup(service => service.GetAll())
+                .Returns(new[]
+                {
+                    new Pessoa { Id = 1, Nome = "Paulo", Sobrenome = "Professor", Email = "paulo@teste.com", TipoPessoa = "P" },
+                    new Pessoa { Id = 2, Nome = "Rita", Sobrenome = "Responsável", Email = "rita@teste.com", TipoPessoa = "R" },
+                    new Pessoa { Id = 3, Nome = "Alice", Sobrenome = "Aluna", Email = "alice@teste.com", TipoPessoa = "A" }
+                });
+
+            controller = new AulaController(
+                mockService.Object,
+                mockDisciplinaService.Object,
+                mockPessoaService.Object,
+                mapper,
+                mockLogger.Object);
 
             // Mock do TempData necessário para a AulaController não quebrar
             var httpContext = new DefaultHttpContext();
@@ -109,6 +133,10 @@ namespace VemCaProfWeb.Controllers.Tests
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.AreEqual("Matemática - F2", ((SelectList)controller.ViewBag.Disciplinas).First().Text);
+            Assert.AreEqual("Paulo Professor - paulo@teste.com", ((SelectList)controller.ViewBag.Professores).First().Text);
+            Assert.AreEqual("Rita Responsável - rita@teste.com", ((SelectList)controller.ViewBag.Responsaveis).First().Text);
+            Assert.AreEqual("Alice Aluna - alice@teste.com", ((SelectList)controller.ViewBag.Alunos).First().Text);
         }
 
         [TestMethod()]
@@ -123,6 +151,18 @@ namespace VemCaProfWeb.Controllers.Tests
             Assert.IsNull(redirectToActionResult.ControllerName);
             Assert.AreEqual("Index", redirectToActionResult.ActionName);
             Assert.AreEqual("Aula cadastrada com sucesso!", controller.TempData["SuccessMessage"]);
+        }
+
+        [TestMethod]
+        public void CreateTest_PostInvalido_RecarregaOpcoes()
+        {
+            controller.ModelState.AddModelError("IdProfessor", "Professor inválido");
+
+            var result = controller.Create(GetNewAulaModel());
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.AreEqual("Matemática - F2", ((SelectList)controller.ViewBag.Disciplinas).Single().Text);
+            Assert.AreEqual("Paulo Professor - paulo@teste.com", ((SelectList)controller.ViewBag.Professores).Single().Text);
         }
 
         [TestMethod()]
@@ -211,6 +251,31 @@ namespace VemCaProfWeb.Controllers.Tests
             Assert.AreEqual("Participação confirmada com sucesso!", controller.TempData["SuccessMessage"]);
         }
 
+        [TestMethod]
+        public void HorariosDisponiveis_RetornaIdETextoFormatado()
+        {
+            mockService.Setup(service => service.GetHorariosDisponiveis(1, null))
+                .Returns(new[]
+                {
+                    new DisponibilidadeHorarioDTO
+                    {
+                        Id = 8,
+                        IdProfessor = 1,
+                        Dia = new DateTime(2026, 7, 20),
+                        HorarioInicio = TimeSpan.FromHours(9),
+                        HorarioFim = TimeSpan.FromHours(10)
+                    }
+                });
+
+            var result = controller.HorariosDisponiveis(1);
+
+            Assert.IsInstanceOfType(result, typeof(JsonResult));
+            var json = JsonSerializer.Serialize(((JsonResult)result).Value);
+            StringAssert.Contains(json, "\"id\":8");
+            StringAssert.Contains(json, "20/07/2026 - 09:00");
+            StringAssert.Contains(json, "10:00");
+        }
+
         // --- Helper Methods ---
 
         private AulaModel GetNewAulaModel()
@@ -221,7 +286,12 @@ namespace VemCaProfWeb.Controllers.Tests
                 Descricao = "Aula de Física Moderna",
                 Valor = 80.0,
                 DataHorarioInicio = DateTime.Now.AddDays(1),
-                DataHorarioFinal = DateTime.Now.AddDays(1).AddHours(1)
+                DataHorarioFinal = DateTime.Now.AddDays(1).AddHours(1),
+                IdDisponibilidadeHorario = 1,
+                IdProfessor = 1,
+                IdDisciplina = 1,
+                IdResponsavel = 2,
+                IdAluno = 3
             };
         }
 
@@ -233,7 +303,12 @@ namespace VemCaProfWeb.Controllers.Tests
                 Descricao = "Aula de Matemática Básica",
                 Valor = 50.0,
                 DataHorarioInicio = DateTime.Now,
-                DataHorarioFinal = DateTime.Now.AddHours(1)
+                DataHorarioFinal = DateTime.Now.AddHours(1),
+                IdDisponibilidadeHorario = 1,
+                IdProfessor = 1,
+                IdDisciplina = 1,
+                IdResponsavel = 2,
+                IdAluno = 3
             };
         }
 
@@ -245,7 +320,12 @@ namespace VemCaProfWeb.Controllers.Tests
                 Descricao = "Aula de Matemática Básica",
                 Valor = 50.0,
                 DataHorarioInicio = DateTime.Now,
-                DataHorarioFinal = DateTime.Now.AddHours(1)
+                DataHorarioFinal = DateTime.Now.AddHours(1),
+                IdDisponibilidadeHorario = 1,
+                IdProfessor = 1,
+                IdDisciplina = 1,
+                IdResponsavel = 2,
+                IdAluno = 3
             };
         }
 

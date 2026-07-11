@@ -18,25 +18,13 @@
 <div class="row">
     <div class="col-md-6 mb-3">
         <label asp-for="Cpf" class="form-label fw-bold"></label>
-        @if (Model.TipoPessoa == "A")
-        {
-            <input asp-for="Cpf" class="form-control" placeholder="000.000.000-00" />
-        }
-        else
-        {
-            <input asp-for="Cpf" class="form-control bg-light" readonly />
-        }
+        <input asp-for="Cpf" class="form-control" placeholder="000.000.000-00" />
+        <span asp-validation-for="Cpf" class="text-danger"></span>
     </div>
     <div class="col-md-6 mb-3">
         <label asp-for="Email" class="form-label fw-bold"></label>
-        @if (Model.TipoPessoa == "A")
-        {
-            <input asp-for="Email" class="form-control" placeholder="email@doaluno.com" />
-        }
-        else
-        {
-            <input asp-for="Email" class="form-control bg-light" readonly />
-        }
+        <input asp-for="Email" class="form-control" placeholder="email@doaluno.com" />
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 </div>
 

@@ -9,74 +9,138 @@
     <link rel="stylesheet" href="~/css/cidade.css" />
 }
 
-<h1>Create</h1>
+<h1>Nova aula</h1>
 
 <h4>Aula</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
            
-            <div class="form-group">
-                <label asp-for="DataHorarioInicio" class="control-label"></label>
-                <input asp-for="DataHorarioInicio" class="form-control" />
-                <span asp-validation-for="DataHorarioInicio" class="text-danger"></span>
+            <div class="form-group mb-3">
+                <label asp-for="IdProfessor" class="control-label"></label>
+                <select asp-for="IdProfessor" asp-items="ViewBag.Professores" class="form-select">
+                    <option value="">Selecione um professor</option>
+                </select>
+                <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="DataHorarioFinal" class="control-label"></label>
-                <input asp-for="DataHorarioFinal" class="form-control" />
-                <span asp-validation-for="DataHorarioFinal" class="text-danger"></span>
+            <div class="form-group mb-3">
+                <label asp-for="IdDisciplina" class="control-label"></label>
+                <select asp-for="IdDisciplina" asp-items="ViewBag.Disciplinas" class="form-select">
+                    <option value="">Selecione uma disciplina</option>
+                </select>
+                <span asp-validation-for="IdDisciplina" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
+                <label asp-for="IdResponsavel" class="control-label"></label>
+                <select asp-for="IdResponsavel" asp-items="ViewBag.Responsaveis" class="form-select">
+                    <option value="">Selecione um responsável</option>
+                </select>
+                <span asp-validation-for="IdResponsavel" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="IdAluno" class="control-label"></label>
+                <select asp-for="IdAluno" asp-items="ViewBag.Alunos" class="form-select">
+                    <option value="">Selecione um aluno</option>
+                </select>
+                <span asp-validation-for="IdAluno" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="DataAula" class="control-label"></label>
+                <input asp-for="DataAula" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="DataAula" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="IdDisponibilidadeHorario" class="control-label"></label>
+                <select asp-for="IdDisponibilidadeHorario"
+                        class="form-select"
+                        data-url="@Url.Action("HorariosDisponiveis", "Aula")"
+                        data-selected="@Model.IdDisponibilidadeHorario"
+                        disabled>
+                    <option value="">Selecione o professor e a data da aula</option>
+                </select>
+                <span asp-validation-for="IdDisponibilidadeHorario" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
                 <label asp-for="Descricao" class="control-label"></label>
                 <input asp-for="Descricao" class="form-control" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label asp-for="Valor" class="control-label"></label>
-                <input asp-for="Valor" class="form-control" />
+                <input asp-for="Valor" class="form-control" type="text" inputmode="decimal" placeholder="Ex: 50,00" />
                 <span asp-validation-for="Valor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MetodoPagamento" class="control-label"></label>
-                <input asp-for="MetodoPagamento" class="form-control" />
-                <span asp-validation-for="MetodoPagamento" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdDisciplina" class="control-label"></label>
-                <input asp-for="IdDisciplina" class="form-control" />
-                <span asp-validation-for="IdDisciplina" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdResponsavel" class="control-label"></label>
-                <input asp-for="IdResponsavel" class="form-control" />
-                <span asp-validation-for="IdResponsavel" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdAluno" class="control-label"></label>
-                <input asp-for="IdAluno" class="form-control" />
-                <span asp-validation-for="IdAluno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdProfessor" class="control-label"></label>
-                <input asp-for="IdProfessor" class="form-control" />
-                <span asp-validation-for="IdProfessor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Salvar" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar para a lista</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        (() => {
+            const professor = document.getElementById('IdProfessor');
+            const dataAula = document.getElementById('DataAula');
+            const horario = document.getElementById('IdDisponibilidadeHorario');
+            let versaoRequisicao = 0;
+
+            async function carregarHorarios(valorSelecionado = '') {
+                const versaoAtual = ++versaoRequisicao;
+                horario.innerHTML = '<option value="">Carregando horários...</option>';
+                horario.disabled = true;
+
+                if (!professor.value || !dataAula.value) {
+                    horario.innerHTML = '<option value="">Selecione o professor e a data da aula</option>';
+                    return;
+                }
+
+                try {
+                    const params = new URLSearchParams({
+                        professorId: professor.value,
+                        dataAula: dataAula.value
+                    });
+                    const url = `${horario.dataset.url}?${params}`;
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error();
+
+                    const horarios = await response.json();
+                    if (versaoAtual !== versaoRequisicao) return;
+                    horario.innerHTML = '<option value="">Selecione um horário</option>';
+                    horarios.forEach(item => {
+                        const option = new Option(item.texto, item.id, false, String(item.id) === String(valorSelecionado));
+                        horario.add(option);
+                    });
+
+                    if (horarios.length === 0) {
+                        horario.innerHTML = '<option value="">Nenhum horário disponível</option>';
+                    }
+                    horario.disabled = horarios.length === 0;
+                } catch {
+                    if (versaoAtual !== versaoRequisicao) return;
+                    horario.innerHTML = '<option value="">Não foi possível carregar os horários</option>';
+                }
+            }
+
+            professor.addEventListener('change', () => carregarHorarios());
+            dataAula.addEventListener('change', () => carregarHorarios());
+            if (professor.value && dataAula.value) carregarHorarios(horario.dataset.selected);
+            const form = document.querySelector('form');
+            form.addEventListener('submit', (e) => {
+                if (professor.value && dataAula.value && horario.disabled) {
+                    e.preventDefault();
+                    alert('Aguarde o carregamento dos horários antes de salvar.');
+                }
+            });
+        })();
+    </script>
 }
