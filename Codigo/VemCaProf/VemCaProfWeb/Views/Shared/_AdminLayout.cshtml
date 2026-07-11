@@ -19,24 +19,45 @@
             </div>
 
             <nav class="admin-menu mt-4">
-                <a href="#" class="active">Disciplinas</a>
+                <a asp-controller="Home" asp-action="Index">Início</a>
+                <a asp-controller="Disciplina" asp-action="Index">Disciplinas</a>
+                <a asp-controller="Cidade" asp-action="Index">Cidades</a>
+                <a asp-controller="Pessoa" asp-action="MeuPerfil">Pessoas</a>
+                <a asp-controller="Penalidade" asp-action="Index">Penalidades</a>
+                <a asp-controller="DisponibilidadeHorario" asp-action="Index">Horários</a>
+                <a asp-controller="Aula" asp-action="Index">Aulas</a>
+                <a asp-controller="Pagamento" asp-action="Index">Pagamentos</a>
             </nav>
-
-            <nav class="admin-menu mt-4">
-                <a asp-controller="Cidade" asp-action="Index" class="active">Cidades</a>
-            </nav>
-            <a asp-controller="Home" asp-action="Index" class="btn btn-sair d-flex align-items-center justify-content-center text-decoration-none">SAIR</a>
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="mt-auto">
+                <button type="submit" class="btn btn-sair d-flex align-items-center justify-content-center">SAIR</button>
+            </form>
         </aside>
 
         <main class="admin-main">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
 
             @RenderBody()
 
         </main>
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.css"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

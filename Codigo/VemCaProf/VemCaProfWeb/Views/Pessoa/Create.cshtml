@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Novo Cadastro";
-    Layout = "~/Views/Shared/_Layout.cshtml";
     
     string tituloPerfil = Model.TipoPessoa == "P" ? "Professor" : 
         (Model.TipoPessoa == "A" ? "Aluno" : "Responsável");
