@@ -15,7 +15,10 @@
         <aside class="admin-sidebar">
             <div class="admin-logo">
                 🛡️ VemCáProf<br>
-                <small class="text-muted fw-normal">Administrativo</small>
+                @if (User.IsInRole("Admin"))
+                {
+                    <small class="text-muted fw-normal">Administrativo</small>
+                }
             </div>
 
             <nav class="admin-menu mt-4">
