@@ -2,12 +2,25 @@
 INSERT INTO `identityusers`.`aspnetroles`
 (`Id`, `Name`, `NormalizedName`, `ConcurrencyStamp`)
 VALUES
-('1', 'Professor', 'Professor', null),
-('2', 'Aluno', 'Aluno', null),
-('3', 'Responsavel', 'Responsavel', null),
-('4', 'Admin', 'Admin', null);
+('1', 'Professor', 'PROFESSOR', null),
+('2', 'Aluno', 'ALUNO', null),
+('3', 'Responsavel', 'RESPONSAVEL', null),
+('4', 'Admin', 'ADMIN', null);
 
 SELECT * FROM identityusers.aspnetroles;
+
+-- Cidades (devem existir antes das pessoas por causa da chave estrangeira)
+INSERT INTO `vcp`.`cidade`
+(`id`, `nome`, `estado`)
+VALUES
+('1', 'Itabaiana', 'SE'),
+('2', 'Aracaju', 'SE'),
+('3', 'São Paulo', 'SP'),
+('4', 'Rio de Janeiro', 'RJ'),
+('5', 'Salvador', 'BA'),
+('6', 'Recife', 'PE'),
+('7', 'Fortaleza', 'CE'),
+('8', 'Belo Horizonte', 'MG');
 
 -- ADMINISTRADORES
 INSERT INTO `vcp`.`pessoa`
@@ -101,18 +114,25 @@ VALUES
 (UUID(),'prof2','PROF2','prof2@email.com','PROF2@EMAIL.COM',
  1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','222222222',1,0,NULL,1,0);
 
--- Cidades
-INSERT INTO `vcp`.`cidade`
-(`id`, `nome`, `estado`)
-VALUES
-('1', 'Itabaiana', 'SE'),
-('2', 'Aracaju', 'SE'),
-('3', 'São Paulo', 'SP'),
-('4', 'Rio de Janeiro', 'RJ'),
-('5', 'Salvador', 'BA'),
-('6', 'Recife', 'PE'),
-('7', 'Fortaleza', 'CE'),
-('8', 'Belo Horizonte', 'MG');
+-- Vincula os usuários aos perfis do ASP.NET Identity.
+-- O LEFT JOIN permite executar este bloco também em uma base já populada.
+INSERT INTO `identityusers`.`aspnetuserroles` (`UserId`, `RoleId`)
+SELECT usuario.`Id`, vinculo.`RoleId`
+FROM `identityusers`.`aspnetusers` AS usuario
+INNER JOIN (
+    SELECT 'ADMIN1' AS `NormalizedUserName`, '4' AS `RoleId`
+    UNION ALL SELECT 'ADMIN2', '4'
+    UNION ALL SELECT 'RESPONSAVEL1', '3'
+    UNION ALL SELECT 'ALUNO1', '2'
+    UNION ALL SELECT 'ALUNO2', '2'
+    UNION ALL SELECT 'ALUNO3', '2'
+    UNION ALL SELECT 'PROF1', '1'
+    UNION ALL SELECT 'PROF2', '1'
+) AS vinculo ON vinculo.`NormalizedUserName` = usuario.`NormalizedUserName`
+LEFT JOIN `identityusers`.`aspnetuserroles` AS usuarioPerfil
+    ON usuarioPerfil.`UserId` = usuario.`Id`
+    AND usuarioPerfil.`RoleId` = vinculo.`RoleId`
+WHERE usuarioPerfil.`UserId` IS NULL;
 
 -- Diciplinas
 INSERT INTO `vcp`.`disciplina`
