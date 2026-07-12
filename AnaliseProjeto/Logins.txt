@@ -1,0 +1,27 @@
+Login adm
+Carlos:
+login: admin1@email.com
+senha:123456
+
+Maria 
+login: admin2@email.com
+senha:123456
+
+Login responsável:
+João
+login: resp@email.com
+senha:123456
+
+Login aluno (depende do Responsável):
+Pedro 
+login: aluno1@email.com
+senha:123456
+
+Ana
+login: aluno2@email.com
+senha:123456
+
+Aluno Sem resp 
+login: aluno3@email.com
+senha:123456
+
