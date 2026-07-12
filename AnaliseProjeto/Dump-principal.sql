@@ -8,6 +8,7 @@ VALUES
 ('4', 'Admin', 'ADMIN', null);
 
 SELECT * FROM identityusers.aspnetroles;
+-- Ordem de execução: 1) query.sql; 2) migrations do VemCaProfContext; 3) este dump.
 
 -- Cidades (devem existir antes das pessoas por causa da chave estrangeira)
 INSERT INTO `vcp`.`cidade`
@@ -200,6 +201,8 @@ VALUES
 -- SET @IdResp = (SELECT id FROM `vcp`.`pessoa` WHERE email='resp@email.com');
 SET @IdAluno = (SELECT id FROM `vcp`.`pessoa` WHERE email='aluno2@email.com');
 INSERT INTO `vcp`.`aula`
+(`id`, `dataHorarioInicio`, `dataHorarioFinal`, `descricao`, `dataHoraPagamento`,
+ `valor`, `metodoPagamento`, `status`, `idDisciplina`, `idResponsavel`, `idAluno`, `idProfessor`)
 VALUES
 ('2', '2026-07-15 14:00:00', '2026-07-15 16:00:00', 'Aula de Português - Gramática básica',
  '2026-07-14 20:00:00', 90.00, 'C', 'AG', 2,
@@ -211,6 +214,8 @@ VALUES
 SET @IdAluno = (SELECT id FROM `vcp`.`pessoa` WHERE email='aluno3@email.com');
 
 INSERT INTO `vcp`.`aula`
+(`id`, `dataHorarioInicio`, `dataHorarioFinal`, `descricao`, `dataHoraPagamento`,
+ `valor`, `metodoPagamento`, `status`, `idDisciplina`, `idResponsavel`, `idAluno`, `idProfessor`)
 VALUES
 ('3', '2026-07-16 09:00:00', '2026-07-16 11:00:00', 'Aula de Química - Reações químicas',
  '2026-07-15 19:00:00', 120.00, 'D', 'AG', 6,
@@ -218,10 +223,12 @@ VALUES
  @IdAluno,
  8);
 
--- Aula de Biologia com Professor 8 e Aluno 1
+-- Aula de Biologia com Professor 8 e Aluno 3
 -- SET @IdResp = (SELECT id FROM `vcp`.`pessoa` WHERE email='resp@email.com');
 SET @IdAluno = (SELECT id FROM `vcp`.`pessoa` WHERE email='aluno3@email.com');
 INSERT INTO `vcp`.`aula`
+(`id`, `dataHorarioInicio`, `dataHorarioFinal`, `descricao`, `dataHoraPagamento`,
+ `valor`, `metodoPagamento`, `status`, `idDisciplina`, `idResponsavel`, `idAluno`, `idProfessor`)
 VALUES
 ('4', '2026-07-18 08:00:00', '2026-07-18 10:00:00', 'Aula de Biologia - Ecossistemas',
  '2026-07-17 21:00:00', 110.00, 'P', 'PG', 7,

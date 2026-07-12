@@ -1,9 +1,13 @@
+using Core;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace VemCaProfWeb.Migrations.VemCaProf
 {
+    [DbContext(typeof(VemCaProfContext))]
+    [Migration("20260712_RecurringAvailability")]
     public partial class RecurringAvailability : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
