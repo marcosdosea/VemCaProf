@@ -207,14 +207,14 @@ VALUES
  @IdAluno,
  7);
 
--- Aula de Química com Professor 8 e Aluno 3 (independente)
+-- Aula de Química com Professor 8 e Aluno 3 (conta independente)
 SET @IdAluno = (SELECT id FROM `vcp`.`pessoa` WHERE email='aluno3@email.com');
 
 INSERT INTO `vcp`.`aula`
 VALUES
 ('3', '2026-07-16 09:00:00', '2026-07-16 11:00:00', 'Aula de Química - Reações químicas',
  '2026-07-15 19:00:00', 120.00, 'D', 'AG', 6,
- 0, -- aluno independente, sem responsável
+ @IdResp,
  @IdAluno,
  8);
 
