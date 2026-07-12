@@ -87,7 +87,6 @@ namespace VemCaProfWebTests.Controllers
 
         }
 
-        [TestMethod()]
         private IEnumerable<PenalidadeDTO> GetAll()
         {
             return new List<PenalidadeDTO>

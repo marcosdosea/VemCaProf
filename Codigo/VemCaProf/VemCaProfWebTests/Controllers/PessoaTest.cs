@@ -393,6 +393,12 @@ namespace VemCaProfWebTests
         public void MeuPerfil_ComPessoaExistente_RedirecionaParaDetails()
         {
             // Arrange
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "12345678901"),
+                new Claim(ClaimTypes.Role, "Professor")
+            }, "mock"));
+            _controller.ControllerContext.HttpContext.User = user;
             var pessoa = new Pessoa { Id = 5, Cpf = "12345678901" };
             _pessoaServiceMock.Setup(s => s.GetByCpf("12345678901")).Returns(pessoa);
 
