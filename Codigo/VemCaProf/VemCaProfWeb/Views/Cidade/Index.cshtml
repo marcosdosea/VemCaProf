@@ -4,9 +4,7 @@
     ViewData["Title"] = "Cidades";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
-}
+
 
 <div class="page-hero page-hero-gradient">
   <div class="page-hero-content">
@@ -25,7 +23,10 @@
 <div class="admin-card">
   <div class="admin-card-body p-0">
     <div class="table-responsive">
-    <table id="tabelaCidades" class="table admin-table mb-0">
+    <table id="tabelaCidades" class="table admin-table mb-0"
+           data-admin-table data-actions-column="2" data-order-column="0"
+           data-search-placeholder="Buscar cidade ou estado..."
+           data-empty-message="Nenhuma cidade cadastrada.">
       <thead>
         <tr>
           <th>@Html.DisplayNameFor(model => model.Nome)</th>
@@ -60,19 +61,3 @@
     </div>
   </div>
 </div>
-
-@section Scripts {
-    <script src="~/lib/datatables.net/dataTables.min.js"></script>
-    <script src="~/lib/datatables.net/dataTables.bootstrap5.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#tabelaCidades').DataTable({
-                language: { url: "/lib/datatables.net/pt-BR.json" },
-                pageLength: 10,
-                lengthChange: false,
-                ordering: true,
-                info: true
-            });
-        });
-    </script>
-}

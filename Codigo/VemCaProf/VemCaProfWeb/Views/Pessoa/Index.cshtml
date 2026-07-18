@@ -5,9 +5,7 @@
     string tipoAtual = ViewBag.TipoAtual as string ?? "";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
-}
+
 
 <div class="page-hero page-hero-gradient">
   <div class="page-hero-content">
@@ -43,7 +41,10 @@
 <div class="admin-card">
   <div class="admin-card-body p-0">
     <div class="table-responsive">
-    <table id="tabelaPessoas" class="table admin-table mb-0">
+    <table id="tabelaPessoas" class="table admin-table mb-0"
+           data-admin-table data-actions-column="5" data-order-column="0"
+           data-search-placeholder="Buscar nome, CPF ou e-mail..."
+           data-empty-message="Nenhuma pessoa encontrada.">
       <thead>
         <tr>
           <th>Nome</th>
@@ -100,22 +101,3 @@
     </div>
   </div>
 </div>
-
-@section Scripts {
-    <script src="~/lib/datatables.net/dataTables.min.js"></script>
-    <script src="~/lib/datatables.net/dataTables.bootstrap5.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#tabelaPessoas').DataTable({
-                language: { url: "/lib/datatables.net/pt-BR.json" },
-                pageLength: 10,
-                lengthChange: false,
-                ordering: true,
-                info: true,
-                columnDefs: [
-                    { orderable: false, targets: [5] }
-                ]
-            });
-        });
-    </script>
-}

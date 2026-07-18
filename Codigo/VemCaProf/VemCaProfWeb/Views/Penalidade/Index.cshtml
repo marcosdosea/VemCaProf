@@ -4,9 +4,7 @@
     ViewData["Title"] = "Penalidades";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
-}
+
 
 <div class="page-hero page-hero-gradient">
     <div class="page-hero-content">
@@ -23,7 +21,10 @@
 <div class="admin-card">
     <div class="admin-card-body p-0">
         <div class="table-responsive">
-        <table id="tabelaPenalidades" class="table admin-table mb-0">
+        <table id="tabelaPenalidades" class="table admin-table mb-0"
+               data-admin-table data-actions-column="6" data-order-column="0" data-order-direction="desc"
+               data-search-placeholder="Buscar tipo, professor ou responsável..."
+               data-empty-message="Nenhuma penalidade encontrada.">
             <thead>
                 <tr>
                     <th>Início</th>
@@ -66,22 +67,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script src="~/lib/datatables.net/dataTables.min.js"></script>
-    <script src="~/lib/datatables.net/dataTables.bootstrap5.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#tabelaPenalidades').DataTable({
-                language: { url: "/lib/datatables.net/pt-BR.json" },
-                pageLength: 10,
-                lengthChange: false,
-                ordering: true,
-                info: true,
-                columnDefs: [
-                    { orderable: false, targets: [6] }
-                ]
-            });
-        });
-    </script>
-}

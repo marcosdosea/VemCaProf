@@ -5,9 +5,7 @@
     ViewData["Title"] = "Aulas";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
-}
+
 
 <div class="page-hero page-hero-gradient">
     <div class="page-hero-content">
@@ -33,7 +31,10 @@
 <div class="admin-card">
     <div class="admin-card-body p-0">
         <div class="table-responsive">
-        <table id="tabelaAulas" class="table admin-table mb-0">
+        <table id="tabelaAulas" class="table admin-table mb-0"
+               data-admin-table data-actions-column="11" data-order-column="0" data-order-direction="desc"
+               data-search-placeholder="Buscar aula, aluno ou professor..."
+               data-empty-message="Nenhuma aula encontrada.">
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.DataHorarioInicio)</th>
@@ -149,20 +150,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script src="~/lib/datatables.net/dataTables.min.js"></script>
-    <script src="~/lib/datatables.net/dataTables.bootstrap5.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#tabelaAulas').DataTable({
-                language: { url: "/lib/datatables.net/pt-BR.json" },
-                pageLength: 10,
-                lengthChange: false,
-                ordering: true,
-                info: true,
-                order: [[0, 'desc']]
-            });
-        });
-    </script>
-}

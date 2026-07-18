@@ -4,9 +4,7 @@
     ViewData["Title"] = "Horários";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
-}
+
 
 <div class="page-hero page-hero-gradient">
     <div class="page-hero-content">
@@ -23,7 +21,10 @@
 <div class="admin-card">
     <div class="admin-card-body p-0">
         <div class="table-responsive">
-        <table id="tabelaHorarios" class="table admin-table mb-0">
+        <table id="tabelaHorarios" class="table admin-table mb-0"
+               data-admin-table data-actions-column="3" data-order-column="0"
+               data-search-placeholder="Buscar professor ou horário..."
+               data-empty-message="Nenhum horário cadastrado.">
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.HorarioInicio)</th>
@@ -50,22 +51,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <script src="~/lib/datatables.net/dataTables.min.js"></script>
-    <script src="~/lib/datatables.net/dataTables.bootstrap5.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#tabelaHorarios').DataTable({
-                language: { url: "/lib/datatables.net/pt-BR.json" },
-                pageLength: 10,
-                lengthChange: false,
-                ordering: true,
-                info: true,
-                columnDefs: [
-                    { orderable: false, targets: [3] }
-                ]
-            });
-        });
-    </script>
-}
