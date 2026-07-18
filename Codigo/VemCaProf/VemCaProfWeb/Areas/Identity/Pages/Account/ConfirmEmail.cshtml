@@ -1,8 +1,21 @@
 ﻿@page
 @model ConfirmEmailModel
 @{
-    ViewData["Title"] = "Confirm email";
+    ViewData["Title"] = "E-mail Confirmado";
 }
 
-<h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="text-center">
+    <div class="identity-icon-success"><i class="bi bi-check-lg"></i></div>
+    <h1 class="identity-card-title mb-2">E-mail confirmado!</h1>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        var statusClass = Model.StatusMessage.StartsWith("Error") ? "identity-alert-danger" : "identity-alert-success";
+        <div class="identity-alert @statusClass text-start">
+            <i class="bi @(Model.StatusMessage.StartsWith("Error") ? "bi-exclamation-circle-fill" : "bi-check-circle-fill")"></i>
+            <span>@Model.StatusMessage</span>
+        </div>
+    }
+
+    <a asp-page="./Login" class="btn-identity mt-3">Ir para o login</a>
+</div>
