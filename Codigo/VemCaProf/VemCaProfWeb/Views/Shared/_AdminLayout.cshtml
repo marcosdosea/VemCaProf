@@ -23,13 +23,14 @@
                     <div class="admin-logo-sub">Administrativo</div>
                 </div>
             </div>
-            <button class="admin-menu-toggle" onclick="document.querySelector('.admin-wrapper').classList.toggle('sidebar-open')" aria-label="Abrir menu">
+            <button type="button" class="admin-menu-toggle" data-admin-menu-open
+                    aria-label="Abrir menu" aria-controls="adminSidebar" aria-expanded="false">
                 <i class="bi bi-list"></i>
             </button>
         </header>
 
         <!-- Sidebar -->
-        <aside class="admin-sidebar">
+        <aside id="adminSidebar" class="admin-sidebar" aria-label="Navegação principal">
             <div class="admin-sidebar-header">
                 <div class="admin-logo-icon">
                     <i class="bi bi-mortarboard-fill"></i>
@@ -38,7 +39,7 @@
                     <div class="admin-logo-text">VemCáProf</div>
                     <div class="admin-logo-sub">Administrativo</div>
                 </div>
-                <button class="admin-sidebar-close" onclick="document.querySelector('.admin-wrapper').classList.remove('sidebar-open')" aria-label="Fechar menu">
+                <button type="button" class="admin-sidebar-close" data-admin-menu-close aria-label="Fechar menu">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -126,9 +127,6 @@
             </div>
         </aside>
 
-        <!-- Overlay for mobile -->
-        <div class="admin-overlay" onclick="document.querySelector('.admin-wrapper').classList.remove('sidebar-open')"></div>
-
         <!-- Main content -->
         <main class="admin-main">
             @if (TempData["SuccessMessage"] != null)
@@ -155,6 +153,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/datatables.net/dataTables.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/admin-navigation.js" asp-append-version="true"></script>
     <script src="~/js/admin-table.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
