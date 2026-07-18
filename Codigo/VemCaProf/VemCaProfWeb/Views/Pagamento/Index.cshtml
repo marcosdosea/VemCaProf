@@ -7,107 +7,93 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
     <link rel="stylesheet" href="~/css/pagamento.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
 }
 
-<div class="city-page">
-    <div class="city-wrap">
+<div class="page-hero page-hero-gradient">
+    <div class="page-hero-content">
+        <div class="page-hero-badge"><i class="bi bi-currency-dollar"></i> Financeiro</div>
+        <h1 class="page-hero-title">@ViewData["Title"]</h1>
+        <p class="page-hero-subtitle">Visualize pagamentos e realize pagamentos pendentes.</p>
+    </div>
+</div>
 
-        <a asp-action="Index" class="city-back">
-            <i class="bi bi-arrow-left"></i>
-            Voltar
-        </a>
-
-        <div class="pay-header city-header">
-            <h1>Pagamentos</h1>
-            <p>Visualize pagamentos e realize pagamentos pendentes</p>
-        </div>
-
-        <div class="city-card">
-            <table class="table table-city table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th style="width:10%;">@Html.DisplayNameFor(m => m.First().Id)</th>
-                        <th style="width:30%;">@Html.DisplayNameFor(m => m.First().Descricao)</th>
-                        <th style="width:20%;">Data/Hora Pagamento</th>
-                        <th style="width:15%;">@Html.DisplayNameFor(m => m.First().Valor)</th>
-                        <th style="width:15%;">@Html.DisplayNameFor(m => m.First().Status)</th>
-                        <th style="width:10%;" class="text-end">Ações</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Id</td>
-                                <td>
-                                    <span class="city-badge">@item.Descricao</span>
-                                </td>
-
-                                <td>
-                                    @if (item.Status == StatusEnum.Paga)
-                                    {
-                                        <span class="pay-badge pay-badge-success">
-                                            <i class="bi bi-check-circle"></i>
-                                            @(item.DataHoraPagamento?.ToString("dd/MM/yyyy HH:mm") ?? "-")
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="pay-badge pay-badge-warning">
-                                            <i class="bi bi-hourglass-split"></i>
-                                            Pendente
-                                        </span>
-                                    }
-                                </td>
-
-                                <td>R$ @item.Valor</td>
-
-                                <td>
-                                    @PagamentoDisplayHelper.StatusLabel(item.Status)
-                                </td>
-
-                                <td class="text-end">
-                                    <div class="pay-actions">
-                                        <a asp-action="Details"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-outline-secondary pay-btn"
-                                           title="Detalhes">
-                                            <i class="bi bi-eye"></i>
-                                            <span class="d-none d-sm-inline">Detalhes</span>
-                                        </a>
-
-                                        @if (item.Status != StatusEnum.Paga)
-                                        {
-                                            <a asp-action="Create"
-                                               asp-route-id="@item.Id"
-                                               class="btn btn-success pay-btn"
-                                               title="Pagar">
-                                                <i class="bi bi-cash-coin"></i>
-                                                <span class="d-none d-sm-inline">Pagar</span>
-                                            </a>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    }
-                    else
+<div class="admin-card">
+    <div class="admin-card-body p-0">
+        <div class="table-responsive">
+        <table id="tabelaPagamentos" class="table admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(m => m.First().Id)</th>
+                    <th>@Html.DisplayNameFor(m => m.First().Descricao)</th>
+                    <th>Data/Hora Pagamento</th>
+                    <th>@Html.DisplayNameFor(m => m.First().Valor)</th>
+                    <th>@Html.DisplayNameFor(m => m.First().Status)</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
                     {
                         <tr>
-                            <td colspan="6" class="city-empty">
-                                Nenhum pagamento encontrado.
+                            <td>@item.Id</td>
+                            <td><span class="fw-medium">@item.Descricao</span></td>
+                            <td>
+                                @if (item.Status == StatusEnum.Paga)
+                                {
+                                    <span class="pay-badge pay-badge-success">
+                                        <i class="bi bi-check-circle"></i> @(item.DataHoraPagamento?.ToString("dd/MM/yyyy HH:mm") ?? "-")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="pay-badge pay-badge-warning">
+                                        <i class="bi bi-hourglass-split"></i> Pendente
+                                    </span>
+                                }
+                            </td>
+                            <td>R$ @item.Valor</td>
+                            <td>@PagamentoDisplayHelper.StatusLabel(item.Status)</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn-action-icon" title="Detalhes"><i class="bi bi-eye"></i></a>
+                                @if (item.Status != StatusEnum.Paga)
+                                {
+                                    <a asp-action="Create" asp-route-id="@item.Id" class="btn-action-icon btn-action-icon-success" title="Pagar"><i class="bi bi-cash-coin"></i></a>
+                                }
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Nenhum pagamento encontrado.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
         </div>
-
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/datatables.net/dataTables.min.js"></script>
+    <script src="~/lib/datatables.net/dataTables.bootstrap5.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tabelaPagamentos').DataTable({
+                language: { url: "/lib/datatables.net/pt-BR.json" },
+                pageLength: 10,
+                lengthChange: false,
+                ordering: true,
+                info: true,
+                columnDefs: [
+                    { orderable: false, targets: [5] }
+                ]
+            });
+        });
+    </script>
+}

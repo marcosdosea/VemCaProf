@@ -1,8 +1,101 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Início";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Bem-vindo</h1>
-    <p>Sistema de gerenciamento de aulas VemCáProf.</p>
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-activity"></i> Painel administrativo</div>
+    <h1 class="page-hero-title">Bem-vindo, @Model.NomeUsuario.</h1>
+    <p class="page-hero-subtitle">Sistema de gerenciamento de aulas VemCáProf — tudo o que você precisa para conduzir seu ensino particular.</p>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#eef2ff;color:#6366f1"><i class="bi bi-people-fill"></i></div>
+      <div class="stat-card-label">Alunos Ativos</div>
+      <div class="stat-card-value">@Model.AlunosAtivos</div>
+      <div class="stat-card-trend"><i class="bi bi-person-check me-1"></i>Total de alunos cadastrados</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#ecfdf5;color:#059669"><i class="bi bi-calendar-week-fill"></i></div>
+      <div class="stat-card-label">Aulas na Semana</div>
+      <div class="stat-card-value">@Model.AulasSemana</div>
+      <div class="stat-card-trend"><i class="bi bi-arrow-up me-1"></i>Agendadas para esta semana</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#fffbeb;color:#d97706"><i class="bi bi-play-circle-fill"></i></div>
+      <div class="stat-card-label">Aulas Hoje</div>
+      <div class="stat-card-value">@Model.AulasHoje</div>
+      <div class="stat-card-trend"><i class="bi bi-lightning me-1"></i>Ocorrendo hoje</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#fef2f2;color:#dc2626"><i class="bi bi-cash-stack"></i></div>
+      <div class="stat-card-label">Receita do Mês</div>
+      <div class="stat-card-value">@Model.ReceitaMes.ToString("C2")</div>
+      <div class="stat-card-trend"><i class="bi bi-graph-up me-1"></i>Pagamentos realizados</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-8">
+    <div class="admin-card">
+      <div class="admin-card-body p-0">
+        <div class="ratio ratio-16x9">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="VemCáProf" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="admin-card h-100">
+      <div class="admin-card-body d-flex flex-column justify-content-center text-center" style="min-height:200px;">
+        <i class="bi bi-info-circle-fill" style="font-size:2rem;color:var(--color-primary);margin-bottom:0.75rem;"></i>
+        <h6 style="font-weight:600;margin-bottom:0.5rem;">Bem-vindo ao VemCáProf</h6>
+        <p style="font-size:0.8125rem;color:var(--color-text-secondary);margin-bottom:0;">
+          Gerencie suas aulas, alunos e pagamentos de forma simples e eficiente.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Aula" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-calendar-check"></i></div>
+      <div class="quick-action-title">Aulas</div>
+      <div class="quick-action-desc">Gerenciar agendamentos</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Pessoa" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-people"></i></div>
+      <div class="quick-action-title">Pessoas</div>
+      <div class="quick-action-desc">Alunos, professores e responsáveis</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Pagamento" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-cash-coin"></i></div>
+      <div class="quick-action-title">Pagamentos</div>
+      <div class="quick-action-desc">Histórico financeiro</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Disciplina" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-book"></i></div>
+      <div class="quick-action-title">Disciplinas</div>
+      <div class="quick-action-desc">Matérias e valores</div>
+    </a>
+  </div>
 </div>

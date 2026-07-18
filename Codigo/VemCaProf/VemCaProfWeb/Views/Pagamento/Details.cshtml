@@ -7,73 +7,67 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
     <link rel="stylesheet" href="~/css/pagamento.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 }
 
-<div class="city-page">
-    <div class="city-wrap">
+<div class="page-hero page-hero-gradient">
+    <div class="page-hero-content">
+        <div class="page-hero-badge"><i class="bi bi-currency-dollar"></i> Financeiro</div>
+        <h1 class="page-hero-title">@ViewData["Title"]</h1>
+        <p class="page-hero-subtitle">Informações detalhadas do pagamento.</p>
+    </div>
+</div>
 
-        <a asp-action="Index" class="city-back">
-            <i class="bi bi-arrow-left"></i>
-            Voltar para Pagamentos
-        </a>
+<div class="admin-card">
+    <div class="admin-card-body">
+        <div class="mb-3">
+            <div class="text-muted small">@Html.DisplayNameFor(m => m.Id)</div>
+            <div class="fw-semibold">@Html.DisplayFor(m => m.Id)</div>
+        </div>
 
-        <div class="city-form-card">
-            <div class="city-form-title">Detalhes do Pagamento</div>
+        <div class="mb-3">
+            <div class="text-muted small">@Html.DisplayNameFor(m => m.Descricao)</div>
+            <div class="fw-semibold">@Html.DisplayFor(m => m.Descricao)</div>
+        </div>
 
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(m => m.Id)</div>
-                <div class="fw-semibold">@Html.DisplayFor(m => m.Id)</div>
-            </div>
+        <div class="mb-3">
+            <div class="text-muted small">@Html.DisplayNameFor(m => m.Valor)</div>
+            <div class="fw-semibold">R$ @Html.DisplayFor(m => m.Valor)</div>
+        </div>
 
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(m => m.Descricao)</div>
-                <div class="fw-semibold">@Html.DisplayFor(m => m.Descricao)</div>
-            </div>
+        <div class="mb-3">
+            <div class="text-muted small">@Html.DisplayNameFor(m => m.MetodoPagamento)</div>
+            <div class="fw-semibold">@PagamentoDisplayHelper.MetodoLabel(Model.MetodoPagamento)</div>
+        </div>
 
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(m => m.Valor)</div>
-                <div class="fw-semibold">R$ @Html.DisplayFor(m => m.Valor)</div>
-            </div>
+        <div class="mb-3">
+            <div class="text-muted small">@Html.DisplayNameFor(m => m.Status)</div>
+            <div class="fw-semibold">@PagamentoDisplayHelper.StatusLabel(Model.Status)</div>
+        </div>
 
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(m => m.MetodoPagamento)</div>
-                <div class="fw-semibold">@PagamentoDisplayHelper.MetodoLabel(Model.MetodoPagamento)</div>
-            </div>
-
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(m => m.Status)</div>
-                <div class="fw-semibold">@PagamentoDisplayHelper.StatusLabel(Model.Status)</div>
-            </div>
-
-            <div class="mb-4">
-                <div class="text-muted small">@Html.DisplayNameFor(m => m.DataHoraPagamento)</div>
-                <div>
-                    @if (Model.Status == StatusEnum.Paga)
-                    {
-                        <span class="pay-badge pay-badge-success">
-                            <i class="bi bi-check-circle"></i>
-                            @(Model.DataHoraPagamento?.ToString("dd/MM/yyyy HH:mm:ss") ?? "-")
-                        </span>
-                    }
-                    else
-                    {
-                        <span class="pay-badge pay-badge-warning">
-                            <i class="bi bi-hourglass-split"></i>
-                            Pendente
-                        </span>
-                    }
-                </div>
-            </div>
-
-            <div class="city-form-actions">
-                <a asp-action="Index" class="btn btn-outline-secondary btn-city-outline">
-                    Voltar para lista
-                </a>
+        <div class="mb-4">
+            <div class="text-muted small">@Html.DisplayNameFor(m => m.DataHoraPagamento)</div>
+            <div>
+                @if (Model.Status == StatusEnum.Paga)
+                {
+                    <span class="pay-badge pay-badge-success">
+                        <i class="bi bi-check-circle"></i>
+                        @(Model.DataHoraPagamento?.ToString("dd/MM/yyyy HH:mm:ss") ?? "-")
+                    </span>
+                }
+                else
+                {
+                    <span class="pay-badge pay-badge-warning">
+                        <i class="bi bi-hourglass-split"></i>
+                        Pendente
+                    </span>
+                }
             </div>
         </div>
 
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Voltar para lista
+        </a>
     </div>
 </div>

@@ -1,5 +1,7 @@
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -12,11 +14,301 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
   margin-bottom: 60px;
+}
+
+/* ============================================
+   Identity Pages (Login, Register, etc.)
+   ============================================ */
+
+/* --- Identity Layout --- */
+.identity-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+.identity-container {
+  width: 100%;
+  max-width: 460px;
+}
+
+.identity-header {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.identity-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.35);
+}
+
+.identity-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+}
+
+.identity-subtitle {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #94a3b8;
+  margin-top: 0.125rem;
+}
+
+.identity-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  padding: 2.25rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+}
+
+.identity-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.25rem;
+}
+
+.identity-card-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.identity-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.identity-alert-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.identity-alert-danger {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.identity-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* --- Form fields with icons --- */
+.identity-field {
+  margin-bottom: 1.25rem;
+}
+
+.identity-field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.375rem;
+}
+
+.identity-field .input-group-text {
+  border: 1px solid #e2e8f0;
+  border-right: none;
+  border-radius: 0.75rem 0 0 0.75rem;
+  background: #ffffff;
+  color: #94a3b8;
+  padding: 0.5rem 0.75rem;
+}
+
+.identity-field .form-control {
+  border: 1px solid #e2e8f0;
+  border-left: none;
+  border-radius: 0 0.75rem 0.75rem 0;
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+  height: auto;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.identity-field .form-control:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  outline: none;
+}
+
+.identity-field .form-control.is-invalid {
+  border-color: #dc2626;
+  box-shadow: none;
+}
+
+/* --- Submit button --- */
+.btn-identity {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btn-identity:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  color: white;
+}
+
+.btn-identity:active {
+  transform: translateY(0);
+}
+
+/* --- Links --- */
+.identity-link {
+  color: #6366f1;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.identity-link:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+.identity-text-muted {
+  color: #64748b;
+  font-size: 0.8125rem;
+}
+
+/* --- Checkbox --- */
+.identity-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.identity-check input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #cbd5e1;
+  accent-color: #6366f1;
+}
+
+.identity-check label {
+  font-size: 0.8125rem;
+  color: #475569;
+  user-select: none;
+}
+
+/* --- Confirmation / Status pages --- */
+.identity-icon-success {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.identity-icon-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #dc2626;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.identity-icon-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #6366f1;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* --- Manage Nav --- */
+.identity-manage-nav .nav-link {
+  color: #475569;
+  font-weight: 500;
+  padding: 0.625rem 1rem;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.identity-manage-nav .nav-link:hover {
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+.identity-manage-nav .nav-link.active {
+  background: #eef2ff;
+  color: #6366f1;
+  border-color: #c7d2fe;
+  font-weight: 600;
+}
+
+.identity-manage-nav .nav-link i {
+  font-size: 1rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+  .identity-card {
+    padding: 1.5rem;
+  }
+
+  .identity-card-title {
+    font-size: 1.25rem;
+  }
 }
