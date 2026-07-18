@@ -4,42 +4,30 @@
     ViewData["Title"] = "Detalhes";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
-}
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-geo-alt"></i> Localização</div>
+    <h1 class="page-hero-title">@ViewData["Title"]</h1>
+    <p class="page-hero-subtitle">Informações da cidade.</p>
+  </div>
+</div>
 
-<div class="city-page">
-    <div class="city-wrap">
-
-        <a asp-action="Index" class="city-back">
-            <i class="bi bi-arrow-left"></i>
-            Voltar para Lista
-        </a>
-
-        <div class="city-form-card">
-            <div class="city-form-title">Detalhes da Cidade</div>
-
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(model => model.Nome)</div>
-                <div class="fw-semibold">@Html.DisplayFor(model => model.Nome)</div>
-            </div>
-
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(model => model.Estado)</div>
-                <div class="fw-semibold">@Html.DisplayFor(model => model.Estado)</div>
-            </div>
-
-            <div class="city-form-actions">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-city-primary">
-                    <i class="bi bi-pencil"></i>
-                    Editar
-                </a>
-
-                <a asp-action="Index" class="btn btn-outline-secondary btn-city-outline">
-                    Voltar
-                </a>
-            </div>
-        </div>
-
+<div class="admin-card">
+  <div class="admin-card-body">
+    <div class="mb-3">
+      <div class="text-muted small">@Html.DisplayNameFor(model => model.Nome)</div>
+      <div class="fw-semibold">@Html.DisplayFor(model => model.Nome)</div>
     </div>
+
+    <div class="mb-3">
+      <div class="text-muted small">@Html.DisplayNameFor(model => model.Estado)</div>
+      <div class="fw-semibold">@Html.DisplayFor(model => model.Estado)</div>
+    </div>
+
+    <hr class="text-muted" />
+    <div class="d-flex gap-2">
+      <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"><i class="bi bi-pencil"></i> Editar</a>
+      <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Voltar</a>
+    </div>
+  </div>
 </div>

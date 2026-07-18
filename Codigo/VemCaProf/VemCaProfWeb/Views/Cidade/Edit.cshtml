@@ -4,56 +4,41 @@
     ViewData["Title"] = "Editar Cidade";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
-}
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-geo-alt"></i> Localização</div>
+    <h1 class="page-hero-title">@ViewData["Title"]</h1>
+    <p class="page-hero-subtitle">Altere os dados da cidade.</p>
+  </div>
+</div>
 
-<div class="city-page">
-    <div class="city-wrap">
+<div class="admin-card">
+  <div class="admin-card-body">
+    <form asp-action="Edit">
+      <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+      <input type="hidden" asp-for="Id" />
 
-        <a asp-action="Index" class="city-back">
-            <i class="bi bi-arrow-left"></i>
-            Voltar para Lista
-        </a>
+      <div class="mb-3">
+        <label asp-for="Nome" class="form-label-modern"></label>
+        <input asp-for="Nome" class="form-control" placeholder="Nome da cidade" />
+        <span asp-validation-for="Nome" class="text-danger small"></span>
+      </div>
 
-        <div class="city-form-card">
-            <div class="city-form-title">Editar Cidade</div>
+      <div class="mb-3">
+        <label asp-for="Estado" class="form-label-modern"></label>
+        <input asp-for="Estado" class="form-control" placeholder="Estado" />
+        <span asp-validation-for="Estado" class="text-danger small"></span>
+      </div>
 
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-                <input type="hidden" asp-for="Id" />
-
-                <div class="mb-3">
-                    <label asp-for="Nome" class="form-label"></label>
-                    <input asp-for="Nome" class="form-control" placeholder="Nome da cidade" />
-                    <span asp-validation-for="Nome" class="text-danger small"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Estado" class="form-label"></label>
-                    <input asp-for="Estado" class="form-control" placeholder="Estado" />
-                    <span asp-validation-for="Estado" class="text-danger small"></span>
-                </div>
-
-                <div class="city-form-actions">
-                    <button type="submit" class="btn btn-primary btn-city-primary">
-                        <i class="bi bi-check-lg"></i>
-                        Salvar
-                    </button>
-
-                    <a asp-action="Index" class="btn btn-outline-secondary btn-city-outline">
-                        <i class="bi bi-x-lg me-1"></i>
-                        Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
-
-    </div>
+      <hr class="text-muted" />
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Salvar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i> Cancelar</a>
+      </div>
+    </form>
+  </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

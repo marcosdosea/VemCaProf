@@ -12,43 +12,36 @@
     };
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <span class="me-3 text-muted">Geral</span>
-        <span class="me-3 fw-bold border-bottom border-primary border-2 pb-1">Detalhes da Disciplina</span>
-    </div>
-    <div>
-        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Voltar para Lista</a>
-    </div>
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-book"></i> Geral</div>
+    <h1 class="page-hero-title">@ViewData["Title"]</h1>
+  </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="admin-table-container">
-            <h5 class="mb-4 fw-bold">Informações Cadastradas</h5>
+<div class="admin-card">
+  <div class="admin-card-body">
+    <dl class="row dl-modern">
+      <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Id)</dt>
+      <dd class="col-sm-9">#@Html.DisplayFor(model => model.Id)</dd>
 
-            <dl class="row mb-0">
-                <dt class="col-sm-3 text-muted small fw-bold text-uppercase mb-3">@Html.DisplayNameFor(model => model.Id)</dt>
-                <dd class="col-sm-9 mb-3">#@Html.DisplayFor(model => model.Id)</dd>
+      <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Nome)</dt>
+      <dd class="col-sm-9 fw-bold fs-5">@Html.DisplayFor(model => model.Nome)</dd>
 
-                <dt class="col-sm-3 text-muted small fw-bold text-uppercase mb-3">@Html.DisplayNameFor(model => model.Nome)</dt>
-                <dd class="col-sm-9 fw-bold fs-5 mb-3">@Html.DisplayFor(model => model.Nome)</dd>
+      <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Descricao)</dt>
+      <dd class="col-sm-9 text-muted">@Html.DisplayFor(model => model.Descricao)</dd>
 
-                <dt class="col-sm-3 text-muted small fw-bold text-uppercase mb-3">@Html.DisplayNameFor(model => model.Descricao)</dt>
-                <dd class="col-sm-9 text-muted mb-3">@Html.DisplayFor(model => model.Descricao)</dd>
+      <dt class="col-sm-3">Nível de Ensino</dt>
+      <dd class="col-sm-9">
+        <span class="badge bg-light text-dark border">@textoNivel</span>
+      </dd>
+    </dl>
 
-                <dt class="col-sm-3 text-muted small fw-bold text-uppercase mb-3">Nível de Ensino</dt>
-                <dd class="col-sm-9 mb-3">
-                    <span class="badge bg-light text-dark border">@textoNivel</span>
-                </dd>
-            </dl>
+    <hr class="text-muted my-4" />
 
-            <hr class="text-muted my-4" />
-
-            <div class="d-flex justify-content-end gap-2">
-                <a asp-action="Index" class="btn btn-light px-4">Voltar</a>
-                <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary px-4 fw-bold">Editar Disciplina</a>
-            </div>
-        </div>
+    <div class="d-flex gap-2">
+      <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar Disciplina</a>
+      <a asp-action="Index" class="btn btn-outline-secondary">Voltar</a>
     </div>
+  </div>
 </div>

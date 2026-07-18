@@ -1,43 +1,42 @@
 ﻿@model VemCaProfWeb.Models.DisponibilidadeHorarioModel
 
-
 @{
     ViewData["Title"] = "Detalhes";
 }
 
-
-@section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
-}
-
-
-<h1>Detalhes</h1>
-
-<div>
-    <h4>Horário</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HorarioInicio)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HorarioInicio)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.HorarioFim)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HorarioFim)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeProfessor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeProfessor)
-        </dd>
-    </dl>
+<div class="page-hero page-hero-gradient">
+    <div class="page-hero-content">
+        <div class="page-hero-badge"><i class="bi bi-clock"></i> Horários</div>
+        <h1 class="page-hero-title">@ViewData["Title"]</h1>
+        <p class="page-hero-subtitle">Informações do horário</p>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Editar</a> |
-    <a asp-action="Index">Voltar para lista</a>
+
+<div class="admin-card">
+    <div class="admin-card-body">
+        <dl class="row dl-modern">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HorarioInicio)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.HorarioInicio)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.HorarioFim)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.HorarioFim)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NomeProfessor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NomeProfessor)
+            </dd>
+        </dl>
+        <div class="mt-3">
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary"><i class="bi bi-pencil"></i> Editar</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Voltar para lista</a>
+        </div>
+    </div>
 </div>

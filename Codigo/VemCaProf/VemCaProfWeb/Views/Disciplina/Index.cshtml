@@ -6,62 +6,59 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/lib/datatables.net/dataTables.bootstrap5.min.css" />
-
-    <style>
-        .dataTables_filter input {
-            border-radius: 5px;
-            border: 1px solid #ced4da;
-            padding: 5px 10px;
-        }
-    </style>
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <span class="me-3 text-muted">Geral</span>
-        <span class="me-3 fw-bold border-bottom border-primary border-2 pb-1">Disciplinas</span>
-    </div>
-    <div>
-        <a asp-action="Create" class="btn btn-primary fw-bold">
-            + Nova Disciplina
-        </a>
-    </div>
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-book"></i> Geral</div>
+    <h1 class="page-hero-title">@ViewData["Title"]</h1>
+    <p class="page-hero-subtitle">Gerencie as disciplinas oferecidas na plataforma.</p>
+  </div>
 </div>
 
-<div class="admin-table-container">
-    <table id="tabelaDisciplinas" class="table table-borderless table-hover w-100">
-        <thead class="border-bottom">
-            <tr>
-                <th>Disciplina</th>
-                <th>Descrição</th>
-                <th>Nível</th>
-                <th class="text-end">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                string textoNivel = item.Nivel switch
-                {
-                    "F1" => "Fundamental Menor",
-                    "F2" => "Fundamental Maior",
-                    "M1" => "Ensino Médio",
-                    _ => "Não definido"
-                };
+<div class="page-actions">
+  <div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nova Disciplina</a>
+  </div>
+</div>
 
-                <tr>
-                    <td class="fw-bold align-middle">@item.Nome</td>
-                    <td class="text-muted align-middle">@item.Descricao</td>
-                    <td class="align-middle"><span class="badge bg-light text-dark border">@textoNivel</span></td>
-                    <td class="text-end align-middle">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Detalhes</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Editar</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
+<div class="admin-card">
+  <div class="admin-card-body p-0">
+    <div class="table-responsive">
+    <table id="tabelaDisciplinas" class="table admin-table mb-0">
+      <thead>
+        <tr>
+          <th>Disciplina</th>
+          <th>Descrição</th>
+          <th>Nível</th>
+          <th class="text-end">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var item in Model)
+        {
+          string textoNivel = item.Nivel switch
+          {
+            "F1" => "Fundamental Menor",
+            "F2" => "Fundamental Maior",
+            "M1" => "Ensino Médio",
+            _ => "Não definido"
+          };
+          <tr>
+            <td class="fw-bold">@item.Nome</td>
+            <td class="text-muted">@item.Descricao</td>
+            <td><span class="badge-dot badge-dot-secondary">@textoNivel</span></td>
+            <td class="text-end">
+              <a asp-action="Details" asp-route-id="@item.Id" class="btn-action-icon" title="Detalhes"><i class="bi bi-eye"></i></a>
+              <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action-icon" title="Editar"><i class="bi bi-pencil"></i></a>
+              <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action-icon btn-action-icon-danger" title="Excluir"><i class="bi bi-trash"></i></a>
+            </td>
+          </tr>
+        }
+      </tbody>
     </table>
+    </div>
+  </div>
 </div>
 
 @section Scripts {
@@ -74,13 +71,11 @@
     <script>
         $(document).ready(function () {
             $('#tabelaDisciplinas').DataTable({
-                "language": {
-                    // Tradução local
-                    "url": "/lib/datatables.net/pt-BR.json"
-                },
-                "pageLength": 10,
-                "ordering": true,
-                "info": true
+                language: { url: "/lib/datatables.net/pt-BR.json" },
+                pageLength: 10,
+                lengthChange: false,
+                ordering: true,
+                info: true
             });
         });
     </script>

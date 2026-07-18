@@ -1,77 +1,81 @@
 ﻿@model VemCaProfWeb.Models.AulaModel
 
-
 @{
     ViewData["Title"] = "Excluir";
 }
 
+<div class="page-hero page-hero-gradient">
+    <div class="page-hero-content">
+        <div class="page-hero-badge"><i class="bi bi-journal-text"></i> Agenda</div>
+        <h1 class="page-hero-title">@ViewData["Title"]</h1>
+        <p class="page-hero-subtitle">Remova a aula do sistema</p>
+    </div>
+</div>
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
-}
+<div class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span>Esta ação não poderá ser desfeita.</span>
+</div>
 
-<h1>Excluir</h1>
+<div class="admin-card">
+    <div class="admin-card-body">
+        <dl class="row dl-modern">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DataHorarioInicio)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DataHorarioInicio)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DataHorarioFinal)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DataHorarioFinal)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Descricao)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Descricao)
+            </dd>
+            
+            
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Valor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Valor)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NomeDisciplina)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NomeDisciplina)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NomeResponsavel)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NomeResponsavel)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NomeAluno)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NomeAluno)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.NomeProfessor)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.NomeProfessor)
+            </dd>
+        </dl>
 
-<h3>Tem certeza que deseja excluir?</h3>
-<div>
-    <h4>Aula</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DataHorarioInicio)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DataHorarioInicio)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DataHorarioFinal)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DataHorarioFinal)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-       
-        
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Valor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Valor)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeDisciplina)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NomeDisciplina)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeResponsavel)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NomeResponsavel)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeAluno)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NomeAluno)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeProfessor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.NomeProfessor)
-        </dd>
-    </dl>
-
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Excluir" class="btn btn-danger" /> |
-        <a asp-action="Index">Voltar para lista</a>
-    </form>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Excluir" class="btn btn-danger" />
+            <a asp-action="Index" class="btn btn-outline-secondary">Voltar para lista</a>
+        </form>
+    </div>
 </div>
