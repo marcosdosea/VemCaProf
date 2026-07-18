@@ -124,12 +124,19 @@ body {
   place-items: center;
   width: 2.5rem;
   height: 2.5rem;
-  border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(4px);
-  font-size: 1.25rem;
   position: relative;
   flex-shrink: 0;
+}
+
+.admin-logo-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.admin-sidebar-header .admin-logo-image {
+  filter: brightness(0) invert(1);
 }
 
 .admin-logo-text {
@@ -1223,10 +1230,12 @@ body {
   .admin-mobile-header .admin-logo-icon {
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 0.7rem;
-    background: var(--gradient-primary);
-    color: #fff;
-    box-shadow: var(--shadow-soft);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .admin-mobile-header .admin-logo-image {
+    filter: none;
   }
 
   .admin-menu-toggle {
