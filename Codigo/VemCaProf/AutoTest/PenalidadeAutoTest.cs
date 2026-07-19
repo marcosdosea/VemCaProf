@@ -122,7 +122,7 @@ namespace AutoTest
 
             try
             {
-                NavegarPeloLink(EncontrarLinha(tipoOriginal).FindElement(By.CssSelector(".edit-icon")));
+                NavegarPeloLink(EncontrarLinha(tipoOriginal).FindElement(By.CssSelector("a[title='Editar']")));
                 Aguardar(d => d.FindElements(By.Id("Tipo")).Count == 1);
 
                 var novoInicio = inicio.AddDays(1);
@@ -132,7 +132,8 @@ namespace AutoTest
                 PreencherCampo("Tipo", tipoEditado);
                 PreencherCampo("Descricao", "Depois da edicao");
                 var descricaoEnviada = driver.FindElement(By.Id("Descricao")).GetAttribute("value");
-                js.ExecuteScript("arguments[0].click();", driver.FindElement(By.CssSelector("input[type='submit']")));
+                js.ExecuteScript("arguments[0].click();",
+                    driver.FindElement(By.CssSelector("main .admin-card form button[type='submit']")));
                 try
                 {
                     AguardarTabela();
@@ -168,9 +169,10 @@ namespace AutoTest
             var inicio = DateTime.Today.AddYears(1).AddHours(15);
             CriarPenalidade(tipo, "Exclusao automatizada", inicio, inicio.AddHours(1));
 
-            NavegarPeloLink(EncontrarLinha(tipo).FindElement(By.CssSelector(".delete-icon")));
+            NavegarPeloLink(EncontrarLinha(tipo).FindElement(By.CssSelector("a[title='Excluir']")));
             Aguardar(d => d.FindElements(By.CssSelector("form .btn-danger")).Count == 1);
-            Assert.That(driver.FindElement(By.TagName("h3")).Text, Is.EqualTo("Tem certeza que deseja excluir?"));
+            Assert.That(driver.FindElement(By.CssSelector(".page-hero-subtitle")).Text,
+                Does.Contain("Tem certeza que deseja excluir"));
 
             SubmeterFormularioDoBotao("form .btn-danger");
             AguardarTabela();
@@ -200,7 +202,11 @@ namespace AutoTest
                     .Select(e => e.Text)
                     .Where(t => !string.IsNullOrWhiteSpace(t));
                 var valores = new[] { "DataHorarioInicio", "DataHoraFim", "Tipo", "Descricao", "IdProfessor", "IdResponsavel" }
-                    .Select(id => $"{id}={driver.FindElement(By.Id(id)).GetAttribute("value")}");
+                    .Select(id =>
+                    {
+                        var campo = driver.FindElements(By.Id(id)).FirstOrDefault();
+                        return $"{id}={campo?.GetAttribute("value") ?? "<não encontrado>"}";
+                    });
                 Assert.Fail($"Cadastro não retornou à listagem. URL: {driver.Url}. Erros: {string.Join(" | ", erros)}. Valores: {string.Join(" | ", valores)}");
             }
         }
@@ -255,7 +261,7 @@ namespace AutoTest
             if (linha == null)
                 return;
 
-            NavegarPeloLink(linha.FindElement(By.CssSelector(".delete-icon")));
+            NavegarPeloLink(linha.FindElement(By.CssSelector("a[title='Excluir']")));
             Aguardar(d => d.FindElements(By.CssSelector("form .btn-danger")).Count == 1);
             SubmeterFormularioDoBotao("form .btn-danger");
             AguardarTabela();
@@ -263,7 +269,7 @@ namespace AutoTest
 
         private void AguardarTabela()
         {
-            Aguardar(d => d.FindElements(By.CssSelector("table.penalidades-table")).Count == 1);
+            Aguardar(d => d.FindElements(By.Id("tabelaPenalidades")).Count == 1);
         }
 
         private void NavegarPeloLink(IWebElement link)
