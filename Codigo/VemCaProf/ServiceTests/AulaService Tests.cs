@@ -238,7 +238,7 @@ public class AulaServiceTests
         });
         context.SaveChanges();
 
-        var horarios = new AulaService(context).GetHorariosDisponiveis(1).ToList();
+        var horarios = new AulaService(context).GetHorariosDisponiveis(1, dia).ToList();
 
         Assert.AreEqual(1, horarios.Count);
         Assert.AreEqual(1, horarios[0].Id);
@@ -261,6 +261,7 @@ public class AulaServiceTests
         var dto = new AulaDTO
         {
             IdDisponibilidadeHorario = 7,
+            DataAula = dia,
             IdProfessor = 2,
             IdDisciplina = 1,
             IdResponsavel = 3,
@@ -274,7 +275,7 @@ public class AulaServiceTests
 
         Assert.AreEqual(dia.AddHours(14), aula.DataHorarioInicio);
         Assert.AreEqual(dia.AddHours(15), aula.DataHorarioFinal);
-        Assert.AreEqual(Core.Enums.StatusEnum.AguardandoPagamento, aula.Status);
+        Assert.AreEqual(Core.Enums.StatusEnum.Agendada, aula.Status);
         Assert.AreEqual(7, aula.IdDisponibilidadeHorario);
         Assert.IsNull(aula.MetodoPagamento);
         Assert.IsNull(aula.DataHoraPagamento);
@@ -296,6 +297,7 @@ public class AulaServiceTests
         var dto = new AulaDTO
         {
             IdDisponibilidadeHorario = 7,
+            DataAula = DateTime.Today.AddDays(1),
             IdProfessor = 3,
             IdDisciplina = 1,
             IdResponsavel = 3,

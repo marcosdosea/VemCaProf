@@ -64,7 +64,8 @@ namespace VemCaProfWeb.Controllers.Tests
 
             mockService.Setup(service => service.ConfirmarAula(It.IsAny<int>()))
                 .Verifiable();
-            mockService.Setup(service => service.GetHorariosDisponiveis(It.IsAny<int>(), It.IsAny<int?>()))
+            mockService.Setup(service => service.GetHorariosDisponiveis(
+                    It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<int?>()))
                 .Returns(Array.Empty<DisponibilidadeHorarioDTO>());
 
             mockDisciplinaService.Setup(service => service.GetAll())
@@ -254,7 +255,8 @@ namespace VemCaProfWeb.Controllers.Tests
         [TestMethod]
         public void HorariosDisponiveis_RetornaIdETextoFormatado()
         {
-            mockService.Setup(service => service.GetHorariosDisponiveis(1, null))
+            var dataAula = new DateTime(2026, 7, 20);
+            mockService.Setup(service => service.GetHorariosDisponiveis(1, dataAula, null))
                 .Returns(new[]
                 {
                     new DisponibilidadeHorarioDTO
@@ -267,12 +269,12 @@ namespace VemCaProfWeb.Controllers.Tests
                     }
                 });
 
-            var result = controller.HorariosDisponiveis(1);
+            var result = controller.HorariosDisponiveis(1, dataAula);
 
             Assert.IsInstanceOfType(result, typeof(JsonResult));
             var json = JsonSerializer.Serialize(((JsonResult)result).Value);
             StringAssert.Contains(json, "\"id\":8");
-            StringAssert.Contains(json, "20/07/2026 - 09:00");
+            StringAssert.Contains(json, "09:00");
             StringAssert.Contains(json, "10:00");
         }
 

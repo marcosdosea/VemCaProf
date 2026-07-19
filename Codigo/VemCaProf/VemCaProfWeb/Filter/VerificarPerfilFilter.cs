@@ -18,6 +18,12 @@ namespace VemCaProfWeb.Filter
 
             if (user.Identity?.IsAuthenticated == true)
             {
+                if (user.IsInRole("Admin"))
+                {
+                    await next();
+                    return;
+                }
+
                 var controller = context.RouteData.Values["controller"]?.ToString();
                 var action = context.RouteData.Values["action"]?.ToString();
                 var area = context.RouteData.Values["area"]?.ToString();

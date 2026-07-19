@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — VemCáProf</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="identity-page">
+        <div class="identity-container">
+            <div class="identity-header">
+                <div class="identity-logo">
+                    <img class="identity-logo-image" src="~/images/brand/logo.svg"
+                         asp-append-version="true" alt="" aria-hidden="true" />
+                </div>
+                <div class="identity-title">VemCáProf</div>
+                <div class="identity-subtitle">Administrativo</div>
+            </div>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="identity-alert identity-alert-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>@TempData["SuccessMessage"]</span>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="identity-alert identity-alert-danger">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>@TempData["ErrorMessage"]</span>
+                </div>
+            }
+
+            <div class="identity-card">
+                @RenderBody()
+            </div>
+
+            <div class="identity-footer">
+                &copy; 2026 VemCáProf &middot; Feito com carinho para educadores.
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

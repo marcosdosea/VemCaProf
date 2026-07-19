@@ -1,8 +1,110 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Início";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Bem-vindo</h1>
-    <p>Sistema de gerenciamento de aulas VemCáProf.</p>
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-activity"></i> Painel administrativo</div>
+    <h1 class="page-hero-title">Bem-vindo, @Model.NomeUsuario.</h1>
+    <p class="page-hero-subtitle">Sistema de gerenciamento de aulas VemCáProf — tudo o que você precisa para conduzir seu ensino particular.</p>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#eef2ff;color:#6366f1"><i class="bi bi-people-fill"></i></div>
+      <div class="stat-card-label">Alunos Ativos</div>
+      <div class="stat-card-value">@Model.AlunosAtivos</div>
+      <div class="stat-card-trend"><i class="bi bi-person-check me-1"></i>Total de alunos cadastrados</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#ecfdf5;color:#059669"><i class="bi bi-calendar-week-fill"></i></div>
+      <div class="stat-card-label">Aulas na Semana</div>
+      <div class="stat-card-value">@Model.AulasSemana</div>
+      <div class="stat-card-trend"><i class="bi bi-arrow-up me-1"></i>Agendadas para esta semana</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#fffbeb;color:#d97706"><i class="bi bi-play-circle-fill"></i></div>
+      <div class="stat-card-label">Aulas Hoje</div>
+      <div class="stat-card-value">@Model.AulasHoje</div>
+      <div class="stat-card-trend"><i class="bi bi-lightning me-1"></i>Ocorrendo hoje</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-card-icon" style="background:#fef2f2;color:#dc2626"><i class="bi bi-cash-stack"></i></div>
+      <div class="stat-card-label">Receita do Mês</div>
+      <div class="stat-card-value">@Model.ReceitaMes.ToString("C2")</div>
+      <div class="stat-card-trend"><i class="bi bi-graph-up me-1"></i>Pagamentos realizados</div>
+    </div>
+  </div>
+</div>
+
+<section class="admin-card home-marketing-card mb-4" aria-labelledby="homeMarketingTitle">
+  <div class="row g-0">
+    <div class="col-lg-5 home-marketing-media">
+      <video class="home-marketing-video" controls playsinline preload="metadata"
+             aria-label="Vídeo de apresentação do VemCáProf">
+        <source src="~/videos/marketing.mp4" type="video/mp4" />
+        Seu navegador não oferece suporte à reprodução de vídeos.
+      </video>
+    </div>
+    <div class="col-lg-7 home-marketing-content">
+      <div class="home-marketing-badge"><i class="bi bi-stars"></i> Conheça o VemCáProf</div>
+      <h2 id="homeMarketingTitle">Sua rotina de aulas em um só lugar</h2>
+      <p>Gerencie aulas, alunos e pagamentos de forma simples, organizada e eficiente.</p>
+
+      <div class="home-marketing-features">
+        <div class="home-marketing-feature">
+          <i class="bi bi-calendar-check"></i>
+          <span>Planeje e acompanhe suas aulas</span>
+        </div>
+        <div class="home-marketing-feature">
+          <i class="bi bi-people"></i>
+          <span>Mantenha os dados dos alunos organizados</span>
+        </div>
+        <div class="home-marketing-feature">
+          <i class="bi bi-cash-coin"></i>
+          <span>Consulte seus pagamentos com facilidade</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Aula" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-calendar-check"></i></div>
+      <div class="quick-action-title">Aulas</div>
+      <div class="quick-action-desc">Gerenciar agendamentos</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Pessoa" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-people"></i></div>
+      <div class="quick-action-title">Pessoas</div>
+      <div class="quick-action-desc">Alunos, professores e responsáveis</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Pagamento" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-cash-coin"></i></div>
+      <div class="quick-action-title">Pagamentos</div>
+      <div class="quick-action-desc">Histórico financeiro</div>
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a class="quick-action" asp-controller="Disciplina" asp-action="Index">
+      <div class="quick-action-icon"><i class="bi bi-book"></i></div>
+      <div class="quick-action-title">Disciplinas</div>
+      <div class="quick-action-desc">Matérias e valores</div>
+    </a>
+  </div>
 </div>

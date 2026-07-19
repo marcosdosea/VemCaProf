@@ -4,75 +4,67 @@
     ViewData["Title"] = "Editar Disciplina";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <span class="me-3 text-muted">Geral</span>
-        <span class="me-3 fw-bold border-bottom border-primary border-2 pb-1">Editar Disciplina</span>
-    </div>
-    <div>
-        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Voltar para Lista</a>
-    </div>
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-book"></i> Geral</div>
+    <h1 class="page-hero-title">@ViewData["Title"]</h1>
+    <p class="page-hero-subtitle">Altere os dados da disciplina.</p>
+  </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="admin-table-container">
+<div class="admin-card">
+  <div class="admin-card-body">
+    <form asp-action="Edit">
+      <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+      <input type="hidden" asp-for="Id" />
 
-            <h5 class="mb-4 fw-bold">Detalhes da Disciplina</h5>
+      <div class="form-group mb-4">
+        <label asp-for="Nome" class="form-label text-muted small fw-bold text-uppercase"></label>
+        <input asp-for="Nome" class="form-control form-control-lg bg-light border-0" placeholder="Ex: Matemática" />
+        <span asp-validation-for="Nome" class="text-danger small"></span>
+      </div>
 
-            <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                <input type="hidden" asp-for="Id" />
+      <div class="form-group mb-4">
+        <label asp-for="Descricao" class="form-label text-muted small fw-bold text-uppercase"></label>
+        <textarea asp-for="Descricao" class="form-control bg-light border-0" rows="3" placeholder="Descrição da disciplina..."></textarea>
+        <span asp-validation-for="Descricao" class="text-danger small"></span>
+      </div>
 
-                <div class="form-group mb-4">
-                    <label asp-for="Nome" class="form-label text-muted small fw-bold text-uppercase"></label>
-                    <input asp-for="Nome" class="form-control form-control-lg bg-light border-0" placeholder="Ex: Matemática" />
-                    <span asp-validation-for="Nome" class="text-danger small"></span>
-                </div>
+      <div class="form-group mb-4">
+        <label class="form-label text-muted small fw-bold text-uppercase d-block mb-3">Nível de Ensino</label>
 
-                <div class="form-group mb-4">
-                    <label asp-for="Descricao" class="form-label text-muted small fw-bold text-uppercase"></label>
-                    <textarea asp-for="Descricao" class="form-control bg-light border-0" rows="3" placeholder="Descrição da disciplina..."></textarea>
-                    <span asp-validation-for="Descricao" class="text-danger small"></span>
-                </div>
-
-                <div class="form-group mb-4">
-                    <label class="form-label text-muted small fw-bold text-uppercase d-block mb-3">Nível de Ensino</label>
-
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" asp-for="Nivel" value="F1" id="NivelF1">
-                        <label class="form-check-label" for="NivelF1">
-                            Fundamental Menor <span class="text-muted small">(1º ao 5º ano)</span>
-                        </label>
-                    </div>
-
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" asp-for="Nivel" value="F2" id="NivelF2">
-                        <label class="form-check-label" for="NivelF2">
-                            Fundamental Maior <span class="text-muted small">(6º ao 9º ano)</span>
-                        </label>
-                    </div>
-
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="radio" asp-for="Nivel" value="M1" id="NivelM1">
-                        <label class="form-check-label" for="NivelM1">
-                            Ensino Médio
-                        </label>
-                    </div>
-
-                    <span asp-validation-for="Nivel" class="text-danger small"></span>
-                </div>
-
-                <hr class="text-muted my-4" />
-
-                <div class="d-flex justify-content-end gap-2">
-                    <a asp-action="Index" class="btn btn-light px-4">Cancelar</a>
-                    <button type="submit" class="btn btn-primary px-4 fw-bold">Salvar Alterações</button>
-                </div>
-
-            </form>
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="radio" asp-for="Nivel" value="F1" id="NivelF1">
+          <label class="form-check-label" for="NivelF1">
+            Fundamental Menor <span class="text-muted small">(1º ao 5º ano)</span>
+          </label>
         </div>
-    </div>
+
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="radio" asp-for="Nivel" value="F2" id="NivelF2">
+          <label class="form-check-label" for="NivelF2">
+            Fundamental Maior <span class="text-muted small">(6º ao 9º ano)</span>
+          </label>
+        </div>
+
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="radio" asp-for="Nivel" value="M1" id="NivelM1">
+          <label class="form-check-label" for="NivelM1">
+            Ensino Médio
+          </label>
+        </div>
+
+        <span asp-validation-for="Nivel" class="text-danger small"></span>
+      </div>
+
+      <hr class="text-muted my-4" />
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
 </div>
 
 @section Scripts {

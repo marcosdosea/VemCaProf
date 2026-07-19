@@ -3,79 +3,160 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - VemCáProf Admin</title>
+    <title>@ViewData["Title"] — VemCáProf</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-
     <div class="admin-wrapper">
-        <aside class="admin-sidebar">
-            <div class="admin-logo">
-                🛡️ VemCáProf<br>
-                <small class="text-muted fw-normal">Administrativo</small>
+        <!-- Mobile header -->
+        <header class="admin-mobile-header">
+            <div class="d-flex align-items-center gap-2">
+                <div class="admin-logo-icon">
+                    <img class="admin-logo-image" src="~/images/brand/logo.svg"
+                         asp-append-version="true" alt="" aria-hidden="true" />
+                </div>
+                <div>
+                    <div class="fw-semibold" style="font-size:0.9375rem">VemCáProf</div>
+                    <div class="admin-logo-sub">Administrativo</div>
+                </div>
+            </div>
+            <button type="button" class="admin-menu-toggle" data-admin-menu-open
+                    aria-label="Abrir menu" aria-controls="adminSidebar" aria-expanded="false">
+                <i class="bi bi-list"></i>
+            </button>
+        </header>
+
+        <!-- Sidebar -->
+        <aside id="adminSidebar" class="admin-sidebar" aria-label="Navegação principal">
+            <div class="admin-sidebar-header">
+                <div class="admin-logo-icon">
+                    <img class="admin-logo-image" src="~/images/brand/logo.svg"
+                         asp-append-version="true" alt="" aria-hidden="true" />
+                </div>
+                <div>
+                    <div class="admin-logo-text">VemCáProf</div>
+                    <div class="admin-logo-sub">Administrativo</div>
+                </div>
+                <button type="button" class="admin-sidebar-close" data-admin-menu-close aria-label="Fechar menu">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
 
-            <nav class="admin-menu mt-4">
-                <a asp-controller="Home" asp-action="Index">Início</a>
+            <nav class="admin-nav">
+                @{
+                    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+                    var area = ViewContext.RouteData.Values["area"]?.ToString() ?? "";
+                }
+                <a asp-controller="Home" asp-action="Index" class="admin-nav-item @(controller == "Home" && area == "" ? "active" : "")">
+                    <i class="bi bi-house-door"></i>
+                    <span>Início</span>
+                </a>
+
                 @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
                 {
-                    <a asp-controller="Disciplina" asp-action="Index">Disciplinas</a>
+                    <a asp-controller="Disciplina" asp-action="Index" class="admin-nav-item @(controller == "Disciplina" ? "active" : "")">
+                        <i class="bi bi-book"></i>
+                        <span>Disciplinas</span>
+                    </a>
                 }
+
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-controller="Cidade" asp-action="Index">Cidades</a>
+                    <a asp-controller="Cidade" asp-action="Index" class="admin-nav-item @(controller == "Cidade" ? "active" : "")">
+                        <i class="bi bi-geo-alt"></i>
+                        <span>Cidades</span>
+                    </a>
                 }
-                <a asp-controller="Pessoa" asp-action="MeuPerfil">Pessoas</a>
+
+                <a asp-controller="Pessoa" asp-action="MeuPerfil" class="admin-nav-item @(controller == "Pessoa" ? "active" : "")">
+                    <i class="bi bi-people"></i>
+                    <span>Pessoas</span>
+                </a>
+
                 @if (User.IsInRole("Admin") || User.IsInRole("Responsavel"))
                 {
-                    <a asp-controller="Penalidade" asp-action="Index">Penalidades</a>
+                    <a asp-controller="Penalidade" asp-action="Index" class="admin-nav-item @(controller == "Penalidade" ? "active" : "")">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Penalidades</span>
+                    </a>
                 }
+
                 @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
                 {
-                    <a asp-controller="DisponibilidadeHorario" asp-action="Index">Horários</a>
+                    <a asp-controller="DisponibilidadeHorario" asp-action="Index" class="admin-nav-item @(controller == "DisponibilidadeHorario" ? "active" : "")">
+                        <i class="bi bi-clock"></i>
+                        <span>Horários</span>
+                    </a>
                 }
+
                 @if (User.IsInRole("Admin") || User.IsInRole("Professor") || User.IsInRole("Responsavel") || User.IsInRole("Aluno"))
                 {
-                    <a asp-controller="Aula" asp-action="Index">Aulas</a>
+                    <a asp-controller="Aula" asp-action="Index" class="admin-nav-item @(controller == "Aula" ? "active" : "")">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Aulas</span>
+                    </a>
                 }
+
                 @if (User.IsInRole("Admin") || User.IsInRole("Professor") || User.IsInRole("Responsavel"))
                 {
-                    <a asp-controller="Pagamento" asp-action="Index">Pagamentos</a>
+                    <a asp-controller="Pagamento" asp-action="Index" class="admin-nav-item @(controller == "Pagamento" ? "active" : "")">
+                        <i class="bi bi-currency-dollar"></i>
+                        <span>Pagamentos</span>
+                    </a>
                 }
             </nav>
-            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="mt-auto">
-                <button type="submit" class="btn btn-sair d-flex align-items-center justify-content-center">SAIR</button>
-            </form>
+
+            <div class="admin-sidebar-footer">
+                <div class="admin-user">
+                    <div class="admin-avatar">
+                        @(User.Identity?.Name?.Length > 0 ? User.Identity.Name[0].ToString().ToUpper() : "U")
+                    </div>
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">@(User.Identity?.Name ?? "Usuário")</div>
+                        <div class="admin-user-email">@(User.Identity?.Name ?? "")</div>
+                    </div>
+                </div>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                    <button type="submit" class="admin-logout-btn">
+                        <i class="bi bi-box-arrow-right"></i>
+                        SAIR
+                    </button>
+                </form>
+            </div>
         </aside>
 
+        <!-- Main content -->
         <main class="admin-main">
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    @TempData["SuccessMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="admin-alert admin-alert-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>@TempData["SuccessMessage"]</span>
+                    <button type="button" class="admin-alert-close" onclick="this.parentElement.remove()">&times;</button>
                 </div>
             }
-
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="admin-alert admin-alert-danger">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>@TempData["ErrorMessage"]</span>
+                    <button type="button" class="admin-alert-close" onclick="this.parentElement.remove()">&times;</button>
                 </div>
             }
-
             @RenderBody()
-
         </main>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/datatables.net/dataTables.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/admin-navigation.js" asp-append-version="true"></script>
+    <script src="~/js/admin-table.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

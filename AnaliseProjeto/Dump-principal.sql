@@ -2,12 +2,26 @@
 INSERT INTO `identityusers`.`aspnetroles`
 (`Id`, `Name`, `NormalizedName`, `ConcurrencyStamp`)
 VALUES
-('1', 'Professor', 'Professor', null),
-('2', 'Aluno', 'Aluno', null),
-('3', 'Responsavel', 'Responsavel', null),
-('4', 'Admin', 'Admin', null);
+('1', 'Professor', 'PROFESSOR', null),
+('2', 'Aluno', 'ALUNO', null),
+('3', 'Responsavel', 'RESPONSAVEL', null),
+('4', 'Admin', 'ADMIN', null);
 
 SELECT * FROM identityusers.aspnetroles;
+-- Ordem de execução: 1) query.sql; 2) migrations do VemCaProfContext; 3) este dump.
+
+-- Cidades (devem existir antes das pessoas por causa da chave estrangeira)
+INSERT INTO `vcp`.`cidade`
+(`id`, `nome`, `estado`)
+VALUES
+('1', 'Itabaiana', 'SE'),
+('2', 'Aracaju', 'SE'),
+('3', 'São Paulo', 'SP'),
+('4', 'Rio de Janeiro', 'RJ'),
+('5', 'Salvador', 'BA'),
+('6', 'Recife', 'PE'),
+('7', 'Fortaleza', 'CE'),
+('8', 'Belo Horizonte', 'MG');
 
 -- ADMINISTRADORES
 INSERT INTO `vcp`.`pessoa`
@@ -31,9 +45,9 @@ INSERT INTO `identityusers`.`aspnetusers`
  `LockoutEnd`,`LockoutEnabled`,`AccessFailedCount`)
 VALUES
 (UUID(),'admin1','ADMIN1','admin1@email.com','ADMIN1@EMAIL.COM',
- 1,'hash','secstamp','concstamp','999999999',1,0,NULL,1,0),
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','999999999',1,0,NULL,1,0),
 (UUID(),'admin2','ADMIN2','admin2@email.com','ADMIN2@EMAIL.COM',
- 1,'hash','secstamp','concstamp','888888888',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','888888888',1,0,NULL,1,0);
 
 
 -- RESPONSÁVEL
@@ -46,7 +60,7 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'responsavel1','RESPONSAVEL1','resp@email.com','RESP@EMAIL.COM',
- 1,'hash','secstamp','concstamp','777777777',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','777777777',1,0,NULL,1,0);
 
 
 
@@ -64,9 +78,9 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'aluno1','ALUNO1','aluno1@email.com','ALUNO1@EMAIL.COM',
- 1,'hash','secstamp','concstamp','666666666',1,0,NULL,1,0),
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','666666666',1,0,NULL,1,0),
 (UUID(),'aluno2','ALUNO2','aluno2@email.com','ALUNO2@EMAIL.COM',
- 1,'hash','secstamp','concstamp','555555555',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','555555555',1,0,NULL,1,0);
 
 
 
@@ -80,7 +94,7 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'aluno3','ALUNO3','aluno3@email.com','ALUNO3@EMAIL.COM',
- 1,'hash','secstamp','concstamp','444444444',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','444444444',1,0,NULL,1,0);
 
 
 
@@ -97,22 +111,29 @@ VALUES
 INSERT INTO `identityusers`.`aspnetusers`
 VALUES
 (UUID(),'prof1','PROF1','prof1@email.com','PROF1@EMAIL.COM',
- 1,'hash','secstamp','concstamp','333333333',1,0,NULL,1,0),
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','333333333',1,0,NULL,1,0),
 (UUID(),'prof2','PROF2','prof2@email.com','PROF2@EMAIL.COM',
- 1,'hash','secstamp','concstamp','222222222',1,0,NULL,1,0);
+ 1,'AQAAAAIAAYagAAAAEID6mlYwGP4rEZMFTAuYQAtF4NdaZjRF3++fqNe+2ycqe2tg661QIYsNfJw6cq1IuA==','secstamp','concstamp','222222222',1,0,NULL,1,0);
 
--- Cidades
-INSERT INTO `vcp`.`cidade`
-(`id`, `nome`, `estado`)
-VALUES
-('1', 'Itabaiana', 'SE'),
-('2', 'Aracaju', 'SE'),
-('3', 'São Paulo', 'SP'),
-('4', 'Rio de Janeiro', 'RJ'),
-('5', 'Salvador', 'BA'),
-('6', 'Recife', 'PE'),
-('7', 'Fortaleza', 'CE'),
-('8', 'Belo Horizonte', 'MG');
+-- Vincula os usuários aos perfis do ASP.NET Identity.
+-- O LEFT JOIN permite executar este bloco também em uma base já populada.
+INSERT INTO `identityusers`.`aspnetuserroles` (`UserId`, `RoleId`)
+SELECT usuario.`Id`, vinculo.`RoleId`
+FROM `identityusers`.`aspnetusers` AS usuario
+INNER JOIN (
+    SELECT 'ADMIN1' AS `NormalizedUserName`, '4' AS `RoleId`
+    UNION ALL SELECT 'ADMIN2', '4'
+    UNION ALL SELECT 'RESPONSAVEL1', '3'
+    UNION ALL SELECT 'ALUNO1', '2'
+    UNION ALL SELECT 'ALUNO2', '2'
+    UNION ALL SELECT 'ALUNO3', '2'
+    UNION ALL SELECT 'PROF1', '1'
+    UNION ALL SELECT 'PROF2', '1'
+) AS vinculo ON vinculo.`NormalizedUserName` = usuario.`NormalizedUserName`
+LEFT JOIN `identityusers`.`aspnetuserroles` AS usuarioPerfil
+    ON usuarioPerfil.`UserId` = usuario.`Id`
+    AND usuarioPerfil.`RoleId` = vinculo.`RoleId`
+WHERE usuarioPerfil.`UserId` IS NULL;
 
 -- Diciplinas
 INSERT INTO `vcp`.`disciplina`
@@ -180,6 +201,8 @@ VALUES
 -- SET @IdResp = (SELECT id FROM `vcp`.`pessoa` WHERE email='resp@email.com');
 SET @IdAluno = (SELECT id FROM `vcp`.`pessoa` WHERE email='aluno2@email.com');
 INSERT INTO `vcp`.`aula`
+(`id`, `dataHorarioInicio`, `dataHorarioFinal`, `descricao`, `dataHoraPagamento`,
+ `valor`, `metodoPagamento`, `status`, `idDisciplina`, `idResponsavel`, `idAluno`, `idProfessor`)
 VALUES
 ('2', '2026-07-15 14:00:00', '2026-07-15 16:00:00', 'Aula de Português - Gramática básica',
  '2026-07-14 20:00:00', 90.00, 'C', 'AG', 2,
@@ -187,21 +210,25 @@ VALUES
  @IdAluno,
  7);
 
--- Aula de Química com Professor 8 e Aluno 3 (independente)
+-- Aula de Química com Professor 8 e Aluno 3 (conta independente)
 SET @IdAluno = (SELECT id FROM `vcp`.`pessoa` WHERE email='aluno3@email.com');
 
 INSERT INTO `vcp`.`aula`
+(`id`, `dataHorarioInicio`, `dataHorarioFinal`, `descricao`, `dataHoraPagamento`,
+ `valor`, `metodoPagamento`, `status`, `idDisciplina`, `idResponsavel`, `idAluno`, `idProfessor`)
 VALUES
 ('3', '2026-07-16 09:00:00', '2026-07-16 11:00:00', 'Aula de Química - Reações químicas',
  '2026-07-15 19:00:00', 120.00, 'D', 'AG', 6,
- 0, -- aluno independente, sem responsável
+ @IdResp,
  @IdAluno,
  8);
 
--- Aula de Biologia com Professor 8 e Aluno 1
+-- Aula de Biologia com Professor 8 e Aluno 3
 -- SET @IdResp = (SELECT id FROM `vcp`.`pessoa` WHERE email='resp@email.com');
 SET @IdAluno = (SELECT id FROM `vcp`.`pessoa` WHERE email='aluno3@email.com');
 INSERT INTO `vcp`.`aula`
+(`id`, `dataHorarioInicio`, `dataHorarioFinal`, `descricao`, `dataHoraPagamento`,
+ `valor`, `metodoPagamento`, `status`, `idDisciplina`, `idResponsavel`, `idAluno`, `idProfessor`)
 VALUES
 ('4', '2026-07-18 08:00:00', '2026-07-18 10:00:00', 'Aula de Biologia - Ecossistemas',
  '2026-07-17 21:00:00', 110.00, 'P', 'PG', 7,

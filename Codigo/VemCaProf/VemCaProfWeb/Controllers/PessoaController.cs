@@ -240,6 +240,9 @@ namespace VemCaProfWeb.Controllers
         }
         public IActionResult MeuPerfil()
         {
+            if (User.IsInRole("Admin"))
+                return RedirectToAction(nameof(Index));
+
             var cpfLogado = User.Identity?.Name;
             var pessoa = _pessoaService.GetByCpf(cpfLogado);
             if (pessoa == null)

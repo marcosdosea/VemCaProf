@@ -12,8 +12,8 @@ namespace Service.Tests
     [TestClass()]
     public class DisponibilidadeHorarioServiceTests
     {
-        private VemCaProfContext context = null;
-        private IDisponibilidadeHorarioService disponibilidadeHorarioService = null;
+        private VemCaProfContext context = null!;
+        private IDisponibilidadeHorarioService disponibilidadeHorarioService = null!;
 
         [TestInitialize]
         public void Initialize()
@@ -61,7 +61,7 @@ namespace Service.Tests
             Assert.AreEqual(4, disponibilidadeHorarioService.GetAll().Count());
             var disponibilidadeHorario = disponibilidadeHorarioService.Get(id);
             Assert.IsNotNull(disponibilidadeHorario);
-            Assert.AreEqual(new DateTime(2026, 02, 10, 14, 0, 0), disponibilidadeHorario.Dia);
+            Assert.AreEqual(DateTime.Today, disponibilidadeHorario.Dia);
             Assert.AreEqual(new TimeSpan(10, 14, 12), disponibilidadeHorario.HorarioInicio);
             Assert.AreEqual(new TimeSpan(14, 1, 14), disponibilidadeHorario.HorarioFim);
             Assert.AreEqual( 1, disponibilidadeHorario.IdProfessor);
@@ -69,8 +69,7 @@ namespace Service.Tests
 
 
         [TestMethod()]
-        [ExpectedException(typeof(ServiceException))]
-        public void CreateTest_DiaVazio_DeveLancarExcecao()
+        public void CreateTest_DiaVazio_DeveUsarDataAtual()
         {
             // Arrange
             var disponibilidadeHorarioInvalida = new DisponibilidadeHorarioDTO
@@ -83,7 +82,10 @@ namespace Service.Tests
             };
 
             // Act
-            disponibilidadeHorarioService.Create(disponibilidadeHorarioInvalida);
+            var id = disponibilidadeHorarioService.Create(disponibilidadeHorarioInvalida);
+
+            // Assert
+            Assert.AreEqual(DateTime.Today, disponibilidadeHorarioService.Get(id)!.Dia);
         }
 
 
@@ -131,7 +133,7 @@ namespace Service.Tests
             Assert.IsTrue(resultado);
             var disponibilidadeHorarioAtualizada = disponibilidadeHorarioService.Get(3);
             Assert.IsNotNull(disponibilidadeHorarioAtualizada);
-            Assert.AreEqual(new DateTime(2027, 03, 8, 13, 0, 0), disponibilidadeHorarioAtualizada.Dia);
+            Assert.AreEqual(new DateTime(2024, 03, 8, 13, 0, 0), disponibilidadeHorarioAtualizada.Dia);
             Assert.AreEqual(4, disponibilidadeHorarioAtualizada.IdProfessor);
         }
 

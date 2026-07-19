@@ -1,29 +1,40 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Perfil";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </form>
+<div class="identity-card-title mb-3">@ViewData["Title"]</div>
+
+<form id="profile-form" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+    <div class="identity-field">
+        <div class="identity-field-label">
+            <label asp-for="Username">Usuário</label>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input asp-for="Username" class="form-control" disabled />
+        </div>
     </div>
-</div>
+
+    <div class="identity-field">
+        <div class="identity-field-label">
+            <label asp-for="Input.PhoneNumber">Telefone</label>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+            <input asp-for="Input.PhoneNumber" class="form-control" placeholder="(00) 00000-0000" />
+        </div>
+        <span asp-validation-for="Input.PhoneNumber" class="text-danger small"></span>
+    </div>
+
+    <button type="submit" class="btn-identity">
+        Salvar <i class="bi bi-check-lg"></i>
+    </button>
+</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

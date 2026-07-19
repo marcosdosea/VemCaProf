@@ -4,48 +4,38 @@
     ViewData["Title"] = "Remover";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
-}
+<div class="page-hero page-hero-gradient">
+  <div class="page-hero-content">
+    <div class="page-hero-badge"><i class="bi bi-geo-alt"></i> Localização</div>
+    <h1 class="page-hero-title">@ViewData["Title"]</h1>
+    <p class="page-hero-subtitle">Confirme a remoção da cidade.</p>
+  </div>
+</div>
 
-<div class="city-page">
-    <div class="city-wrap">
+<div class="alert alert-danger d-flex align-items-center gap-2">
+  <i class="bi bi-exclamation-triangle-fill"></i>
+  <span>Tem certeza que deseja remover esta cidade? Esta ação não pode ser desfeita.</span>
+</div>
 
-        <a asp-action="Index" class="city-back">
-            <i class="bi bi-arrow-left"></i>
-            Voltar para Lista
-        </a>
-
-        <div class="city-form-card">
-            <div class="city-form-title">Remover Cidade</div>
-
-            <div class="alert alert-warning">
-                Tem certeza que deseja remover esta cidade?
-            </div>
-
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(model => model.Nome)</div>
-                <div class="fw-semibold">@Html.DisplayFor(model => model.Nome)</div>
-            </div>
-
-            <div class="mb-3">
-                <div class="text-muted small">@Html.DisplayNameFor(model => model.Estado)</div>
-                <div class="fw-semibold">@Html.DisplayFor(model => model.Estado)</div>
-            </div>
-
-            <form asp-action="Delete" class="city-form-actions">
-                <input type="hidden" asp-for="Id" />
-
-                <button type="submit" class="btn btn-danger btn-city-primary">
-                    <i class="bi bi-x-lg"></i>
-                    Remover
-                </button>
-
-                <a asp-action="Index" class="btn btn-outline-secondary btn-city-outline">
-                    Cancelar
-                </a>
-            </form>
-        </div>
-
+<div class="admin-card">
+  <div class="admin-card-body">
+    <div class="mb-3">
+      <div class="text-muted small">@Html.DisplayNameFor(model => model.Nome)</div>
+      <div class="fw-semibold">@Html.DisplayFor(model => model.Nome)</div>
     </div>
+
+    <div class="mb-3">
+      <div class="text-muted small">@Html.DisplayNameFor(model => model.Estado)</div>
+      <div class="fw-semibold">@Html.DisplayFor(model => model.Estado)</div>
+    </div>
+
+    <form asp-action="Delete">
+      <input type="hidden" asp-for="Id" />
+      <hr class="text-muted" />
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Remover</button>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i> Cancelar</a>
+      </div>
+    </form>
+  </div>
 </div>

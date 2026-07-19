@@ -1,9 +1,13 @@
+using Core;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace VemCaProfWeb.Migrations.VemCaProf
 {
+    [DbContext(typeof(VemCaProfContext))]
+    [Migration("20260711_AllowPendingAulaPayment")]
     public partial class AllowPendingAulaPayment : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

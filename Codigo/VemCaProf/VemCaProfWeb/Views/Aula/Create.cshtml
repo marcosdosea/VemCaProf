@@ -4,55 +4,54 @@
     ViewData["Title"] = "Nova aula";
 }
 
+<div class="page-hero page-hero-gradient">
+    <div class="page-hero-content">
+        <div class="page-hero-badge"><i class="bi bi-journal-text"></i> Agenda</div>
+        <h1 class="page-hero-title">@ViewData["Title"]</h1>
+        <p class="page-hero-subtitle">Registre uma nova aula no sistema</p>
+    </div>
+</div>
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/cidade.css" />
-}
-
-<h1>Nova aula</h1>
-
-<h4>Aula</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="admin-card">
+    <div class="admin-card-body">
         <form asp-action="Create">
             <div asp-validation-summary="All" class="text-danger"></div>
-           
+            
             <div class="form-group mb-3">
-                <label asp-for="IdProfessor" class="control-label"></label>
+                <label asp-for="IdProfessor" class="control-label form-label-modern"></label>
                 <select asp-for="IdProfessor" asp-items="ViewBag.Professores" class="form-select">
                     <option value="">Selecione um professor</option>
                 </select>
                 <span asp-validation-for="IdProfessor" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="IdDisciplina" class="control-label"></label>
+                <label asp-for="IdDisciplina" class="control-label form-label-modern"></label>
                 <select asp-for="IdDisciplina" asp-items="ViewBag.Disciplinas" class="form-select">
                     <option value="">Selecione uma disciplina</option>
                 </select>
                 <span asp-validation-for="IdDisciplina" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="IdResponsavel" class="control-label"></label>
+                <label asp-for="IdResponsavel" class="control-label form-label-modern"></label>
                 <select asp-for="IdResponsavel" asp-items="ViewBag.Responsaveis" class="form-select">
                     <option value="">Selecione um responsável</option>
                 </select>
                 <span asp-validation-for="IdResponsavel" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="IdAluno" class="control-label"></label>
+                <label asp-for="IdAluno" class="control-label form-label-modern"></label>
                 <select asp-for="IdAluno" asp-items="ViewBag.Alunos" class="form-select">
                     <option value="">Selecione um aluno</option>
                 </select>
                 <span asp-validation-for="IdAluno" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="DataAula" class="control-label"></label>
+                <label asp-for="DataAula" class="control-label form-label-modern"></label>
                 <input asp-for="DataAula" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="DataAula" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="IdDisponibilidadeHorario" class="control-label"></label>
+                <label asp-for="IdDisponibilidadeHorario" class="control-label form-label-modern"></label>
                 <select asp-for="IdDisponibilidadeHorario"
                         class="form-select"
                         data-url="@Url.Action("HorariosDisponiveis", "Aula")"
@@ -63,24 +62,21 @@
                 <span asp-validation-for="IdDisponibilidadeHorario" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="Descricao" class="control-label"></label>
+                <label asp-for="Descricao" class="control-label form-label-modern"></label>
                 <input asp-for="Descricao" class="form-control" />
                 <span asp-validation-for="Descricao" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="Valor" class="control-label"></label>
+                <label asp-for="Valor" class="control-label form-label-modern"></label>
                 <input asp-for="Valor" class="form-control" type="text" inputmode="decimal" placeholder="Ex: 50,00" />
                 <span asp-validation-for="Valor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Voltar</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Voltar para a lista</a>
 </div>
 
 @section Scripts {

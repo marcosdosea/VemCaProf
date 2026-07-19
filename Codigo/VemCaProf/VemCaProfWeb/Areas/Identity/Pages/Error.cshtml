@@ -1,23 +1,20 @@
 ﻿@page
 @model ErrorModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Erro";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+<div class="text-center">
+    <div class="identity-icon-danger"><i class="bi bi-exclamation-triangle"></i></div>
+    <h1 class="identity-card-title mb-2">Ops! Algo deu errado.</h1>
+    <p class="identity-text-muted">Ocorreu um erro ao processar sua solicitação.</p>
 
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+    @if (Model.ShowRequestId)
+    {
+        <p class="identity-text-muted small">
+            <strong>ID da solicitação:</strong> <code class="text-danger">@Model.RequestId</code>
+        </p>
+    }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+    <a asp-page="./Login" class="btn-identity mt-3">Ir para o login</a>
+</div>

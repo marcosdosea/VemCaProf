@@ -42,6 +42,7 @@ namespace VemCaProfWeb.Models
         [Required(ErrorMessage = "O número é obrigatório")]
         public string? Numero { get; set; }
 
+        [Required(ErrorMessage = "O complemento é obrigatório")]
         public string? Complemento { get; set; }
 
         [Required(ErrorMessage = "O bairro é obrigatório")]
