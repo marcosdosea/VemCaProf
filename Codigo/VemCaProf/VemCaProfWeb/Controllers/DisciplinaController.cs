@@ -9,7 +9,7 @@ using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers
 {
-    [Authorize(Roles = "Admin, Professor")]
+    [Authorize(Roles = "Admin")]
     public class DisciplinaController : Controller
     {
         IDisciplinaService _disciplinaService;

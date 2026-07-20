@@ -1,9 +1,15 @@
-﻿@{
+﻿@using Core.Service
+@inject IPessoaService PessoaService
+
+@{
     var profileLabel = User.IsInRole("Admin") ? "Administrativo"
         : User.IsInRole("Professor") ? "Professor"
         : User.IsInRole("Responsavel") ? "Responsável"
         : User.IsInRole("Aluno") ? "Aluno"
         : string.Empty;
+    var cpf = User.Identity?.Name;
+    var pessoa = !string.IsNullOrEmpty(cpf) ? PessoaService.GetByCpf(cpf) : null;
+    var nomeExibicao = pessoa != null ? $"{pessoa.Nome} {pessoa.Sobrenome}" : (cpf ?? "Usuário");
 }
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -69,7 +75,7 @@
                     <span>Início</span>
                 </a>
 
-                @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
+                @if (User.IsInRole("Admin"))
                 {
                     <a asp-controller="Disciplina" asp-action="Index" class="admin-nav-item @(controller == "Disciplina" ? "active" : "")">
                         <i class="bi bi-book"></i>
@@ -126,11 +132,14 @@
             <div class="admin-sidebar-footer">
                 <div class="admin-user">
                     <div class="admin-avatar">
-                        @(User.Identity?.Name?.Length > 0 ? User.Identity.Name[0].ToString().ToUpper() : "U")
+                        @(nomeExibicao.Length > 0 ? nomeExibicao[0].ToString().ToUpper() : "U")
                     </div>
                     <div class="admin-user-info">
-                        <div class="admin-user-name">@(User.Identity?.Name ?? "Usuário")</div>
-                        <div class="admin-user-email">@(User.Identity?.Name ?? "")</div>
+                        <div class="admin-user-name">@nomeExibicao</div>
+                        @if (pessoa != null && cpf != null)
+                        {
+                            <div class="admin-user-email">@cpf</div>
+                        }
                     </div>
                 </div>
                 <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
