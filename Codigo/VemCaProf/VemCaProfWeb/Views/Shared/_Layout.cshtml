@@ -25,48 +25,62 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Início</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Disciplina" asp-action="Index">
-                                <i class="fas fa-city"></i>
-                                <span>Disciplina</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Pessoa" asp-action="MeuPerfil">
-                                <i class="fas fa-book"></i>
-                                <span>Pessoa</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Cidade" asp-action="Index">
-                                <i class="fas fa-book"></i>
-                                <span>Cidade</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Penalidade" asp-action="Index">
-                                <i class="fas fa-book"></i>
-                                <span>Penalidade</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="DisponibilidadeHorario" asp-action="Index">
-                                <i class="fas fa-book"></i>
-                                <span>Horário</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Aula" asp-action="Index">
-                                <i class="fas fa-book"></i>
-                                <span>Aula</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Pagamento" asp-action="Index">
-                                <i class="fas fa-book"></i>
-                                <span>Pagamento</span>
-                            </a>
-                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Disciplina" asp-action="Index">
+                                    <span>Disciplina</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Pessoa" asp-action="MeuPerfil">
+                                    <span>Pessoa</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cidade" asp-action="Index">
+                                    <span>Cidade</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Responsavel"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Penalidade" asp-action="Index">
+                                    <span>Penalidade</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="DisponibilidadeHorario" asp-action="Index">
+                                    <span>Horário</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Professor") || User.IsInRole("Responsavel") || User.IsInRole("Aluno"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Aula" asp-action="Index">
+                                    <span>Aula</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin") || User.IsInRole("Professor") || User.IsInRole("Responsavel"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Pagamento" asp-action="Index">
+                                    <span>Pagamento</span>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

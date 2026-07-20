@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var profileLabel = User.IsInRole("Admin") ? "Administrativo"
+        : User.IsInRole("Professor") ? "Professor"
+        : User.IsInRole("Responsavel") ? "Responsável"
+        : User.IsInRole("Aluno") ? "Aluno"
+        : string.Empty;
+}
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
@@ -21,7 +28,10 @@
                 </div>
                 <div>
                     <div class="fw-semibold" style="font-size:0.9375rem">VemCáProf</div>
-                    <div class="admin-logo-sub">Administrativo</div>
+                    @if (!string.IsNullOrEmpty(profileLabel))
+                    {
+                        <div class="admin-logo-sub">@profileLabel</div>
+                    }
                 </div>
             </div>
             <button type="button" class="admin-menu-toggle" data-admin-menu-open
@@ -39,7 +49,10 @@
                 </div>
                 <div>
                     <div class="admin-logo-text">VemCáProf</div>
-                    <div class="admin-logo-sub">Administrativo</div>
+                    @if (!string.IsNullOrEmpty(profileLabel))
+                    {
+                        <div class="admin-logo-sub">@profileLabel</div>
+                    }
                 </div>
                 <button type="button" class="admin-sidebar-close" data-admin-menu-close aria-label="Fechar menu">
                     <i class="bi bi-x-lg"></i>

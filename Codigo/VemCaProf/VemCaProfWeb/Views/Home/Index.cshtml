@@ -5,7 +5,10 @@
 
 <div class="page-hero page-hero-gradient">
   <div class="page-hero-content">
-    <div class="page-hero-badge"><i class="bi bi-activity"></i> Painel administrativo</div>
+    @if (User.IsInRole("Admin"))
+    {
+      <div class="page-hero-badge"><i class="bi bi-activity"></i> Painel administrativo</div>
+    }
     <h1 class="page-hero-title">Bem-vindo, @Model.NomeUsuario.</h1>
     <p class="page-hero-subtitle">Sistema de gerenciamento de aulas VemCáProf — tudo o que você precisa para conduzir seu ensino particular.</p>
   </div>
