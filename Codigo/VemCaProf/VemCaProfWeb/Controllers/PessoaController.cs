@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using VemCaProfWeb.Models;
 using Util;
+using Microsoft.Extensions.Logging;
 
 namespace VemCaProfWeb.Controllers
 {
@@ -17,17 +18,20 @@ namespace VemCaProfWeb.Controllers
         private readonly ICidadeService _cidadeService;
         private readonly IDisciplinaService _disciplinaService;
         private readonly IMapper _mapper;
+        private readonly ILogger<PessoaController> _logger;
 
         public PessoaController(
             IPessoaService pessoaService,
             ICidadeService cidadeService,
             IDisciplinaService disciplinaService,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<PessoaController> logger)
         {
             _pessoaService = pessoaService;
             _cidadeService = cidadeService;
             _disciplinaService = disciplinaService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         // GET: Pessoa
@@ -134,7 +138,7 @@ namespace VemCaProfWeb.Controllers
 
             _pessoaService.CreateSeguro(pessoa, cpfLogado, isAdmin, isProfessor, isResponsavel);
 
-            TempData["Success"] = "Pessoa cadastrada com sucesso!";
+            TempData["SuccessMessage"] = "Pessoa cadastrada com sucesso!";
             return RedirectToAction(nameof(Details), new { id = pessoa.Id });
         }
         catch (ServiceException ex)
@@ -197,7 +201,7 @@ namespace VemCaProfWeb.Controllers
                 return View(viewModel);
             }
 
-            TempData["Success"] = "Dados atualizados com sucesso!";
+            TempData["SuccessMessage"] = "Dados atualizados com sucesso!";
             return RedirectToAction(nameof(Details), new { id });
         }
         catch (ServiceException ex)
@@ -226,17 +230,31 @@ namespace VemCaProfWeb.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var cpfLogado = User.Identity?.Name;
-            var isAdmin = User.IsInRole("Admin");
-            bool sucesso = _pessoaService.DeleteSeguro(id, cpfLogado, isAdmin);
-            if (!sucesso)
+            try
             {
-                TempData["Error"] = "Não foi possível excluir.";
+                var cpfLogado = User.Identity?.Name;
+                var isAdmin = User.IsInRole("Admin");
+                bool sucesso = _pessoaService.DeleteSeguro(id, cpfLogado, isAdmin);
+                if (!sucesso)
+                {
+                    TempData["ErrorMessage"] = "Não foi possível excluir.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                TempData["SuccessMessage"] = "Pessoa excluída com sucesso.";
                 return RedirectToAction(nameof(Index));
             }
-
-            TempData["Success"] = "Pessoa excluída com sucesso.";
-            return RedirectToAction(nameof(Index));
+            catch (ServiceException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Erro ao excluir pessoa";
+                _logger.LogError(ex, "Erro ao excluir pessoa ID {Id}", id);
+                return RedirectToAction(nameof(Index));
+            }
         }
         public IActionResult MeuPerfil()
         {

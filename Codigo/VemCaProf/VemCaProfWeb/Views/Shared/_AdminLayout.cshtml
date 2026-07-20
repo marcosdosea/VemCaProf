@@ -146,18 +146,20 @@
         <main class="admin-main">
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="admin-alert admin-alert-success">
+                <div class="admin-alert admin-alert-success admin-alert-wrapper" role="alert">
                     <i class="bi bi-check-circle-fill"></i>
                     <span>@TempData["SuccessMessage"]</span>
                     <button type="button" class="admin-alert-close" onclick="this.parentElement.remove()">&times;</button>
+                    <div class="admin-alert-progress"></div>
                 </div>
             }
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="admin-alert admin-alert-danger">
+                <div class="admin-alert admin-alert-danger admin-alert-wrapper" role="alert">
                     <i class="bi bi-exclamation-circle-fill"></i>
                     <span>@TempData["ErrorMessage"]</span>
                     <button type="button" class="admin-alert-close" onclick="this.parentElement.remove()">&times;</button>
+                    <div class="admin-alert-progress"></div>
                 </div>
             }
             @RenderBody()

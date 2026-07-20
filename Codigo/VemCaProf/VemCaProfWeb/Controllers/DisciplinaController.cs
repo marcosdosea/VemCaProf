@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using Core.Service;
 using Core;
+using Core.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using VemCaProfWeb.Models;
 
 namespace VemCaProfWeb.Controllers
@@ -11,14 +12,15 @@ namespace VemCaProfWeb.Controllers
     [Authorize(Roles = "Admin, Professor")]
     public class DisciplinaController : Controller
     {
-
         IDisciplinaService _disciplinaService;
         IMapper _mapper;
+        ILogger<DisciplinaController> _logger;
 
-        public DisciplinaController(IDisciplinaService disciplinaService, IMapper mapper)
+        public DisciplinaController(IDisciplinaService disciplinaService, IMapper mapper, ILogger<DisciplinaController> logger)
         {
             _disciplinaService = disciplinaService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         // GET: DisciplinaController
@@ -50,10 +52,23 @@ namespace VemCaProfWeb.Controllers
         [Authorize]
         public ActionResult Create(DisciplinaModel disciplinaModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(disciplinaModel);
+
+            try
             {
                 var disciplina = _mapper.Map<Disciplina>(disciplinaModel);
                 _disciplinaService.Create(disciplina);
+                TempData["SuccessMessage"] = "Disciplina cadastrada com sucesso!";
+            }
+            catch (ServiceException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao criar disciplina");
+                TempData["ErrorMessage"] = "Erro ao criar disciplina";
             }
             return RedirectToAction(nameof(Index));
         }
@@ -71,10 +86,23 @@ namespace VemCaProfWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, DisciplinaModel disciplinaModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(disciplinaModel);
+
+            try
             {
                 var disciplina = _mapper.Map<Disciplina>(disciplinaModel);
                 _disciplinaService.Edit(disciplina);
+                TempData["SuccessMessage"] = "Disciplina atualizada com sucesso!";
+            }
+            catch (ServiceException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao editar disciplina");
+                TempData["ErrorMessage"] = "Erro ao editar disciplina";
             }
             return RedirectToAction(nameof(Index));
         }
@@ -92,7 +120,20 @@ namespace VemCaProfWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
-            _disciplinaService.Delete((uint)id);
+            try
+            {
+                _disciplinaService.Delete((uint)id);
+                TempData["SuccessMessage"] = "Disciplina excluída com sucesso!";
+            }
+            catch (ServiceException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao excluir disciplina ID {Id}", id);
+                TempData["ErrorMessage"] = "Erro ao excluir disciplina";
+            }
             return RedirectToAction(nameof(Index));
         }
     }
