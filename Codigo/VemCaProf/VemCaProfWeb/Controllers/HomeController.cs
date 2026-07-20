@@ -48,7 +48,9 @@ public class HomeController : Controller
                             a.DataHoraPagamento.Value.Year == hoje.Year &&
                             a.DataHoraPagamento.Value.Month == hoje.Month)
                 .Sum(a => (decimal)a.Valor),
-            NomeUsuario = User.Identity?.Name ?? "Usuário"
+            NomeUsuario = _pessoaService.GetByCpf(User.Identity?.Name) is { } p
+                ? $"{p.Nome} {p.Sobrenome}"
+                : (User.Identity?.Name ?? "Usuário")
         };
 
         return View(model);

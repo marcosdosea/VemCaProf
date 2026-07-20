@@ -88,6 +88,15 @@
             <span>-</span>
           }
         </dd>
+
+        @if (!string.IsNullOrEmpty(Model.SenhaGerada))
+        {
+          <dt class="col-sm-3">Senha de Acesso</dt>
+          <dd class="col-sm-9">
+            <code class="user-select-all">@Model.SenhaGerada</code>
+            <span class="text-muted small ms-2">(compartilhe esta senha com o aluno)</span>
+          </dd>
+        }
       }
       else if (Model.TipoPessoa == "R")
       {
@@ -121,7 +130,7 @@
 
         @if (Model.Dependentes != null && Model.Dependentes.Any())
         {
-          <dt class="col-sm-12 mt-4 mb-2"><i class="fa fa-users"></i> Gerenciar Acessos dos Dependentes</dt>
+          <dt class="col-sm-12 mt-4 mb-2"><i class="fa fa-users"></i> Dependentes</dt>
           <dd class="col-sm-12">
             <div class="table-responsive">
               <table class="table table-bordered align-middle">
@@ -129,7 +138,6 @@
                   <tr>
                     <th>Nome do Aluno</th>
                     <th>CPF</th>
-                    <th class="text-center">Ação</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -138,14 +146,6 @@
                     <tr>
                       <td>@dep.Nome @dep.Sobrenome</td>
                       <td class="text-muted">@dep.Cpf</td>
-                      <td class="text-center">
-                        <a asp-area="Identity"
-                           asp-page="/Account/Register"
-                           asp-route-alunoId="@dep.Id"
-                           class="btn btn-primary btn-sm">
-                          <i class="fa fa-key"></i> Ativar Acesso
-                        </a>
-                      </td>
                     </tr>
                   }
                 </tbody>
@@ -157,26 +157,6 @@
     </dl>
   </div>
 </div>
-
-@if (Model.TipoPessoa == "A" && (User.IsInRole("Responsavel") || User.IsInRole("Admin")))
-{
-  <div class="admin-card mt-4 border-primary">
-    <div class="admin-card-body d-flex align-items-center justify-content-between">
-      <div>
-        <h5 class="text-primary mb-1">
-          <i class="fa fa-unlock-alt"></i> Acesso do Aluno
-        </h5>
-        <p class="text-muted mb-0">
-          Este aluno ainda não possui login. Deseja liberar o acesso dele ao portal?
-        </p>
-      </div>
-      <a asp-area="Identity" asp-page="/Account/Register" asp-route-alunoId="@Model.Id"
-         class="btn btn-primary btn-lg">
-        <i class="fa fa-user-plus"></i> Ativar Acesso
-      </a>
-    </div>
-  </div>
-}
 
 <div class="page-actions">
   <div>
