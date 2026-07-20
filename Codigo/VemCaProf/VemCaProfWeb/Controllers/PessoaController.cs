@@ -285,10 +285,13 @@ namespace VemCaProfWeb.Controllers
         // POST: Pessoa/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
+                var pessoa = _pessoaService.Get(id);
+                var cpfPessoa = pessoa?.Cpf;
+
                 var cpfLogado = User.Identity?.Name;
                 var isAdmin = User.IsInRole("Admin");
                 bool sucesso = _pessoaService.DeleteSeguro(id, cpfLogado, isAdmin);
@@ -296,6 +299,15 @@ namespace VemCaProfWeb.Controllers
                 {
                     TempData["ErrorMessage"] = "Não foi possível excluir.";
                     return RedirectToAction(nameof(Index));
+                }
+
+                if (cpfPessoa != null)
+                {
+                    var userIdentity = await _userManager.FindByNameAsync(cpfPessoa);
+                    if (userIdentity != null)
+                    {
+                        await _userManager.DeleteAsync(userIdentity);
+                    }
                 }
 
                 TempData["SuccessMessage"] = "Pessoa excluída com sucesso.";
