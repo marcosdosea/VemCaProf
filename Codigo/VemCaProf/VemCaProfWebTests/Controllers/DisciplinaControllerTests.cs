@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using VemCaProfWeb.Controllers;
 using VemCaProfWeb.Models;
 
@@ -42,7 +44,8 @@ namespace VemCaProfWeb.Controllers.Tests
             mockService.Setup(service => service.Delete(It.IsAny<uint>()))
                 .Verifiable();
 
-            controller = new DisciplinaController(mockService.Object, mapper);
+            controller = new DisciplinaController(mockService.Object, mapper, Mock.Of<ILogger<DisciplinaController>>());
+            controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
         }
 
         [TestMethod()]
