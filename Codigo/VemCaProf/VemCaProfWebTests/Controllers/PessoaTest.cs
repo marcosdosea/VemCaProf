@@ -13,6 +13,10 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures; // para TempData
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using VemCaProfWeb.Areas.Identity.Data;
 
 namespace VemCaProfWebTests
 {
@@ -23,6 +27,8 @@ namespace VemCaProfWebTests
         private Mock<ICidadeService> _cidadeServiceMock = null!;
         private Mock<IDisciplinaService> _disciplinaServiceMock = null!;
         private Mock<IMapper> _mapperMock = null!;
+        private Mock<UserManager<Usuario>> _userManagerMock = null!;
+        private Mock<RoleManager<IdentityRole>> _roleManagerMock = null!;
         private PessoaController _controller = null!;
 
         [TestInitialize]
@@ -33,11 +39,43 @@ namespace VemCaProfWebTests
             _disciplinaServiceMock = new Mock<IDisciplinaService>();
             _mapperMock = new Mock<IMapper>();
 
+            var userStoreMock = new Mock<IUserStore<Usuario>>();
+            _userManagerMock = new Mock<UserManager<Usuario>>(
+                userStoreMock.Object,
+                new Mock<IOptions<IdentityOptions>>().Object,
+                new Mock<IPasswordHasher<Usuario>>().Object,
+                null, null, null, null, null, null);
+
+            var roleStoreMock = new Mock<IRoleStore<IdentityRole>>();
+            _roleManagerMock = new Mock<RoleManager<IdentityRole>>(
+                roleStoreMock.Object, null, null, null, null);
+
+            _userManagerMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync((Usuario?)null);
+            _userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync((Usuario?)null);
+            _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<Usuario>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(x => x.AddToRoleAsync(It.IsAny<Usuario>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(x => x.AddClaimAsync(It.IsAny<Usuario>(), It.IsAny<System.Security.Claims.Claim>()))
+                .ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(x => x.DeleteAsync(It.IsAny<Usuario>()))
+                .ReturnsAsync(IdentityResult.Success);
+
+            _roleManagerMock.Setup(x => x.RoleExistsAsync(It.IsAny<string>()))
+                .ReturnsAsync(false);
+            _roleManagerMock.Setup(x => x.CreateAsync(It.IsAny<IdentityRole>()))
+                .ReturnsAsync(IdentityResult.Success);
+
             _controller = new PessoaController(
                 _pessoaServiceMock.Object,
                 _cidadeServiceMock.Object,
                 _disciplinaServiceMock.Object,
-                _mapperMock.Object);
+                _mapperMock.Object,
+                Mock.Of<ILogger<PessoaController>>(),
+                _userManagerMock.Object,
+                _roleManagerMock.Object);
 
             // Configura TempData para evitar NullReferenceException
             _controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
@@ -81,7 +119,7 @@ namespace VemCaProfWebTests
         // ==================== DETAILS ====================
 
         [TestMethod]
-        public void Details_ComPessoaExistente_RetornaViewComModelo()
+        public async Task Details_ComPessoaExistente_RetornaViewComModelo()
         {
             // Arrange
             var pessoa = new Pessoa { Id = 1, Nome = "João", TipoPessoa = "P" };
@@ -92,7 +130,7 @@ namespace VemCaProfWebTests
             _mapperMock.Setup(m => m.Map<PessoaModel>(pessoa)).Returns(modelo);
 
             // Act
-            var result = _controller.Details(1) as ViewResult;
+            var result = await _controller.Details(1) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -100,14 +138,14 @@ namespace VemCaProfWebTests
         }
 
         [TestMethod]
-        public void Details_PessoaNaoEncontrada_RedirecionaParaHomeIndex()
+        public async Task Details_PessoaNaoEncontrada_RedirecionaParaHomeIndex()
         {
             // Arrange
             _pessoaServiceMock.Setup(s => s.GetParaDetails(99, "12345678901", true))
                 .Returns((Pessoa?)null);
 
             // Act
-            var result = _controller.Details(99) as RedirectToActionResult;
+            var result = await _controller.Details(99) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -167,7 +205,7 @@ namespace VemCaProfWebTests
         // ==================== CREATE (POST) ====================
 
         [TestMethod]
-        public void Create_Post_ModeloValido_RedirecionaParaDetails()
+        public async Task Create_Post_ModeloValido_RedirecionaParaDetails()
         {
             // Arrange
             var modelo = new PessoaModel { Id = 0, Nome = "Maria", Cpf = "12345678901", TipoPessoa = "A" };
@@ -176,7 +214,7 @@ namespace VemCaProfWebTests
             _mapperMock.Setup(m => m.Map<Pessoa>(modelo)).Returns(entidade);
 
             // Act
-            var result = _controller.Create(modelo) as RedirectToActionResult;
+            var result = await _controller.Create(modelo) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -186,14 +224,14 @@ namespace VemCaProfWebTests
         }
 
         [TestMethod]
-        public void Create_Post_ModeloInvalido_RetornaViewComModelo()
+        public async Task Create_Post_ModeloInvalido_RetornaViewComModelo()
         {
             // Arrange
             _controller.ModelState.AddModelError("Nome", "Obrigatório");
             var modelo = new PessoaModel { TipoPessoa = "P" };
 
             // Act
-            var result = _controller.Create(modelo) as ViewResult;
+            var result = await _controller.Create(modelo) as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -355,14 +393,16 @@ namespace VemCaProfWebTests
         // ==================== DELETE CONFIRMED ====================
 
         [TestMethod]
-        public void DeleteConfirmed_ComSucesso_RedirecionaParaIndex()
+        public async Task DeleteConfirmed_ComSucesso_RedirecionaParaIndex()
         {
             // Arrange
+            _pessoaServiceMock.Setup(s => s.Get(It.IsAny<int>()))
+                .Returns(new Pessoa { Id = 1, Cpf = "12345678901" });
             _pessoaServiceMock.Setup(s => s.DeleteSeguro(1, "12345678901", true))
                 .Returns(true);
 
             // Act
-            var result = _controller.DeleteConfirmed(1) as RedirectToActionResult;
+            var result = await _controller.DeleteConfirmed(1) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -371,19 +411,19 @@ namespace VemCaProfWebTests
         }
 
         [TestMethod]
-        public void DeleteConfirmed_Falha_RedirecionaParaIndexComErro()
+        public async Task DeleteConfirmed_Falha_RedirecionaParaIndexComErro()
         {
             // Arrange
             _pessoaServiceMock.Setup(s => s.DeleteSeguro(1, "12345678901", true))
                 .Returns(false);
 
             // Act
-            var result = _controller.DeleteConfirmed(1) as RedirectToActionResult;
+            var result = await _controller.DeleteConfirmed(1) as RedirectToActionResult;
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual("Index", result.ActionName);
-            Assert.IsTrue(_controller.TempData.ContainsKey("Error"));
+            Assert.IsTrue(_controller.TempData.ContainsKey("ErrorMessage"));
             _pessoaServiceMock.Verify(s => s.DeleteSeguro(1, "12345678901", true), Times.Once);
         }
 

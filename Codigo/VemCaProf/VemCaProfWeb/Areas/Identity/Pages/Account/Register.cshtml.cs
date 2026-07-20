@@ -20,6 +20,7 @@
     using Microsoft.Extensions.Logging;
     using VemCaProfWeb.Areas.Identity.Data; 
     using Core.Service;
+    using Util;
 
     namespace VemCaProfWeb.Areas.Identity.Pages.Account
     {
@@ -154,6 +155,8 @@
                 returnUrl ??= Url.Content("~/");
                 ReturnUrl = returnUrl;
                 ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                Input.Cpf = Methods.RemoveNaoNumericos(Input.Cpf);
 
                 // ==========================================================
                 // BLINDAGEM CONTRA ESCALAÇÃO DE PRIVILÉGIOS E VALIDAÇÃO MANUAL

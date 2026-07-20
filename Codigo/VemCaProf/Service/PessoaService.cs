@@ -169,8 +169,22 @@ namespace Service
                 throw new ServiceException("Não é possível excluir um responsável com dependentes.");
             }
 
-            _context.Pessoas.Remove(pessoa);
-            _context.SaveChanges();
+            if (_context.Penalidades.Any(p => p.IdResponsavel == id))
+            {
+                throw new ServiceException("Não é possível excluir esta pessoa, pois existem penalidades vinculadas a ela.");
+            }
+
+            try
+            {
+                _context.Pessoas.Remove(pessoa);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                _context.Entry(pessoa).State = EntityState.Unchanged;
+                throw new ServiceException(
+                    "Não é possível excluir esta pessoa, pois existem outros registros no sistema vinculados a ela.", ex);
+            }
         }
 
         /// <summary>

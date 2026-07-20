@@ -355,6 +355,26 @@ body {
   border: 1px solid #fecaca;
 }
 
+.admin-alert-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-alert-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: currentColor;
+  opacity: 0.25;
+  transition: width 5s linear;
+  width: 100%;
+}
+
+.admin-alert-dismissing .admin-alert-progress {
+  width: 0%;
+}
+
 /* ============================================
    Page Hero
    ============================================ */
@@ -652,6 +672,203 @@ body {
   background: #f1f5f9;
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
+}
+
+/* ============================================
+   Aula Table
+   ============================================ */
+.aulas-table {
+  width: 100% !important;
+  table-layout: fixed;
+}
+
+.aulas-table thead th:nth-child(1) { width: 13%; }
+.aulas-table thead th:nth-child(2) { width: 18%; }
+.aulas-table thead th:nth-child(3) { width: 25%; }
+.aulas-table thead th:nth-child(4) { width: 17%; }
+.aulas-table thead th:nth-child(5) { width: 11%; }
+.aulas-table thead th:nth-child(6) { width: 16%; }
+
+.aulas-table tbody td {
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.aula-schedule-date {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text);
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.aula-schedule-date i {
+  color: var(--color-primary);
+}
+
+.aula-schedule-time {
+  margin-top: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.aula-cell-title {
+  color: var(--color-text);
+  font-weight: 650;
+}
+
+.aula-cell-description {
+  display: -webkit-box;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.aula-person-row {
+  display: grid;
+  grid-template-columns: 4.75rem minmax(0, 1fr);
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+  font-size: 0.75rem;
+}
+
+.aula-person-row span {
+  color: var(--color-text-muted);
+}
+
+.aula-person-row strong {
+  min-width: 0;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.aula-payment-value {
+  color: var(--color-text);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.aula-payment-detail,
+.aula-payment-method {
+  margin-top: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.6875rem;
+  line-height: 1.35;
+}
+
+.aula-payment-detail i {
+  color: #059669;
+}
+
+.aula-payment-method {
+  display: inline-flex;
+  padding: 0.125rem 0.4rem;
+  border-radius: 9999px;
+  background: #f1f5f9;
+}
+
+.aulas-action-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.aulas-actions-cell .modal {
+  text-align: left;
+}
+
+@media (max-width: 1199.98px) {
+  .aulas-table-responsive {
+    overflow: visible;
+  }
+
+  .aulas-table-responsive .dt-container,
+  .aulas-table-responsive .dt-layout-row,
+  .aulas-table-responsive .dt-layout-cell {
+    display: block;
+  }
+
+  .aulas-table,
+  .aulas-table tbody,
+  .aulas-table tr,
+  .aulas-table td {
+    display: block;
+    width: 100% !important;
+  }
+
+  .aulas-table thead {
+    display: none;
+  }
+
+  .aulas-table tbody {
+    padding: 0.75rem;
+    background: #f8fafc;
+  }
+
+  .aulas-table tbody tr {
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 0.875rem;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .aulas-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .aulas-table tbody td {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: left !important;
+  }
+
+  .aulas-table tbody td:last-child {
+    border-bottom: 0;
+  }
+
+  .aulas-table tbody td::before {
+    content: attr(data-label);
+    color: var(--color-text-muted);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .aulas-table tbody td.dt-empty {
+    display: block;
+    padding: 2rem 1rem;
+    text-align: center !important;
+  }
+
+  .aulas-table tbody td.dt-empty::before {
+    display: none;
+  }
+
+  .aulas-action-group {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .aulas-table tbody td {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
 }
 
 /* ============================================

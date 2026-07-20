@@ -2,11 +2,14 @@ using AutoMapper;
 using Core;
 using Core.Service;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
+using VemCaProfWeb.Areas.Identity.Data;
 using VemCaProfWeb.Models;
 using Util;
+using Microsoft.Extensions.Logging;
 
 namespace VemCaProfWeb.Controllers
 {
@@ -17,17 +20,26 @@ namespace VemCaProfWeb.Controllers
         private readonly ICidadeService _cidadeService;
         private readonly IDisciplinaService _disciplinaService;
         private readonly IMapper _mapper;
+        private readonly ILogger<PessoaController> _logger;
+        private readonly UserManager<Usuario> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public PessoaController(
             IPessoaService pessoaService,
             ICidadeService cidadeService,
             IDisciplinaService disciplinaService,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<PessoaController> logger,
+            UserManager<Usuario> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _pessoaService = pessoaService;
             _cidadeService = cidadeService;
             _disciplinaService = disciplinaService;
             _mapper = mapper;
+            _logger = logger;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: Pessoa
@@ -43,7 +55,7 @@ namespace VemCaProfWeb.Controllers
         }
 
         // GET: Pessoa/Details/5
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var cpfLogado = User.Identity?.Name;
             var isAdmin = User.IsInRole("Admin");
@@ -59,6 +71,18 @@ namespace VemCaProfWeb.Controllers
                 if (responsavel != null)
                 {
                     viewModel.NomeResponsavel = $"{responsavel.Nome} {responsavel.Sobrenome}";
+                }
+            }
+
+            if (pessoa.TipoPessoa == "A" && (isAdmin || User.IsInRole("Responsavel")))
+            {
+                var alunoUser = await _userManager.FindByNameAsync(pessoa.Cpf);
+                if (alunoUser != null)
+                {
+                    var claims = await _userManager.GetClaimsAsync(alunoUser);
+                    var senhaClaim = claims.FirstOrDefault(c => c.Type == "SenhaGerada");
+                    if (senhaClaim != null)
+                        viewModel.SenhaGerada = senhaClaim.Value;
                 }
             }
             
@@ -103,7 +127,7 @@ namespace VemCaProfWeb.Controllers
     // POST: Pessoa/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(PessoaModel viewModel)
+    public async Task<IActionResult> Create(PessoaModel viewModel)
     {
         if (!ModelState.IsValid)
         {
@@ -134,7 +158,44 @@ namespace VemCaProfWeb.Controllers
 
             _pessoaService.CreateSeguro(pessoa, cpfLogado, isAdmin, isProfessor, isResponsavel);
 
-            TempData["Success"] = "Pessoa cadastrada com sucesso!";
+            if (pessoa.TipoPessoa == "A")
+            {
+                var userPorCpf = await _userManager.FindByNameAsync(pessoa.Cpf);
+                var email = pessoa.Email ?? $"{pessoa.Cpf}@vemcaprof.com";
+                var userPorEmail = await _userManager.FindByEmailAsync(email);
+
+                if (userPorCpf == null && userPorEmail == null)
+                {
+                    var alunoUser = new Usuario
+                    {
+                        UserName = pessoa.Cpf,
+                        Email = email,
+                        EmailConfirmed = true
+                    };
+
+                    string senha = GerarSenha();
+                    var result = await _userManager.CreateAsync(alunoUser, senha);
+                    if (result.Succeeded)
+                    {
+                        if (!await _roleManager.RoleExistsAsync("Aluno"))
+                            await _roleManager.CreateAsync(new IdentityRole("Aluno"));
+                        await _userManager.AddToRoleAsync(alunoUser, "Aluno");
+                        await _userManager.AddClaimAsync(alunoUser, new System.Security.Claims.Claim("SenhaGerada", senha));
+                    }
+                    else
+                    {
+                        TempData["SuccessMessage"] = "Aluno cadastrado!";
+                    }
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "Aluno cadastrado!";
+                }
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Pessoa cadastrada com sucesso!";
+            }
             return RedirectToAction(nameof(Details), new { id = pessoa.Id });
         }
         catch (ServiceException ex)
@@ -197,7 +258,7 @@ namespace VemCaProfWeb.Controllers
                 return View(viewModel);
             }
 
-            TempData["Success"] = "Dados atualizados com sucesso!";
+            TempData["SuccessMessage"] = "Dados atualizados com sucesso!";
             return RedirectToAction(nameof(Details), new { id });
         }
         catch (ServiceException ex)
@@ -224,19 +285,45 @@ namespace VemCaProfWeb.Controllers
         // POST: Pessoa/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cpfLogado = User.Identity?.Name;
-            var isAdmin = User.IsInRole("Admin");
-            bool sucesso = _pessoaService.DeleteSeguro(id, cpfLogado, isAdmin);
-            if (!sucesso)
+            try
             {
-                TempData["Error"] = "Não foi possível excluir.";
+                var pessoa = _pessoaService.Get(id);
+                var cpfPessoa = pessoa?.Cpf;
+
+                var cpfLogado = User.Identity?.Name;
+                var isAdmin = User.IsInRole("Admin");
+                bool sucesso = _pessoaService.DeleteSeguro(id, cpfLogado, isAdmin);
+                if (!sucesso)
+                {
+                    TempData["ErrorMessage"] = "Não foi possível excluir.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (cpfPessoa != null)
+                {
+                    var userIdentity = await _userManager.FindByNameAsync(cpfPessoa);
+                    if (userIdentity != null)
+                    {
+                        await _userManager.DeleteAsync(userIdentity);
+                    }
+                }
+
+                TempData["SuccessMessage"] = "Pessoa excluída com sucesso.";
                 return RedirectToAction(nameof(Index));
             }
-
-            TempData["Success"] = "Pessoa excluída com sucesso.";
-            return RedirectToAction(nameof(Index));
+            catch (ServiceException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Erro ao excluir pessoa";
+                _logger.LogError(ex, "Erro ao excluir pessoa ID {Id}", id);
+                return RedirectToAction(nameof(Index));
+            }
         }
         public IActionResult MeuPerfil()
         {
@@ -286,6 +373,13 @@ namespace VemCaProfWeb.Controllers
                 });
                 viewModel.Responsaveis = new SelectList(opcoes, "Id", "Texto", viewModel.ResponsavelId);
             }
+        }
+
+        private static string GerarSenha()
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray()) + "Aa1";
         }
 
         private byte[]? ConvertToBytes(IFormFile? file)

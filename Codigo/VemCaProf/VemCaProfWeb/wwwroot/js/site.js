@@ -1,11 +1,18 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-// site.js - Funcionalidades para VemCaProfWeb
+﻿// site.js - Funcionalidades para VemCaProfWeb
 
 $(document).ready(function () {
+    // ===== AUTO-DISMISS ADMIN ALERTS =====
+    $('.admin-alert-wrapper').each(function () {
+        const $alert = $(this);
+        setTimeout(function () {
+            if ($alert.is(':visible')) {
+                $alert.addClass('admin-alert-dismissing');
+                setTimeout(function () {
+                    $alert.fadeOut(300, function () { $(this).remove(); });
+                }, 5000);
+            }
+        }, 2000);
+    });
     // Cache de seletores para evitar repetição
     const $cpf = $('#Cpf');
     const $telefone = $('#Telefone');

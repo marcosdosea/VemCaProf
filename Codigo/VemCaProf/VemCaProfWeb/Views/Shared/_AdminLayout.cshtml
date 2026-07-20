@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using Core.Service
+@inject IPessoaService PessoaService
+
+@{
+    var profileLabel = User.IsInRole("Admin") ? "Administrativo"
+        : User.IsInRole("Professor") ? "Professor"
+        : User.IsInRole("Responsavel") ? "Responsável"
+        : User.IsInRole("Aluno") ? "Aluno"
+        : string.Empty;
+    var cpf = User.Identity?.Name;
+    var pessoa = !string.IsNullOrEmpty(cpf) ? PessoaService.GetByCpf(cpf) : null;
+    var nomeExibicao = pessoa != null ? $"{pessoa.Nome} {pessoa.Sobrenome}" : (cpf ?? "Usuário");
+}
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
@@ -21,7 +34,10 @@
                 </div>
                 <div>
                     <div class="fw-semibold" style="font-size:0.9375rem">VemCáProf</div>
-                    <div class="admin-logo-sub">Administrativo</div>
+                    @if (!string.IsNullOrEmpty(profileLabel))
+                    {
+                        <div class="admin-logo-sub">@profileLabel</div>
+                    }
                 </div>
             </div>
             <button type="button" class="admin-menu-toggle" data-admin-menu-open
@@ -39,7 +55,10 @@
                 </div>
                 <div>
                     <div class="admin-logo-text">VemCáProf</div>
-                    <div class="admin-logo-sub">Administrativo</div>
+                    @if (!string.IsNullOrEmpty(profileLabel))
+                    {
+                        <div class="admin-logo-sub">@profileLabel</div>
+                    }
                 </div>
                 <button type="button" class="admin-sidebar-close" data-admin-menu-close aria-label="Fechar menu">
                     <i class="bi bi-x-lg"></i>
@@ -56,7 +75,7 @@
                     <span>Início</span>
                 </a>
 
-                @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
+                @if (User.IsInRole("Admin"))
                 {
                     <a asp-controller="Disciplina" asp-action="Index" class="admin-nav-item @(controller == "Disciplina" ? "active" : "")">
                         <i class="bi bi-book"></i>
@@ -113,11 +132,14 @@
             <div class="admin-sidebar-footer">
                 <div class="admin-user">
                     <div class="admin-avatar">
-                        @(User.Identity?.Name?.Length > 0 ? User.Identity.Name[0].ToString().ToUpper() : "U")
+                        @(nomeExibicao.Length > 0 ? nomeExibicao[0].ToString().ToUpper() : "U")
                     </div>
                     <div class="admin-user-info">
-                        <div class="admin-user-name">@(User.Identity?.Name ?? "Usuário")</div>
-                        <div class="admin-user-email">@(User.Identity?.Name ?? "")</div>
+                        <div class="admin-user-name">@nomeExibicao</div>
+                        @if (pessoa != null && cpf != null)
+                        {
+                            <div class="admin-user-email">@cpf</div>
+                        }
                     </div>
                 </div>
                 <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
@@ -133,18 +155,20 @@
         <main class="admin-main">
             @if (TempData["SuccessMessage"] != null)
             {
-                <div class="admin-alert admin-alert-success">
+                <div class="admin-alert admin-alert-success admin-alert-wrapper" role="alert">
                     <i class="bi bi-check-circle-fill"></i>
                     <span>@TempData["SuccessMessage"]</span>
                     <button type="button" class="admin-alert-close" onclick="this.parentElement.remove()">&times;</button>
+                    <div class="admin-alert-progress"></div>
                 </div>
             }
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="admin-alert admin-alert-danger">
+                <div class="admin-alert admin-alert-danger admin-alert-wrapper" role="alert">
                     <i class="bi bi-exclamation-circle-fill"></i>
                     <span>@TempData["ErrorMessage"]</span>
                     <button type="button" class="admin-alert-close" onclick="this.parentElement.remove()">&times;</button>
+                    <div class="admin-alert-progress"></div>
                 </div>
             }
             @RenderBody()

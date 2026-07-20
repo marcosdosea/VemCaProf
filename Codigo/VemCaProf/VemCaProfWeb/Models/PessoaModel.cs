@@ -91,5 +91,8 @@ namespace VemCaProfWeb.Models
         public SelectList? Cidades { get; set; }
         public SelectList? Disciplinas { get; set; }
         public SelectList? Responsaveis { get; set; }
+
+        // Senha gerada automaticamente (preenchida apenas para Admins/Responsaveis visualizarem)
+        public string? SenhaGerada { get; set; }
     }
 }

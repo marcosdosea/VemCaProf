@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<VemCaProfWeb.Models.AulaModel>
 @using Core.Enums
+@using VemCaProfWeb.Helpers
 
 @{
     ViewData["Title"] = "Aulas";
@@ -19,47 +20,75 @@
     <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nova aula</a>
 </div>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-
 <div class="admin-card">
     <div class="admin-card-body p-0">
-        <div class="table-responsive">
-        <table id="tabelaAulas" class="table admin-table mb-0"
-               data-admin-table data-actions-column="11" data-order-column="0" data-order-direction="desc"
+        <div class="table-responsive aulas-table-responsive">
+        <table id="tabelaAulas" class="table admin-table aulas-table mb-0"
+               data-admin-table data-actions-column="5" data-order-column="0" data-order-direction="desc"
                data-search-placeholder="Buscar aula, aluno ou professor..."
                data-empty-message="Nenhuma aula encontrada.">
             <thead>
                 <tr>
-                    <th>@Html.DisplayNameFor(model => model.DataHorarioInicio)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataHorarioFinal)</th>
-                    <th>@Html.DisplayNameFor(model => model.Descricao)</th>
-                    <th>@Html.DisplayNameFor(model => model.Status)</th>
-                    <th>@Html.DisplayNameFor(model => model.Valor)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataHoraPagamento)</th>
-                    <th>@Html.DisplayNameFor(model => model.MetodoPagamento)</th>
-                    <th>@Html.DisplayNameFor(model => model.NomeDisciplina)</th>
-                    <th>@Html.DisplayNameFor(model => model.NomeResponsavel)</th>
-                    <th>@Html.DisplayNameFor(model => model.NomeAluno)</th>
-                    <th>@Html.DisplayNameFor(model => model.NomeProfessor)</th>
-                    <th>Ações</th>
+                    <th>Horário</th>
+                    <th>Aula</th>
+                    <th>Participantes</th>
+                    <th>Pagamento</th>
+                    <th>Status</th>
+                    <th class="text-end">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.DataHorarioInicio)</td>
-                        <td>@Html.DisplayFor(modelItem => item.DataHorarioFinal)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Descricao)</td>
-
-                        <td>
+                        <td data-label="Horário" data-order="@item.DataHorarioInicio.ToString("yyyyMMddHHmmss")">
+                            <div class="aula-schedule-date">
+                                <i class="bi bi-calendar3" aria-hidden="true"></i>
+                                <span>@item.DataHorarioInicio.ToString("dd/MM/yyyy")</span>
+                            </div>
+                            <div class="aula-schedule-time">
+                                @item.DataHorarioInicio.ToString("HH:mm") &ndash; @item.DataHorarioFinal.ToString("HH:mm")
+                            </div>
+                        </td>
+                        <td data-label="Aula">
+                            <div class="aula-cell-title">@(item.NomeDisciplina ?? "Sem disciplina")</div>
+                            <div class="aula-cell-description" title="@item.Descricao">@item.Descricao</div>
+                        </td>
+                        <td data-label="Participantes">
+                            <div class="aula-person-row">
+                                <span>Aluno</span>
+                                <strong>@(item.NomeAluno ?? "Não informado")</strong>
+                            </div>
+                            <div class="aula-person-row">
+                                <span>Professor</span>
+                                <strong>@(item.NomeProfessor ?? "Não informado")</strong>
+                            </div>
+                            <div class="aula-person-row">
+                                <span>Responsável</span>
+                                <strong>@(item.NomeResponsavel ?? "Não informado")</strong>
+                            </div>
+                        </td>
+                        <td data-label="Pagamento" data-order="@(item.Valor ?? 0)">
+                            <div class="aula-payment-value">
+                                @(item.Valor.HasValue ? item.Valor.Value.ToString("C2") : "Não informado")
+                            </div>
+                            @if (item.DataHoraPagamento.HasValue)
+                            {
+                                <div class="aula-payment-detail">
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                    @item.DataHoraPagamento.Value.ToString("dd/MM/yyyy HH:mm")
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="aula-payment-detail text-warning-emphasis">Aguardando pagamento</div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(item.MetodoPagamento))
+                            {
+                                <div class="aula-payment-method">@PagamentoDisplayHelper.MetodoLabel(item.MetodoPagamento)</div>
+                            }
+                        </td>
+                        <td data-label="Status" data-order="@item.Status">
                             @switch (item.Status)
                             {
                                 case StatusEnum.Agendada: <span class="badge-dot badge-dot-info">Agendada</span> break;
@@ -71,36 +100,39 @@
                                 default: <span class="badge-dot badge-dot-secondary">@item.Status</span> break;
                             }
                         </td>
-
-                        <td>@Html.DisplayFor(modelItem => item.Valor)</td>
-                        <td>@Html.DisplayFor(modelItem => item.DataHoraPagamento)</td>
-                        <td>@Html.DisplayFor(modelItem => item.MetodoPagamento)</td>
-                        <td>@Html.DisplayFor(modelItem => item.NomeDisciplina)</td>
-                        <td>@Html.DisplayFor(modelItem => item.NomeResponsavel)</td>
-                        <td>@Html.DisplayFor(modelItem => item.NomeAluno)</td>
-                        <td>@Html.DisplayFor(modelItem => item.NomeProfessor)</td>
-
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action-icon" title="Editar"><i class="bi bi-pencil"></i></a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn-action-icon" title="Detalhes"><i class="bi bi-eye"></i></a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action-icon btn-action-icon-danger" title="Excluir"><i class="bi bi-trash"></i></a>
-
+                        <td data-label="Ações" class="aulas-actions-cell text-end">
+                            <div class="aulas-action-group">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action-icon" title="Editar"><i class="bi bi-pencil"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn-action-icon" title="Detalhes"><i class="bi bi-eye"></i></a>
+                                @if (item.Status == StatusEnum.AguardandoPagamento)
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action-icon btn-action-icon-danger" title="Excluir"><i class="bi bi-trash"></i></a>
+                                }
+                                @if (item.Status != StatusEnum.Realizada && item.Status != StatusEnum.Cancelada && item.Status != StatusEnum.Confirmada)
+                                {
+                                    <a href="#" class="btn-action-icon btn-action-icon-success" data-bs-toggle="modal" data-bs-target="#modalConfirmar-@item.Id" title="Confirmar">
+                                        <i class="bi bi-check-lg"></i>
+                                    </a>
+                                }
+                                @if (item.Status != StatusEnum.Realizada && item.Status != StatusEnum.Cancelada)
+                                {
+                                    <a href="#" class="btn-action-icon btn-action-icon-danger" data-bs-toggle="modal" data-bs-target="#modalCancelar-@item.Id" title="Cancelar">
+                                        <i class="bi bi-x-lg"></i>
+                                    </a>
+                                }
+                            </div>
                             @if (item.Status != StatusEnum.Realizada && item.Status != StatusEnum.Cancelada && item.Status != StatusEnum.Confirmada)
                             {
-                                <a href="#" class="btn-action-icon btn-action-icon-success" data-bs-toggle="modal" data-bs-target="#modalConfirmar-@item.Id" title="Confirmar">
-                                    <i class="bi bi-check-lg"></i>
-                                </a>
-
                                 <div class="modal fade" id="modalConfirmar-@item.Id" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Confirmar Realização de Aula</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                             </div>
                                             <div class="modal-body text-start">
-                                                <p>Deseja confirma a aula <strong>@item.Descricao</strong>?</p>
-                                                <p class="small text-muted">Regra: A confirmação só pode ser feita até 2hrs antes do início da aula.</p>
+                                                <p>Deseja confirmar a aula <strong>@item.Descricao</strong>?</p>
+                                                <p class="small text-muted">Regra: a confirmação só pode ser feita até 2 horas antes do início da aula.</p>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
@@ -112,20 +144,15 @@
                                         </div>
                                     </div>
                                 </div>
-
                             }
                             @if (item.Status != StatusEnum.Realizada && item.Status != StatusEnum.Cancelada)
                             {
-                                <a href="#" class="btn-action-icon btn-action-icon-danger" data-bs-toggle="modal" data-bs-target="#modalCancelar-@item.Id" title="Cancelar">
-                                    <i class="bi bi-x-lg"></i>
-                                </a>
-
                                 <div class="modal fade" id="modalCancelar-@item.Id" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Confirmar Cancelamento</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <p>Tem certeza que deseja cancelar a aula de <strong>@item.Descricao</strong>?</p>
