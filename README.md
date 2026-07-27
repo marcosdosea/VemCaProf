@@ -120,7 +120,7 @@ Entre os potenciais usuários e instituições interessadas estão:
 <h2 id="linksuteis">6. Links Úteis :link:</h2>
 
 <p>
-  <a href="https://drive.google.com/file/d/14cP6-D0W-DF8RUnyzgO6m2mz_1yz9eLj/view" target="_blank">
+  <a href="https://www.youtube.com/shorts/CpozgCblEI8" target="_blank">
     1 - Vídeo de apresentação
   </a>
 </p>
